@@ -1,13 +1,79 @@
 ﻿<script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 
 import ModuleContent from '../../components/ui/ModuleContent.vue'
+import KeyManagementMonitor from '../../components/ui/KeyManagementMonitor.vue'
 import { getProjectById } from '../../mocks/projects'
 import type { CatalogItem, ModulePageConfig, TableCell } from '../../types/module-page'
 import NotFoundProjectState from './NotFoundProjectState.vue'
+import { useKeyMonitoring } from '../../composables/useKeyMonitoring'
+import { useOverlay } from '../../composables/useOverlay'
 
 const route = useRoute()
+
+// Initialize key monitoring
+const {
+  startMonitoring,
+  stopMonitoring,
+  isMonitoring,
+  exportUsageReport,
+  generateMemberGuide
+} = useKeyMonitoring()
+
+// Initialize overlay system
+const { openActionDialog } = useOverlay()
+
+// Key management action handlers
+const handleAssignNewKey = () => {
+  console.log('触发分配新Key操作')
+  openActionDialog({
+    title: '分配新 Key',
+    description: 'Key分配功能已准备就绪，可选择成员并配置对应的模型权限与配额限制。',
+    items: [
+      '支持批量分配和单个分配两种模式',
+      '自动根据成员角色推荐合适的配额额度',
+      '可设置使用说明和到期提醒',
+      '分配后会自动发送通知给相关成员'
+    ]
+  })
+}
+
+const handleExportReport = () => {
+  console.log('触发导出使用报告')
+  openActionDialog({
+    title: '导出使用报告',
+    description: '正在生成详细的使用情况报告，包含成员活跃度、配额使用率和异常告警统计。',
+    items: [
+      '报告将包含近30天的详细使用数据',
+      '支持Excel和JSON两种格式导出',
+      '包含可视化图表和趋势分析',
+      '自动标注异常使用模式和优化建议'
+    ]
+  })
+  // 同时触发实际的导出功能
+  setTimeout(() => {
+    exportUsageReport()
+  }, 2000)
+}
+
+const handleGenerateGuide = () => {
+  console.log('触发生成成员指南')
+  openActionDialog({
+    title: '生成成员使用指南',
+    description: '将根据当前项目配置和成员权限，自动生成个性化的Key使用指南文档。',
+    items: [
+      '包含每个成员的个人配额和权限说明',
+      '提供模型选择和使用场景建议',
+      '集成最佳实践和注意事项',
+      '支持Markdown格式，便于分享和更新'
+    ]
+  })
+  // 同时触发实际的生成功能
+  setTimeout(() => {
+    generateMemberGuide()
+  }, 2000)
+}
 
 // ?????????????????????????????
 function cell(text: string, tone?: TableCell['tone'], mono = false): TableCell {
@@ -62,6 +128,43 @@ function buildServiceCards(projectId: string) {
     }
   })
 }
+
+// Monitor section changes for key management
+watch(
+  section,
+  (newSection, oldSection) => {
+    if (oldSection === 'keymanagement' && newSection !== 'keymanagement') {
+      console.log('离开Key管理页面，停止监控')
+      stopMonitoring()
+    }
+
+    if (newSection === 'keymanagement' && oldSection !== 'keymanagement') {
+      console.log('进入Key管理页面，启动监控')
+      setTimeout(() => {
+        startMonitoring()
+      }, 1000) // Delay to ensure component is fully mounted
+    }
+  },
+  { immediate: false }
+)
+
+// Auto-start monitoring if landing directly on key management
+onMounted(() => {
+  if (section.value === 'keymanagement') {
+    console.log('直接访问Key管理页面，启动监控')
+    setTimeout(() => {
+      startMonitoring()
+    }, 1500)
+  }
+})
+
+// Cleanup on unmount
+onUnmounted(() => {
+  if (isMonitoring.value) {
+    console.log('组件卸载，停止监控')
+    stopMonitoring()
+  }
+})
 
 // ??????? section ??????????????????????
 const pageConfig = computed<ModulePageConfig>(() => {
@@ -290,6 +393,94 @@ const pageConfig = computed<ModulePageConfig>(() => {
         },
       ],
     },
+    keymanagement: {
+      sections: [
+        {
+          type: 'hero',
+          eyebrow: `${project.value.name} / Key Management`,
+          title: 'Key 管理中心',
+          description: '统一管理项目 API Key 分配、配额监控、使用统计和异常告警。',
+          actions: [
+            { label: '分配新 Key', variant: 'primary' },
+            { label: '导出使用报告' },
+          ],
+        },
+        {
+          type: 'metrics',
+          items: [
+            { id: 'keys', icon: '🔑', label: '启用 Key', value: '6', delta: 'Claude / GPT / 文心 多模型', tone: 'primary' },
+            { id: 'members', icon: '👥', label: '已分配成员', value: '12', delta: '4 个高级权限', tone: 'success' },
+            { id: 'usage', icon: '📊', label: '本月使用', value: '68%', delta: '较上月 +12%', tone: 'warning' },
+            { id: 'alerts', icon: '⚠️', label: '异常告警', value: '1', delta: '王五配额超限', tone: 'danger' },
+          ],
+        },
+        {
+          type: 'table',
+          title: '成员 Key 分配',
+          table: {
+            columns: ['成员', '角色', '状态', '配额', '使用量', '操作'],
+            rows: [
+              [cell('张三'), cell('Owner'), cell('已分配', 'success'), cell('120K'), cell('87K (73%)', 'warning'), cell('调整配额')],
+              [cell('李四'), cell('Member'), cell('已分配', 'success'), cell('80K'), cell('52K (65%)', 'primary'), cell('查看详情')],
+              [cell('王五'), cell('Member'), cell('已分配', 'success'), cell('60K'), cell('64K (107%)', 'danger'), cell('紧急调整')],
+              [cell('赵六'), cell('Viewer'), cell('未分配', 'muted'), cell('--'), cell('--'), cell('分配 Key')],
+            ],
+          },
+        },
+        {
+          type: 'split',
+          columns: 2,
+          items: [
+            {
+              title: '实时使用监控',
+              list: [
+                { title: '14:23 李四使用 GPT-4', meta: '消耗 2.3K tokens', badge: '刚刚', tone: 'primary' },
+                { title: '14:18 张三使用 Claude-3', meta: '消耗 1.8K tokens', badge: '5分钟前', tone: 'success' },
+                { title: '14:15 王五使用 GPT-4', meta: '消耗 4.2K tokens', badge: '8分钟前', tone: 'primary' },
+              ],
+            },
+            {
+              title: 'Top 活跃成员',
+              list: [
+                { title: '1. 张三', meta: '892K tokens', badge: '第1名', tone: 'success' },
+                { title: '2. 王五', meta: '856K tokens', badge: '第2名', tone: 'primary' },
+                { title: '3. 李四', meta: '654K tokens', badge: '第3名', tone: 'primary' },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'list-grid',
+          columns: 2,
+          cards: [
+            {
+              title: '异常告警',
+              items: [
+                {
+                  title: '配额预警',
+                  meta: '王五本月使用量已超额7%',
+                  description: '建议调整配额或优化使用模式',
+                  badge: '需处理',
+                  tone: 'danger',
+                },
+              ],
+            },
+            {
+              title: '优化建议',
+              items: [
+                {
+                  title: '配额建议',
+                  meta: '项目整体使用率68%',
+                  description: '可考虑为新成员分配剩余配额',
+                  badge: '建议',
+                  tone: 'primary',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
     psettings: {
       sections: [
         {
@@ -363,6 +554,12 @@ const pageConfig = computed<ModulePageConfig>(() => {
 
   <section v-else data-testid="project-module-page">
     <ModuleContent :sections="pageConfig.sections" />
+
+    <!-- Key Management Monitor - only show for keymanagement section -->
+    <KeyManagementMonitor
+      v-if="section === 'keymanagement'"
+      :auto-start="false"
+    />
   </section>
 </template>
 

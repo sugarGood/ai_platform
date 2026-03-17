@@ -4,51 +4,107 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is **AI 中台 (Enterprise AI Platform)** — a single-file HTML prototype for an enterprise AI management dashboard. The entire application lives in `ai-platform-prototype.html` (~2850 lines), combining HTML structure, CSS styles, and vanilla JavaScript with no build tools or dependencies.
+This is **AI 中台 (Enterprise AI Platform)** — an enterprise AI management platform that consists of multiple components:
+
+1. **HTML Prototype** (`ai-platform-prototype.html`) — Single-file interactive prototype with all UI features
+2. **Vue 3 Frontend** (`frontend/`) — Production web application built with Vue 3 + TypeScript + Vite
+3. **Spring Boot Backend** (`backend/`) — REST API server using Spring Boot 3 + MyBatis Plus
+4. **Database Schema** (`sql/`) — MySQL database with comprehensive schema and mock data
+
+## Development Commands
+
+### Frontend (Vue 3 + TypeScript + Vite)
+```bash
+cd frontend
+npm install           # Install dependencies
+npm run dev           # Start dev server (http://localhost:5173)
+npm run build         # Build for production
+npm run preview       # Preview production build
+npm run test          # Run tests with Vitest
+```
+
+### Backend (Spring Boot 3)
+```bash
+cd backend
+mvn clean install    # Build project
+mvn spring-boot:run   # Start server (http://localhost:8080)
+mvn test              # Run tests
+```
+
+### Database Setup
+The backend uses H2 in-memory database for development by default. To use MySQL:
+1. Start MySQL and create database `ai_platform`
+2. Run schema: `sql/2026-03-16-full-schema-v2.sql`
+3. Load mock data: `sql/2026-03-16-mock-data.sql`
+4. Update `backend/src/main/resources/application.yml` with MySQL configuration
 
 ## Architecture
 
-The app is a single-page application with two navigation modes:
+### Full Stack Structure
+```
+ai_platform/
+├── ai-platform-prototype.html  # Interactive UI prototype (single file)
+├── frontend/                   # Vue 3 production app
+│   ├── src/
+│   │   ├── components/shell/   # Navigation components
+│   │   ├── components/ui/      # Reusable UI components
+│   │   ├── pages/             # Page components
+│   │   └── router/            # Vue Router configuration
+├── backend/                   # Spring Boot API server
+│   ├── src/main/java/com/aiplatform/backend/
+│   │   ├── aikey/            # AI key management module
+│   │   ├── common/           # Shared utilities and exceptions
+│   │   ├── project/          # Project management module
+│   │   └── member/           # Member management module
+└── sql/                      # Database schema and data
+```
 
-- **Global sidebar** (`#sidebar-global`): Platform-level pages (dashboard, projects, AI capabilities, settings, etc.)
-- **Project sidebar** (`#sidebar-project`): Shown when entering a specific project, with project-scoped navigation
+### Frontend (Vue 3)
+- **Framework**: Vue 3 with Composition API
+- **Build Tool**: Vite for fast development and builds
+- **Language**: TypeScript for type safety
+- **Routing**: Vue Router 5 for SPA navigation
+- **Testing**: Vitest + Vue Test Utils
 
-### Page Routing
+### Backend (Spring Boot 3)
+- **Framework**: Spring Boot 3 with Java 17
+- **Database**: MyBatis Plus for database operations
+- **Architecture**: Domain-driven design with controller/service/mapper layers
+- **Database**: H2 (dev) / MySQL (prod)
+- **API**: RESTful endpoints following `/api/{module}` pattern
 
-Pages are `<div class="page">` elements toggled via CSS class `.active`. Key navigation functions:
-- `showPage(name)` — switches global pages, updates sidebar active state and topbar title
-- `enterProject(icon, name, sprint)` / `exitProject()` — toggles between global and project sidebars
-- `showProjectPage(name)` — navigates within a project context
-- `showServiceDetail(svcKey)` — drills into a service detail view with tabs
+### HTML Prototype Features
+The single-file prototype demonstrates the complete UI:
+- **Global sidebar** (`#sidebar-global`): Platform-level navigation
+- **Project sidebar** (`#sidebar-project`): Project-scoped navigation
+- **Page routing**: CSS-based `.active` class switching
+- **Key functions**: `showPage()`, `enterProject()`, `exitProject()`, `showProjectPage()`
+- **Theme system**: CSS custom properties (--primary, --danger, etc.)
+- **Modals**: `.modal.open` pattern with `openModal()/closeModal()`
 
-### Key Page Sections
+## Key Modules
 
-| Page ID pattern | Section |
-|---|---|
-| `page-dashboard` | Token usage stats, charts, recent activity |
-| `page-projects` | Project cards grid |
-| `page-proj-*` | Project-scoped pages (overview, agile/kanban, knowledge, incidents, services, members, skill config, settings) |
-| `page-svc-detail` | Service detail with tabbed views |
-| `page-workflows` | Agent workflow editor with visual flow diagrams |
-| `page-functions` | Function/tool management with parameter schemas |
-| `page-ai-monitor` | AI execution monitoring |
-| `page-evals` | AI evaluation center |
-| `page-atomic` | Atomic capability library |
-| `page-cicd`, `page-envs` | CI/CD pipelines, environment management |
-| `page-keys`, `page-audit` | API key management, audit/security |
+### AI Key Management (`backend/aikey/`)
+- Manages API keys and token quotas for different AI models
+- Supports per-project token allocation and usage tracking
+- REST endpoints: `/api/aikeys/*`
 
-### CSS Design System
+### Project Management (`backend/project/`)
+- Core project CRUD operations
+- Project-service relationships
+- Member management and permissions
 
-CSS custom properties defined in `:root` control the theme (colors, spacing). Key variables: `--primary`, `--danger`, `--success`, `--warning`, `--sidebar-bg`. All styles are inline in `<style>` — no external CSS.
-
-### Modals
-
-Modals use `<div class="modal">` with `.open` class. Opened/closed via `openModal(name)` / `closeModal(name)`. Clicking the overlay backdrop also closes them.
-
-## Development
-
-Open `ai-platform-prototype.html` directly in a browser — no server or build step required. All content is static/mock data for prototyping purposes.
+### Database Schema
+- **Core tables**: projects, services, members, ai_keys, usage_logs
+- **Schema files**: `sql/2026-03-16-full-schema-v2.sql`
+- **Mock data**: `sql/2026-03-16-mock-data.sql`
 
 ## Language
 
-UI text is in Chinese (zh-CN). Code comments and function names are in English.
+UI text is in Chinese (zh-CN). Code comments, API endpoints, and function names are in English.
+
+## Testing
+
+- **Frontend**: Run `npm run test` in frontend/ directory
+- **Backend**: Run `mvn test` in backend/ directory
+- **Database**: Use H2 console at http://localhost:8080/h2-console (when backend is running)

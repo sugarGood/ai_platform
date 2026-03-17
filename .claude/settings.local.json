@@ -15,7 +15,22 @@
       "mcp__database-mcp__list_tables",
       "Bash(ls /Users/claudecode/*.html)",
       "mcp__database-mcp__describe_table",
-      "mcp__database-mcp__execute"
+      "mcp__database-mcp__execute",
+      "Skill(update-config)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(start:*)",
+      "Bash(node:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" \"http://localhost:8888/ai-platform-prototype.html\")",
+      "Bash(killall python:*)",
+      "Bash(open:*)",
+      "Bash(python:*)",
+      "Bash(curl -s -I http://localhost:8000/ai-platform-prototype.html)",
+      "Bash(pkill:*)",
+      "Bash(findstr :8000)",
+      "Bash(tasklist)",
+      "Bash(findstr python:*)",
+      "Bash(ls -la *.html)"
     ]
   }
 }
