@@ -428,6 +428,9 @@
     <div class="nav-item" id="pnav-members" onclick="showProjectPage('members')">
       <span class="icon">👥</span><span class="label">成员权限</span>
     </div>
+    <div class="nav-item" id="pnav-keymanagement" onclick="showProjectPage('keymanagement')">
+      <span class="icon">🔑</span><span class="label">Key管理中心</span>
+    </div>
     <div class="nav-item" id="pnav-skillconfig" onclick="showProjectPage('skillconfig')">
       <span class="icon">⚡</span><span class="label">Skill 配置</span>
     </div>
@@ -2730,7 +2733,7 @@
   const projPageTitles = {
     overview:'概览', agile:'研发流程', knowledge:'知识库',
     incidents:'事故', services:'代码服务', members:'成员权限',
-    skillconfig:'Skill 配置', psettings:'项目设置'
+    keymanagement:'Key管理中心', skillconfig:'Skill 配置', psettings:'项目设置'
   };
 
   function showProjectPage(name) {
@@ -2815,6 +2818,254 @@
     document.getElementById('wf-stat-time').textContent = meta.time;
     document.getElementById('wf-stat-token').textContent = meta.token;
   }
+
+  // ── Key Management Data Models ──
+
+  // 成员Key分配数据模型 - 项目-成员-key完整关系
+  const memberKeyAssignments = {
+    'proj-1': { // 商城系统项目
+      members: {
+        'member-1': { // 张三 (Owner)
+          id: 'member-1',
+          name: '张三',
+          email: 'zhangsan@company.com',
+          role: 'Owner',
+          avatar: '👨‍💻',
+          assignedKeys: ['key-prod', 'key-dev', 'key-shared'],
+          keyQuotas: {
+            'key-prod': { allocated: 50000, used: 32150, status: 'active' },
+            'key-dev': { allocated: 30000, used: 18900, status: 'active' },
+            'key-shared': { allocated: 20000, used: 5240, status: 'active' }
+          }
+        },
+        'member-2': { // 李四 (Member)
+          id: 'member-2',
+          name: '李四',
+          email: 'lisi@company.com',
+          role: 'Member',
+          avatar: '👨‍🔧',
+          assignedKeys: ['key-dev', 'key-shared'],
+          keyQuotas: {
+            'key-dev': { allocated: 25000, used: 21300, status: 'active' },
+            'key-shared': { allocated: 15000, used: 8750, status: 'active' }
+          }
+        },
+        'member-3': { // 王五 (Member)
+          id: 'member-3',
+          name: '王五',
+          email: 'wangwu@company.com',
+          role: 'Member',
+          avatar: '👩‍💻',
+          assignedKeys: ['key-dev', 'key-shared'],
+          keyQuotas: {
+            'key-dev': { allocated: 20000, used: 12400, status: 'active' },
+            'key-shared': { allocated: 10000, used: 6100, status: 'active' }
+          }
+        },
+        'member-4': { // 赵六 (Viewer)
+          id: 'member-4',
+          name: '赵六',
+          email: 'zhaoliu@company.com',
+          role: 'Viewer',
+          avatar: '👨‍🎓',
+          assignedKeys: ['key-shared'],
+          keyQuotas: {
+            'key-shared': { allocated: 5000, used: 1850, status: 'active' }
+          }
+        }
+      },
+      keys: {
+        'key-prod': {
+          id: 'key-prod',
+          name: '生产主密钥',
+          type: 'production',
+          provider: 'Claude',
+          model: 'claude-3.5-sonnet',
+          totalQuota: 100000,
+          usedTokens: 32150,
+          rateLimit: '1000/min',
+          status: 'active',
+          createdAt: '2026-03-10',
+          description: '生产环境专用API密钥，严格权限控制'
+        },
+        'key-dev': {
+          id: 'key-dev',
+          name: '开发密钥',
+          type: 'development',
+          provider: 'Claude',
+          model: 'claude-3.5-sonnet',
+          totalQuota: 150000,
+          usedTokens: 52600,
+          rateLimit: '500/min',
+          status: 'active',
+          createdAt: '2026-03-08',
+          description: '开发环境API密钥，支持团队开发调试'
+        },
+        'key-shared': {
+          id: 'key-shared',
+          name: '团队共享密钥',
+          type: 'shared',
+          provider: 'Claude',
+          model: 'claude-3.5-haiku',
+          totalQuota: 80000,
+          usedTokens: 21940,
+          rateLimit: '300/min',
+          status: 'active',
+          createdAt: '2026-03-05',
+          description: '团队协作共享密钥，适用于文档生成等场景'
+        }
+      }
+    }
+  };
+
+  // Key使用日志数据模型 - 最近7天使用记录
+  const keyUsageLogs = [
+    // 2026-03-17 (今天)
+    {
+      logId: 'log-001', keyId: 'key-prod', memberId: 'member-1', memberName: '张三',
+      timestamp: '2026-03-17 14:30:25', tokens: 2150, endpoint: '/v1/messages',
+      client: 'Claude Desktop', model: 'claude-3.5-sonnet', cost: 0.043,
+      purpose: '生产代码审查', status: 'success'
+    },
+    {
+      logId: 'log-002', keyId: 'key-dev', memberId: 'member-2', memberName: '李四',
+      timestamp: '2026-03-17 13:45:12', tokens: 1850, endpoint: '/v1/messages',
+      client: 'Cursor', model: 'claude-3.5-sonnet', cost: 0.037,
+      purpose: '功能开发调试', status: 'success'
+    },
+    {
+      logId: 'log-003', keyId: 'key-shared', memberId: 'member-3', memberName: '王五',
+      timestamp: '2026-03-17 11:20:08', tokens: 890, endpoint: '/v1/messages',
+      client: 'GitHub Copilot', model: 'claude-3.5-haiku', cost: 0.018,
+      purpose: '文档生成', status: 'success'
+    },
+    {
+      logId: 'log-004', keyId: 'key-dev', memberId: 'member-1', memberName: '张三',
+      timestamp: '2026-03-17 09:15:33', tokens: 3200, endpoint: '/v1/messages',
+      client: 'Claude Desktop', model: 'claude-3.5-sonnet', cost: 0.064,
+      purpose: '架构设计讨论', status: 'success'
+    },
+
+    // 2026-03-16 (昨天)
+    {
+      logId: 'log-005', keyId: 'key-prod', memberId: 'member-1', memberName: '张三',
+      timestamp: '2026-03-16 16:45:22', tokens: 1950, endpoint: '/v1/messages',
+      client: 'Claude Desktop', model: 'claude-3.5-sonnet', cost: 0.039,
+      purpose: '生产问题诊断', status: 'success'
+    },
+    {
+      logId: 'log-006', keyId: 'key-dev', memberId: 'member-2', memberName: '李四',
+      timestamp: '2026-03-16 15:30:15', tokens: 2400, endpoint: '/v1/messages',
+      client: 'Cursor', model: 'claude-3.5-sonnet', cost: 0.048,
+      purpose: 'Bug修复', status: 'success'
+    },
+    {
+      logId: 'log-007', keyId: 'key-shared', memberId: 'member-4', memberName: '赵六',
+      timestamp: '2026-03-16 14:20:45', tokens: 650, endpoint: '/v1/messages',
+      client: 'Claude Web', model: 'claude-3.5-haiku', cost: 0.013,
+      purpose: '需求理解', status: 'success'
+    },
+    {
+      logId: 'log-008', keyId: 'key-dev', memberId: 'member-3', memberName: '王五',
+      timestamp: '2026-03-16 10:45:18', tokens: 1750, endpoint: '/v1/messages',
+      client: 'GitHub Copilot', model: 'claude-3.5-sonnet', cost: 0.035,
+      purpose: '单元测试编写', status: 'success'
+    },
+
+    // 2026-03-15
+    {
+      logId: 'log-009', keyId: 'key-prod', memberId: 'member-1', memberName: '张三',
+      timestamp: '2026-03-15 17:20:30', tokens: 2800, endpoint: '/v1/messages',
+      client: 'Claude Desktop', model: 'claude-3.5-sonnet', cost: 0.056,
+      purpose: '性能优化分析', status: 'success'
+    },
+    {
+      logId: 'log-010', keyId: 'key-shared', memberId: 'member-2', memberName: '李四',
+      timestamp: '2026-03-15 16:10:25', tokens: 1100, endpoint: '/v1/messages',
+      client: 'Claude Web', model: 'claude-3.5-haiku', cost: 0.022,
+      purpose: 'API文档生成', status: 'success'
+    },
+    {
+      logId: 'log-011', keyId: 'key-dev', memberId: 'member-3', memberName: '王五',
+      timestamp: '2026-03-15 14:35:12', tokens: 2100, endpoint: '/v1/messages',
+      client: 'Cursor', model: 'claude-3.5-sonnet', cost: 0.042,
+      purpose: '代码重构', status: 'success'
+    },
+
+    // 2026-03-14
+    {
+      logId: 'log-012', keyId: 'key-dev', memberId: 'member-2', memberName: '李四',
+      timestamp: '2026-03-14 15:45:40', tokens: 1600, endpoint: '/v1/messages',
+      client: 'GitHub Copilot', model: 'claude-3.5-sonnet', cost: 0.032,
+      purpose: '新功能开发', status: 'success'
+    },
+    {
+      logId: 'log-013', keyId: 'key-shared', memberId: 'member-4', memberName: '赵六',
+      timestamp: '2026-03-14 11:20:15', tokens: 720, endpoint: '/v1/messages',
+      client: 'Claude Web', model: 'claude-3.5-haiku', cost: 0.014,
+      purpose: '代码阅读理解', status: 'success'
+    },
+    {
+      logId: 'log-014', keyId: 'key-prod', memberId: 'member-1', memberName: '张三',
+      timestamp: '2026-03-14 09:30:22', tokens: 3500, endpoint: '/v1/messages',
+      client: 'Claude Desktop', model: 'claude-3.5-sonnet', cost: 0.070,
+      purpose: '系统监控分析', status: 'success'
+    },
+
+    // 2026-03-13
+    {
+      logId: 'log-015', keyId: 'key-dev', memberId: 'member-3', memberName: '王五',
+      timestamp: '2026-03-13 16:25:33', tokens: 1950, endpoint: '/v1/messages',
+      client: 'Cursor', model: 'claude-3.5-sonnet', cost: 0.039,
+      purpose: '集成测试', status: 'success'
+    },
+    {
+      logId: 'log-016', keyId: 'key-shared', memberId: 'member-2', memberName: '李四',
+      timestamp: '2026-03-13 13:40:18', tokens: 850, endpoint: '/v1/messages',
+      client: 'Claude Web', model: 'claude-3.5-haiku', cost: 0.017,
+      purpose: '技术文档编写', status: 'success'
+    },
+
+    // 2026-03-12
+    {
+      logId: 'log-017', keyId: 'key-prod', memberId: 'member-1', memberName: '张三',
+      timestamp: '2026-03-12 18:15:45', tokens: 2650, endpoint: '/v1/messages',
+      client: 'Claude Desktop', model: 'claude-3.5-sonnet', cost: 0.053,
+      purpose: '部署前检查', status: 'success'
+    },
+    {
+      logId: 'log-018', keyId: 'key-dev', memberId: 'member-2', memberName: '李四',
+      timestamp: '2026-03-12 14:50:20', tokens: 1800, endpoint: '/v1/messages',
+      client: 'GitHub Copilot', model: 'claude-3.5-sonnet', cost: 0.036,
+      purpose: '数据库优化', status: 'success'
+    },
+    {
+      logId: 'log-019', keyId: 'key-shared', memberId: 'member-3', memberName: '王五',
+      timestamp: '2026-03-12 10:30:10', tokens: 920, endpoint: '/v1/messages',
+      client: 'Claude Web', model: 'claude-3.5-haiku', cost: 0.018,
+      purpose: '接口设计讨论', status: 'success'
+    },
+
+    // 2026-03-11
+    {
+      logId: 'log-020', keyId: 'key-dev', memberId: 'member-1', memberName: '张三',
+      timestamp: '2026-03-11 17:40:55', tokens: 2200, endpoint: '/v1/messages',
+      client: 'Claude Desktop', model: 'claude-3.5-sonnet', cost: 0.044,
+      purpose: '架构Review', status: 'success'
+    },
+    {
+      logId: 'log-021', keyId: 'key-shared', memberId: 'member-4', memberName: '赵六',
+      timestamp: '2026-03-11 15:25:30', tokens: 580, endpoint: '/v1/messages',
+      client: 'Claude Web', model: 'claude-3.5-haiku', cost: 0.012,
+      purpose: '学习代码规范', status: 'success'
+    },
+    {
+      logId: 'log-022', keyId: 'key-prod', memberId: 'member-1', memberName: '张三',
+      timestamp: '2026-03-11 11:15:25', tokens: 1850, endpoint: '/v1/messages',
+      client: 'Claude Desktop', model: 'claude-3.5-sonnet', cost: 0.037,
+      purpose: '生产环境配置', status: 'success'
+    }
+  ];
 
   // ── Tool Card Select ──
   function selectTool(el) {
