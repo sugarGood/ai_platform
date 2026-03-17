@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:mcpcat.io)",
+      "WebFetch(domain:www.builder.io)",
+      "WebFetch(domain:github.com)",
+      "Bash(wc:*)",
+      "Bash(cd:*)",
+      "Bash(lsof:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)",
+      "Bash(claude mcp:*)",
+      "mcp__database-mcp__query",
+      "mcp__database-mcp__list_tables",
+      "Bash(ls /Users/claudecode/*.html)",
+      "mcp__database-mcp__describe_table",
+      "mcp__database-mcp__execute"
+    ]
+  }
+}

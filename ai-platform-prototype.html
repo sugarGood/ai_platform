@@ -1,0 +1,2847 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 中台 - 企业 AI 管理平台</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --sidebar-w: 220px;
+    --primary: #4F6EF7;
+    --primary-light: #EEF1FF;
+    --danger: #F04438;
+    --success: #12B76A;
+    --warning: #F79009;
+    --bg: #F7F8FA;
+    --card: #ffffff;
+    --border: #E4E7EC;
+    --text: #101828;
+    --sub: #667085;
+    --sidebar-bg: #0F1629;
+    --sidebar-text: #98A2B3;
+    --sidebar-active: #ffffff;
+  }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; font-size: 14px; }
+
+  /* Sidebar */
+  .sidebar { width: var(--sidebar-w); background: var(--sidebar-bg); display: flex; flex-direction: column; flex-shrink: 0; }
+  .sidebar-logo { padding: 20px 16px; border-bottom: 1px solid #1D2D50; display: flex; align-items: center; gap: 10px; }
+  .sidebar-logo .logo-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px; }
+  .sidebar-logo .logo-text { color: white; font-weight: 600; font-size: 15px; }
+  .sidebar-logo .logo-sub { color: var(--sidebar-text); font-size: 11px; }
+  .nav-section { padding: 16px 8px 8px; }
+  .nav-label { color: #3D5078; font-size: 11px; font-weight: 600; padding: 0 8px; margin-bottom: 4px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; cursor: pointer; color: var(--sidebar-text); transition: all 0.15s; margin-bottom: 2px; }
+  .nav-item:hover { background: #1D2D50; color: white; }
+  .nav-item.active { background: var(--primary); color: white; }
+  .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+  .nav-item .label { font-size: 13px; font-weight: 500; }
+  .nav-item .badge { margin-left: auto; background: var(--danger); color: white; border-radius: 10px; padding: 1px 6px; font-size: 11px; }
+  .sidebar-footer { margin-top: auto; padding: 12px; border-top: 1px solid #1D2D50; display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; }
+  .user-info .name { color: white; font-size: 13px; font-weight: 500; }
+  .user-info .role { color: var(--sidebar-text); font-size: 11px; }
+
+  /* Main */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar { background: white; border-bottom: 1px solid var(--border); padding: 0 24px; height: 56px; display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+  .topbar-title { font-size: 16px; font-weight: 600; flex: 1; }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+  .btn { padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border); background: white; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text); display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s; }
+  .btn:hover { background: var(--bg); }
+  .btn-primary { background: var(--primary); color: white; border-color: var(--primary); }
+  .btn-primary:hover { background: #3B55E0; }
+  .btn-danger { background: var(--danger); color: white; border-color: var(--danger); }
+  .content { flex: 1; overflow-y: auto; padding: 24px; }
+
+  /* Cards */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; }
+  .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-title { font-size: 14px; font-weight: 600; }
+  .card-body { padding: 20px; }
+
+  /* Stats */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; }
+  .stat-label { color: var(--sub); font-size: 12px; font-weight: 500; margin-bottom: 6px; }
+  .stat-value { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+  .stat-delta { font-size: 12px; color: var(--success); }
+  .stat-delta.down { color: var(--danger); }
+  .stat-icon { float: right; font-size: 24px; margin-top: -4px; }
+
+  /* Grid layouts */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 600; color: var(--sub); border-bottom: 1px solid var(--border); }
+  td { padding: 12px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+
+  /* Badge */
+  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; gap: 4px; }
+  .badge-green { background: #ECFDF3; color: #027A48; }
+  .badge-red { background: #FEF3F2; color: #B42318; }
+  .badge-yellow { background: #FFFAEB; color: #B54708; }
+  .badge-blue { background: var(--primary-light); color: var(--primary); }
+  .badge-gray { background: #F2F4F7; color: var(--sub); }
+
+  /* Progress bar */
+  .progress-wrap { background: #F2F4F7; border-radius: 4px; height: 6px; overflow: hidden; }
+  .progress-bar { height: 100%; border-radius: 4px; background: var(--primary); }
+  .progress-bar.danger { background: var(--danger); }
+  .progress-bar.warning { background: var(--warning); }
+
+  /* Page visibility */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* Chart placeholder */
+  .chart-area { height: 160px; background: linear-gradient(to bottom, var(--primary-light), transparent); border-radius: 8px; display: flex; align-items: flex-end; justify-content: space-around; padding: 16px 8px 0; gap: 6px; }
+  .chart-bar { flex: 1; border-radius: 4px 4px 0 0; background: var(--primary); opacity: 0.7; transition: opacity 0.2s; cursor: pointer; }
+  .chart-bar:hover { opacity: 1; }
+
+  /* Token meter */
+  .token-ring { width: 120px; height: 120px; position: relative; margin: 0 auto 16px; }
+  .token-ring svg { transform: rotate(-90deg); }
+  .token-ring .center-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .token-ring .center-value { font-size: 22px; font-weight: 700; color: var(--primary); }
+  .token-ring .center-label { font-size: 11px; color: var(--sub); }
+
+  /* Project card */
+  .project-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.15s; }
+  .project-card:hover { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+  .project-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .project-desc { color: var(--sub); font-size: 12px; margin-bottom: 12px; }
+  .project-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .project-tag { background: var(--primary-light); color: var(--primary); padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+  .project-members { display: flex; margin-left: auto; }
+  .project-members .avatar { width: 24px; height: 24px; font-size: 10px; border: 2px solid white; margin-left: -6px; }
+  .project-members .avatar:first-child { margin-left: 0; }
+
+  /* Incident */
+  .incident-item { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .incident-item:last-child { border-bottom: none; }
+  .incident-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+  .incident-dot.critical { background: var(--danger); box-shadow: 0 0 0 3px #FEE4E2; }
+  .incident-dot.warning { background: var(--warning); }
+  .incident-dot.info { background: var(--primary); }
+  .incident-title { font-weight: 500; font-size: 13px; margin-bottom: 3px; }
+  .incident-meta { font-size: 12px; color: var(--sub); }
+  .incident-actions { margin-left: auto; display: flex; gap: 6px; align-items: flex-start; }
+
+  /* MCP connect */
+  .mcp-card { border: 2px dashed var(--border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.15s; }
+  .mcp-card:hover { border-color: var(--primary); background: var(--primary-light); }
+  .mcp-icon { font-size: 32px; margin-bottom: 8px; }
+  .mcp-title { font-weight: 600; margin-bottom: 4px; }
+  .mcp-sub { color: var(--sub); font-size: 12px; }
+
+  /* Code block */
+  .code-block { background: #0F1629; color: #A9B8D4; border-radius: 8px; padding: 14px 16px; font-family: 'Fira Code', monospace; font-size: 12px; line-height: 1.6; }
+  .code-block .kw { color: #79B8FF; }
+  .code-block .str { color: #9ECBFF; }
+  .code-block .cm { color: #6A737D; }
+
+  /* Skill item */
+  .skill-item { display: flex; gap: 12px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--border); }
+  .skill-item:last-child { border-bottom: none; }
+  .skill-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .skill-name { font-weight: 500; font-size: 13px; margin-bottom: 3px; }
+  .skill-desc { color: var(--sub); font-size: 12px; }
+
+  /* Input */
+  input, select, textarea { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; width: 100%; outline: none; font-family: inherit; }
+  input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-size: 13px; font-weight: 500; margin-bottom: 6px; display: block; }
+
+  /* Modal overlay */
+  .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; }
+  .modal.open { display: flex; }
+  .modal-box { background: white; border-radius: 16px; padding: 24px; width: 480px; max-height: 80vh; overflow-y: auto; }
+  .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+
+  /* Tab */
+  .tabs { display: flex; gap: 4px; background: var(--bg); border-radius: 8px; padding: 4px; margin-bottom: 20px; }
+  .tab { flex: 1; text-align: center; padding: 7px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--sub); transition: all 0.15s; }
+  .tab.active { background: white; color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 20px; }
+  .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 0; width: 1px; background: var(--border); }
+  .timeline-item { position: relative; margin-bottom: 16px; }
+  .timeline-dot { position: absolute; left: -17px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); border: 2px solid white; box-shadow: 0 0 0 2px var(--primary); }
+  .timeline-time { font-size: 11px; color: var(--sub); margin-bottom: 3px; }
+  .timeline-content { font-size: 13px; }
+
+  /* AI chat bubble */
+  .ai-bubble { background: var(--primary-light); border-radius: 0 12px 12px 12px; padding: 12px 14px; font-size: 13px; line-height: 1.6; border: 1px solid #D1D9FE; }
+  .ai-label { font-size: 11px; color: var(--sub); margin-bottom: 6px; font-weight: 500; }
+
+  /* Kanban Board */
+  .kanban-board { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+  .kanban-col { min-width: 190px; flex: 1; background: var(--bg); border-radius: 10px; padding: 12px; }
+  .kanban-col-header { font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+  .kanban-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.15s; }
+  .kanban-card:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(79,110,247,0.12); }
+  .kanban-card-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; line-height: 1.4; }
+  .kanban-card-meta { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--sub); }
+  .sp-badge { background: var(--primary-light); color: var(--primary); border-radius: 4px; padding: 1px 6px; font-size: 11px; font-weight: 600; flex-shrink: 0; }
+
+  /* Atomic capability */
+  .atomic-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; transition: all 0.15s; }
+  .atomic-card:hover { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+  .atomic-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 10px; }
+  .atomic-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .atomic-desc { color: var(--sub); font-size: 12px; margin-bottom: 10px; line-height: 1.5; }
+  .atomic-git { font-size: 11px; color: var(--sub); background: var(--bg); border-radius: 6px; padding: 6px 10px; margin-bottom: 10px; font-family: 'Fira Code', monospace; line-height: 1.8; }
+
+  /* Pipeline stages */
+  .pipeline-stages { display: flex; align-items: center; gap: 0; }
+  .pipeline-stage { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; padding: 4px 8px; border-radius: 4px; white-space: nowrap; }
+  .pipeline-stage.success { background: #ECFDF3; color: #027A48; }
+  .pipeline-stage.running { background: var(--primary-light); color: var(--primary); }
+  .pipeline-stage.failed { background: #FEF3F2; color: #B42318; }
+  .pipeline-stage.pending { background: var(--bg); color: var(--sub); }
+  .pipeline-arrow { color: var(--border); margin: 0 2px; font-size: 12px; }
+
+  /* Env card */
+  .env-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .env-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .env-url { font-size: 12px; color: var(--primary); font-family: 'Fira Code', monospace; margin-bottom: 10px; }
+  .env-status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+  .env-status-dot.healthy { background: var(--success); }
+  .env-status-dot.warn { background: var(--warning); }
+
+  /* Efficiency metrics */
+  .metric-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
+  .metric-value { font-size: 32px; font-weight: 800; margin-bottom: 4px; line-height: 1.1; }
+  .metric-label { font-size: 12px; color: var(--sub); margin-bottom: 6px; }
+  .metric-trend { font-size: 12px; }
+
+  /* Section separator in modal */
+  .modal-section-label { font-size: 11px; font-weight: 700; color: var(--sub); text-transform: uppercase; letter-spacing: 0.6px; border-top: 1px solid var(--border); padding-top: 14px; margin-top: 8px; margin-bottom: 12px; }
+
+  /* Project type badges */
+  .proj-type { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .proj-type-product  { background: #EEF1FF; color: var(--primary); }
+  .proj-type-internal { background: #ECFDF3; color: #027A48; }
+  .proj-type-platform { background: #FFFAEB; color: #B54708; }
+  .proj-type-data     { background: #F9F5FF; color: #6941C6; }
+
+  /* Service cards */
+  .service-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.15s; }
+  .service-card:hover { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+  .service-name { font-weight: 600; font-size: 14px; margin-bottom: 3px; }
+  .service-tech { color: var(--sub); font-size: 12px; margin-bottom: 10px; }
+  .service-health { display: flex; align-items: center; gap: 4px; font-size: 12px; }
+
+  /* ── Agent Workflow Nodes ── */
+  .workflow-canvas { background: var(--bg); border-radius: 12px; padding: 20px; overflow-x: auto; }
+  .wf-flow { display: flex; flex-direction: column; align-items: center; }
+  .wf-node { background: white; border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 14px; min-width: 150px; text-align: center; cursor: pointer; transition: all 0.15s; display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }
+  .wf-node:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.12); transform: translateY(-1px); }
+  .wf-node.type-trigger   { border-color: var(--primary); background: var(--primary-light); }
+  .wf-node.type-llm       { border-color: #7B61FF; background: #F9F5FF; }
+  .wf-node.type-tool      { border-color: var(--success); background: #ECFDF3; }
+  .wf-node.type-condition { border-color: var(--warning); background: #FFFAEB; }
+  .wf-node.type-human     { border-color: var(--danger); background: #FEF3F2; }
+  .wf-node-type  { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; opacity: 0.55; }
+  .wf-node-icon  { font-size: 16px; }
+  .wf-node-label { font-size: 11px; font-weight: 600; line-height: 1.3; }
+  .wf-arrow { text-align: center; color: #C8D0DA; font-size: 18px; margin: 2px 0; line-height: 1; }
+  .wf-branch { display: flex; gap: 12px; justify-content: center; align-items: flex-start; }
+  .wf-branch-col { display: flex; flex-direction: column; align-items: center; }
+  .wf-branch-label { font-size: 10px; border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; margin-bottom: 4px; color: var(--sub); background: white; white-space: nowrap; }
+
+  /* ── Tool / Function 管理 ── */
+  .tool-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: all 0.15s; }
+  .tool-card:hover, .tool-card.selected { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+  .param-row { display: flex; gap: 8px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--bg); font-size: 12px; }
+  .param-row:last-child { border-bottom: none; }
+  .param-name { font-family: 'Fira Code', monospace; font-weight: 600; width: 140px; flex-shrink: 0; }
+  .param-type { background: var(--bg); color: var(--sub); border-radius: 4px; padding: 1px 6px; font-family: monospace; font-size: 11px; flex-shrink: 0; }
+
+  /* ── AI Evals ── */
+  .eval-score { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .eval-grade { display: inline-block; padding: 1px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+  .eval-grade.A { background: #ECFDF3; color: #027A48; }
+  .eval-grade.B { background: var(--primary-light); color: var(--primary); }
+  .eval-grade.C { background: #FFFAEB; color: #B54708; }
+
+  /* ── Pulse animation ── */
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+  /* Project sidebar info block */
+  .proj-info-block { padding: 12px 16px; border-bottom: 1px solid #1D2D50; }
+  .proj-info-name { color: white; font-weight: 600; font-size: 14px; }
+  .proj-info-sprint { color: var(--sidebar-text); font-size: 11px; margin-top: 3px; display: flex; align-items: center; gap: 5px; }
+  .proj-status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); display: inline-block; }
+
+  /* Back button in project sidebar */
+  .sidebar-back { padding: 12px 16px; border-bottom: 1px solid #1D2D50; display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--sidebar-text); font-size: 13px; transition: all 0.15s; }
+  .sidebar-back:hover { color: white; }
+</style>
+</head>
+<body>
+
+<!-- Global Sidebar -->
+<div class="sidebar" id="sidebar-global">
+  <div class="sidebar-logo">
+    <div class="logo-icon">AI</div>
+    <div>
+      <div class="logo-text">AI 中台</div>
+      <div class="logo-sub">Enterprise AI Platform</div>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">概览</div>
+    <div class="nav-item active" onclick="showPage('dashboard')">
+      <span class="icon">📊</span><span class="label">工作台</span>
+    </div>
+    <div class="nav-item" onclick="showPage('efficiency')">
+      <span class="icon">📈</span><span class="label">效能看板</span>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">开发</div>
+    <div class="nav-item" onclick="showPage('projects')">
+      <span class="icon">📁</span><span class="label">项目空间</span>
+    </div>
+    <div class="nav-item" onclick="showPage('cicd')">
+      <span class="icon">🔧</span><span class="label">CI / CD</span>
+    </div>
+    <div class="nav-item" onclick="showPage('envs')">
+      <span class="icon">🌍</span><span class="label">环境管理</span>
+    </div>
+    <div class="nav-item" onclick="showPage('incidents')">
+      <span class="icon">🚨</span><span class="label">事故中心</span>
+      <span class="badge">3</span>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">AI 能力</div>
+    <div class="nav-item" onclick="showPage('workflows')">
+      <span class="icon">🔀</span><span class="label">Agent 工作流</span>
+    </div>
+    <div class="nav-item" onclick="showPage('functions')">
+      <span class="icon">🔩</span><span class="label">Function 管理</span>
+    </div>
+    <div class="nav-item" onclick="showPage('ai-monitor')">
+      <span class="icon">🔭</span><span class="label">执行监控</span>
+    </div>
+    <div class="nav-item" onclick="showPage('evals')">
+      <span class="icon">📐</span><span class="label">AI 评估</span>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">资源</div>
+    <div class="nav-item" onclick="showPage('atomic')">
+      <span class="icon">⚛️</span><span class="label">原子能力库</span>
+    </div>
+    <div class="nav-item" onclick="showPage('knowledge')">
+      <span class="icon">📚</span><span class="label">知识库（全局）</span>
+    </div>
+    <div class="nav-item" onclick="showPage('skills')">
+      <span class="icon">⚡</span><span class="label">Skill 库</span>
+    </div>
+    <div class="nav-item" onclick="showPage('templates')">
+      <span class="icon">🗂️</span><span class="label">模板库</span>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">管理</div>
+    <div class="nav-item" onclick="showPage('keys')">
+      <span class="icon">🔑</span><span class="label">Key 管理</span>
+    </div>
+    <div class="nav-item" onclick="showPage('audit')">
+      <span class="icon">🛡️</span><span class="label">审计安全</span>
+    </div>
+    <div class="nav-item" onclick="showPage('settings')">
+      <span class="icon">⚙️</span><span class="label">设置</span>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="avatar">张</div>
+    <div class="user-info">
+      <div class="name">张三</div>
+      <div class="role">超级管理员</div>
+    </div>
+  </div>
+</div>
+
+<!-- Project Sidebar (切换：进入项目后显示) -->
+<div class="sidebar" id="sidebar-project" style="display:none">
+  <div class="sidebar-back" onclick="exitProject()">
+    <span style="font-size:16px">←</span>
+    <span>返回项目列表</span>
+  </div>
+
+  <div class="proj-info-block">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+      <span style="font-size:20px" id="proj-icon">🛒</span>
+      <span class="proj-info-name" id="proj-name">商城系统</span>
+    </div>
+    <div class="proj-info-sprint">
+      <span class="proj-status-dot"></span>
+      <span id="proj-sprint">Sprint 8 · 进行中</span>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">产品</div>
+    <div class="nav-item" id="pnav-overview" onclick="showProjectPage('overview')">
+      <span class="icon">📊</span><span class="label">概览</span>
+    </div>
+    <div class="nav-item" id="pnav-agile" onclick="showProjectPage('agile')">
+      <span class="icon">🏃</span><span class="label">研发流程</span>
+    </div>
+    <div class="nav-item" id="pnav-knowledge" onclick="showProjectPage('knowledge')">
+      <span class="icon">📚</span><span class="label">知识库</span>
+    </div>
+    <div class="nav-item" id="pnav-incidents" onclick="showProjectPage('incidents')">
+      <span class="icon">🚨</span><span class="label">事故</span>
+      <span class="badge">1</span>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">工程</div>
+    <div class="nav-item" id="pnav-services" onclick="showProjectPage('services')">
+      <span class="icon">⚙️</span><span class="label">代码服务</span>
+      <span style="margin-left:auto;color:var(--sidebar-text);font-size:11px">3</span>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">配置</div>
+    <div class="nav-item" id="pnav-members" onclick="showProjectPage('members')">
+      <span class="icon">👥</span><span class="label">成员权限</span>
+    </div>
+    <div class="nav-item" id="pnav-skillconfig" onclick="showProjectPage('skillconfig')">
+      <span class="icon">⚡</span><span class="label">Skill 配置</span>
+    </div>
+    <div class="nav-item" id="pnav-psettings" onclick="showProjectPage('psettings')">
+      <span class="icon">⚙️</span><span class="label">项目设置</span>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="avatar">张</div>
+    <div class="user-info">
+      <div class="name">张三</div>
+      <div class="role">项目负责人</div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">工作台</div>
+    <div class="topbar-actions">
+      <button class="btn">🔔 通知</button>
+      <button class="btn btn-primary" onclick="openModal('newProject')">+ 新建项目</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ========== DASHBOARD ========== -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">🤖</div>
+          <div class="stat-label">本月 Token 消耗</div>
+          <div class="stat-value" style="color:var(--primary)">2.4M</div>
+          <div class="stat-delta">↑ 12% 较���月</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-label">活跃员工</div>
+          <div class="stat-value">38</div>
+          <div class="stat-delta">↑ 5 人新增</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📁</div>
+          <div class="stat-label">进行中项目</div>
+          <div class="stat-value">12</div>
+          <div class="stat-delta" style="color:var(--sub)">共 18 个项目</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🚨</div>
+          <div class="stat-label">待处理事故</div>
+          <div class="stat-value" style="color:var(--danger)">3</div>
+          <div class="stat-delta down">↑ 较昨日 +2</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Token 消耗趋势（本月）</span>
+            <span style="font-size:12px;color:var(--sub)">日维度</span>
+          </div>
+          <div class="card-body">
+            <div class="chart-area" id="chartArea"></div>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--sub)">
+              <span>3/1</span><span>3/7</span><span>3/14</span><span>3/21</span><span>3/28</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">部门 Token 用量排行</span>
+            <span class="badge badge-blue">本月</span>
+          </div>
+          <div class="card-body">
+            <div style="margin-bottom:14px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px">
+                <span>前端团队</span><span style="font-weight:600">680K</span>
+              </div>
+              <div class="progress-wrap"><div class="progress-bar" style="width:85%"></div></div>
+            </div>
+            <div style="margin-bottom:14px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px">
+                <span>后端团队</span><span style="font-weight:600">920K</span>
+              </div>
+              <div class="progress-wrap"><div class="progress-bar" style="width:100%"></div></div>
+            </div>
+            <div style="margin-bottom:14px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px">
+                <span>产品团队</span><span style="font-weight:600;color:var(--warning)">420K / 400K</span>
+              </div>
+              <div class="progress-wrap"><div class="progress-bar warning" style="width:105%;max-width:100%"></div></div>
+              <div style="font-size:11px;color:var(--warning);margin-top:4px">⚠ 已超出配额</div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px">
+                <span>测试团队</span><span style="font-weight:600">180K</span>
+              </div>
+              <div class="progress-wrap"><div class="progress-bar" style="width:22%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🚨 近期事故</span>
+            <button class="btn" style="font-size:12px;padding:4px 10px" onclick="showPage('incidents')">查看全部</button>
+          </div>
+          <div class="card-body" style="padding:0 20px">
+            <div class="incident-item">
+              <div class="incident-dot critical"></div>
+              <div style="flex:1">
+                <div class="incident-title">支付服务 NullPointerException</div>
+                <div class="incident-meta">order-service · 10分钟前 · AI已完成诊断</div>
+              </div>
+              <span class="badge badge-red">严重</span>
+            </div>
+            <div class="incident-item">
+              <div class="incident-dot warning"></div>
+              <div style="flex:1">
+                <div class="incident-title">用户中心接口 P99 延迟超阈值</div>
+                <div class="incident-meta">user-service · 1小时前 · 待分配</div>
+              </div>
+              <span class="badge badge-yellow">警告</span>
+            </div>
+            <div class="incident-item">
+              <div class="incident-dot info"></div>
+              <div style="flex:1">
+                <div class="incident-title">前端打包体积超出限制</div>
+                <div class="incident-meta">mall-frontend · 3小时前 · AI正在分析</div>
+              </div>
+              <span class="badge badge-blue">提示</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📋 项目活动</span>
+          </div>
+          <div class="card-body" style="padding: 16px 20px">
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-time">10分钟前</div>
+                <div class="timeline-content"><strong>李四</strong> 在 <strong>商城系统</strong> 中更新了需求文档</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-time">1小时前</div>
+                <div class="timeline-content"><strong>王五</strong> 通过 MCP 接入了 <strong>支付项目</strong> 知识库</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-time">2小时前</div>
+                <div class="timeline-content">AI 为 <strong>用户中心</strong> 项目生成了接口文档</div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-time">昨天</div>
+                <div class="timeline-content"><strong>张三</strong> 新建项目 <strong>数据看板</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PROJECTS ========== -->
+    <div class="page" id="page-projects">
+      <div style="display:flex;gap:12px;margin-bottom:20px">
+        <input placeholder="搜索项目..." style="max-width:280px">
+        <select style="width:auto">
+          <option>全部状态</option>
+          <option>进行中</option>
+          <option>已完成</option>
+        </select>
+        <button class="btn btn-primary" style="margin-left:auto" onclick="openModal('newProject')">+ 新建项目</button>
+      </div>
+
+      <div class="grid-3" style="margin-bottom:20px">
+        <div class="project-card" onclick="enterProject('🛒','商城系统','Sprint 8 · 进行中')">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <span class="proj-type proj-type-product">对外产品</span>
+            <span style="font-size:20px">🛒</span>
+          </div>
+          <div class="project-name">商城系统</div>
+          <div class="project-desc">B2C 电商平台，含商品、订单、支付模块</div>
+          <div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--sub);margin-bottom:4px">
+              <span>代码服务</span><span>3 个（前端 / 后端 / 移动端）</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--sub);margin-bottom:4px">
+              <span>当前Sprint</span><span style="color:var(--primary);font-weight:500">Sprint 8 · 58% 完成</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--sub)">
+              <span>本月 Token</span><span style="color:var(--primary);font-weight:500">320K</span>
+            </div>
+          </div>
+          <div class="project-meta">
+            <span class="badge badge-green">● 进行中</span>
+            <div class="project-members">
+              <div class="avatar" style="background:#4F6EF7">张</div>
+              <div class="avatar" style="background:#F04438">李</div>
+              <div class="avatar" style="background:#12B76A">王</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card" onclick="enterProject('👤','用户中心','Sprint 6 · 进行中')">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <span class="proj-type proj-type-platform">技术中台</span>
+            <span style="font-size:20px">👤</span>
+          </div>
+          <div class="project-name">用户中心</div>
+          <div class="project-desc">统一身份认证与用户管理服务</div>
+          <div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--sub);margin-bottom:4px">
+              <span>代码服务</span><span>2 个（API / Admin后台）</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--sub);margin-bottom:4px">
+              <span>当前Sprint</span><span style="color:var(--primary);font-weight:500">Sprint 6 · 75% 完成</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--sub)">
+              <span>本月 Token</span><span style="color:var(--primary);font-weight:500">180K</span>
+            </div>
+          </div>
+          <div class="project-meta">
+            <span class="badge badge-green">● 进行中</span>
+            <div class="project-members">
+              <div class="avatar" style="background:#F79009">陈</div>
+              <div class="avatar" style="background:#4F6EF7">赵</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card" onclick="enterProject('📊','数据看板','Sprint 3 · 进行中')">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <span class="proj-type proj-type-data">数据产品</span>
+            <span style="font-size:20px">📊</span>
+          </div>
+          <div class="project-name">数据看板</div>
+          <div class="project-desc">业务数据可视化分析平台</div>
+          <div style="margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--sub);margin-bottom:4px">
+              <span>代码服务</span><span>2 个（前端 / 数据服务）</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--sub);margin-bottom:4px">
+              <span>当前Sprint</span><span style="color:var(--warning);font-weight:500">Sprint 3 · 待上线</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--sub)">
+              <span>本月 Token</span><span style="color:var(--primary);font-weight:500">95K</span>
+            </div>
+          </div>
+          <div class="project-meta">
+            <span class="badge badge-yellow">⏸ 待上线</span>
+            <div class="project-members">
+              <div class="avatar" style="background:#12B76A">孙</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">全部项目</span>
+          <span style="color:var(--sub);font-size:12px">共 18 个</span>
+        </div>
+        <table>
+          <thead>
+            <tr><th>项目名称</th><th>类型</th><th>代码服务</th><th>成员</th><th>当前Sprint</th><th>本月Token</th><th>状态</th></tr>
+          </thead>
+          <tbody>
+            <tr onclick="enterProject('🛒','商城系统','Sprint 8 · 进行中')" style="cursor:pointer"><td><strong>🛒 商城系统</strong></td><td><span class="proj-type proj-type-product">对外产品</span></td><td>3个服务</td><td>6人</td><td>Sprint 8 · 58%</td><td>320K</td><td><span class="badge badge-green">进行中</span></td></tr>
+            <tr onclick="enterProject('👤','用户中心','Sprint 6 · 进行中')" style="cursor:pointer"><td><strong>👤 用户中心</strong></td><td><span class="proj-type proj-type-platform">技术中台</span></td><td>2个服务</td><td>3人</td><td>Sprint 6 · 75%</td><td>180K</td><td><span class="badge badge-green">进行中</span></td></tr>
+            <tr onclick="enterProject('📊','数据看板','Sprint 3 · 待上线')" style="cursor:pointer"><td><strong>📊 数据看板</strong></td><td><span class="proj-type proj-type-data">数据产品</span></td><td>2个服务</td><td>2人</td><td>Sprint 3 · 100%</td><td>95K</td><td><span class="badge badge-yellow">待上线</span></td></tr>
+            <tr onclick="enterProject('💳','支付网关','Sprint 5 · 进行中')" style="cursor:pointer"><td><strong>💳 支付网关</strong></td><td><span class="proj-type proj-type-platform">技术中台</span></td><td>2个服务</td><td>4人</td><td>Sprint 5 · 40%</td><td>410K</td><td><span class="badge badge-green">进行中</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== PROJECT: OVERVIEW ========== -->
+    <div class="page" id="page-proj-overview">
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-icon">🏃</div><div class="stat-label">当前Sprint</div><div class="stat-value" style="color:var(--primary);font-size:18px">Sprint 8</div><div class="stat-delta">↑ 58% 已完成</div></div>
+        <div class="stat-card"><div class="stat-icon">⚙️</div><div class="stat-label">代码服务</div><div class="stat-value">3</div><div class="stat-delta" style="color:var(--sub)">前端 · 后端 · 移动端</div></div>
+        <div class="stat-card"><div class="stat-icon">🚨</div><div class="stat-label">待处理事故</div><div class="stat-value" style="color:var(--danger)">1</div><div class="stat-delta down">严重 × 1</div></div>
+        <div class="stat-card"><div class="stat-icon">🤖</div><div class="stat-label">本月 Token</div><div class="stat-value" style="color:var(--primary)">320K</div><div class="stat-delta">↑ 15% 较上月</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">⚙️ 代码服务健康状态</span></div>
+          <div class="card-body" style="padding:0 20px">
+            <div class="incident-item" style="cursor:pointer" onclick="showProjectPage('services');showServiceDetail('backend')">
+              <div style="font-size:20px">🍃</div>
+              <div style="flex:1">
+                <div class="incident-title">mall-backend <span style="font-size:11px;color:var(--sub);font-weight:400">Spring Boot 3</span></div>
+                <div class="incident-meta">最后部署：30分钟前 · main #7b9c4d · prod 健康</div>
+              </div>
+              <span class="badge badge-green">● 正常</span>
+            </div>
+            <div class="incident-item" style="cursor:pointer" onclick="showProjectPage('services');showServiceDetail('frontend')">
+              <div style="font-size:20px">⚛️</div>
+              <div style="flex:1">
+                <div class="incident-title">mall-frontend <span style="font-size:11px;color:var(--sub);font-weight:400">React 18</span></div>
+                <div class="incident-meta">最后部署：2小时前 · feature/search 构建中</div>
+              </div>
+              <span class="badge badge-blue">构建中</span>
+            </div>
+            <div class="incident-item" style="cursor:pointer" onclick="showProjectPage('services');showServiceDetail('mobile')">
+              <div style="font-size:20px">📱</div>
+              <div style="flex:1">
+                <div class="incident-title">mall-mobile <span style="font-size:11px;color:var(--sub);font-weight:400">React Native</span></div>
+                <div class="incident-meta">最后部署：昨天 · v2.1.0 · prod 健康</div>
+              </div>
+              <span class="badge badge-green">● 正常</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">📋 项目活动</span></div>
+          <div class="card-body" style="padding:16px 20px">
+            <div class="timeline">
+              <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">10分钟前</div><div class="timeline-content"><strong>李四</strong> 推送代码到 <strong>mall-backend / feature/search</strong>，CI 构建中</div></div>
+              <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">1小时前</div><div class="timeline-content">AI 完成 <strong>用户优惠券模块</strong> Code Review，发现 2 个问题</div></div>
+              <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">2小时前</div><div class="timeline-content"><strong>王五</strong> 将 <strong>SKU规格选择</strong> 任务移入「完成」</div></div>
+              <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">昨天</div><div class="timeline-content">mall-backend <strong>v2.3.1</strong> 成功部署到生产环境</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <div class="card-header"><span class="card-title">🤖 AI 项目摘要</span><span style="font-size:12px;color:var(--sub)">每日更新</span></div>
+        <div class="card-body">
+          <div class="ai-bubble">
+            <strong>商城系统 · 今日摘要（3月8日）</strong><br><br>
+            Sprint 8 进度 58%，剩余6天，整体节奏正常。<strong>订单状态机重构</strong>是本Sprint最大风险项（8SP，仅65%），建议今天组织对齐。<br><br>
+            mall-frontend 正在构建 feature/search（ES接入），预计15分钟完成。mall-backend 生产环境运行稳定，P99 延迟 120ms。<br><br>
+            <strong>今日建议：</strong>支付回调联调已拖1天，建议李四与支付网关团队今天完成对接。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PROJECT: SERVICES ========== -->
+    <div class="page" id="page-proj-services">
+      <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center">
+        <span style="font-size:13px;color:var(--sub)">共 3 个代码服务</span>
+        <button class="btn btn-primary" style="margin-left:auto">+ 添加服务</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
+        <div class="service-card" onclick="showServiceDetail('backend')">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+            <span style="font-size:28px">🍃</span>
+            <span class="badge badge-green">● 正常</span>
+          </div>
+          <div class="service-name">mall-backend</div>
+          <div class="service-tech">Spring Boot 3 · Java · MySQL</div>
+          <div style="font-size:12px;margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">Git 仓库</span><span style="font-family:monospace">git.co/mall/backend</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">主干分支</span><span>main</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">最后部署</span><span>30分钟前 · prod</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--sub)">CI状态</span><span class="badge badge-green" style="font-size:10px">✓ 通过</span></div>
+          </div>
+          <button class="btn" style="width:100%;font-size:12px">进入服务详情 →</button>
+        </div>
+
+        <div class="service-card" onclick="showServiceDetail('frontend')">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+            <span style="font-size:28px">⚛️</span>
+            <span class="badge badge-blue">构建中</span>
+          </div>
+          <div class="service-name">mall-frontend</div>
+          <div class="service-tech">React 18 · TypeScript · Vite</div>
+          <div style="font-size:12px;margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">Git 仓库</span><span style="font-family:monospace">git.co/mall/frontend</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">主干分支</span><span>main</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">最后部署</span><span>2小时前 · staging</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--sub)">CI状态</span><span class="badge badge-blue" style="font-size:10px">⟳ 构建中</span></div>
+          </div>
+          <button class="btn" style="width:100%;font-size:12px">进入服务详情 →</button>
+        </div>
+
+        <div class="service-card" onclick="showServiceDetail('mobile')">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+            <span style="font-size:28px">📱</span>
+            <span class="badge badge-green">● 正常</span>
+          </div>
+          <div class="service-name">mall-mobile</div>
+          <div class="service-tech">React Native · TypeScript</div>
+          <div style="font-size:12px;margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">Git 仓库</span><span style="font-family:monospace">git.co/mall/mobile</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">主干分支</span><span>main</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">最后部署</span><span>昨天 · prod v2.1.0</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--sub)">CI状态</span><span class="badge badge-green" style="font-size:10px">✓ 通过</span></div>
+          </div>
+          <button class="btn" style="width:100%;font-size:12px">进入服务详情 →</button>
+        </div>
+      </div>
+
+      <!-- 添加服务的三种方式 -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">+ 添加新服务</span></div>
+        <div class="card-body">
+          <div class="grid-3">
+            <div class="mcp-card">
+              <div class="mcp-icon">🗂️</div>
+              <div class="mcp-title">选择模板创建</div>
+              <div class="mcp-sub">从公司标准模板快速初始化服务</div>
+            </div>
+            <div class="mcp-card">
+              <div class="mcp-icon">🔗</div>
+              <div class="mcp-title">关联已有仓库</div>
+              <div class="mcp-sub">填入 Git 地址，自动识别技术栈</div>
+            </div>
+            <div class="mcp-card">
+              <div class="mcp-icon">📥</div>
+              <div class="mcp-title">导入 Git 仓库</div>
+              <div class="mcp-sub">从 GitHub / GitLab / 自建 Git 导入</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SERVICE DETAIL ========== -->
+    <div class="page" id="page-svc-detail">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        <button class="btn" onclick="showProjectPage('services')">← 代码服务</button>
+        <span style="font-size:20px" id="svc-icon">🍃</span>
+        <h2 style="font-size:16px;font-weight:700" id="svc-name">mall-backend</h2>
+        <span class="badge badge-gray" id="svc-tech">Spring Boot 3</span>
+        <span class="badge badge-green" style="margin-left:4px">● 正常</span>
+      </div>
+
+      <div class="tabs" id="svcTabs">
+        <div class="tab active" onclick="switchTab('svcTabs','svc-overview')">📊 概览</div>
+        <div class="tab" onclick="switchTab('svcTabs','svc-cicd')">🔧 CI/CD</div>
+        <div class="tab" onclick="switchTab('svcTabs','svc-envs')">🌍 环境管理</div>
+        <div class="tab" onclick="switchTab('svcTabs','svc-mcp')">🔌 MCP 配置</div>
+      </div>
+
+      <div id="svc-overview">
+        <div class="stats-grid" style="margin-bottom:16px">
+          <div class="stat-card"><div class="stat-label">今日构建</div><div class="stat-value" style="color:var(--primary)">6</div><div class="stat-delta">成功率 100%</div></div>
+          <div class="stat-card"><div class="stat-label">Prod P99 延迟</div><div class="stat-value">120ms</div><div class="stat-delta">↓ 正常</div></div>
+          <div class="stat-card"><div class="stat-label">测试覆盖率</div><div class="stat-value" style="color:var(--success)">82%</div><div class="stat-delta">↑ +3% 较上周</div></div>
+          <div class="stat-card"><div class="stat-label">代码行数</div><div class="stat-value">48K</div><div class="stat-delta" style="color:var(--sub)">AI贡献 38%</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><span class="card-title">最近 PR</span></div>
+            <div class="card-body" style="padding:0 20px">
+              <div class="incident-item"><div style="flex:1"><div class="incident-title">feat: 商品搜索ES接入</div><div class="incident-meta">李四 · feature/search · AI Review: 通过 ✓</div></div><span class="badge badge-blue">Review中</span></div>
+              <div class="incident-item"><div style="flex:1"><div class="incident-title">fix: 购物车并发锁优化</div><div class="incident-meta">张三 · feature/cart-fix · 已合并</div></div><span class="badge badge-green">已合并</span></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">🤖 AI 代码质量分析</span></div>
+            <div class="card-body">
+              <div class="ai-bubble">本周代码质量良好。发现2处潜在问题：<br>· <code>OrderService:203</code> 缺少事务回滚处理<br>· <code>PaymentController</code> 参数校验不完整<br><br>建议在下次 PR 中一并修复。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="svc-cicd" style="display:none">
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header"><span class="card-title">流水线记录</span></div>
+          <table>
+            <thead><tr><th>分支</th><th>触发</th><th>阶段</th><th>时长</th><th>状态</th><th>时间</th></tr></thead>
+            <tbody>
+              <tr><td>feature/search</td><td>李四 Push</td><td><div class="pipeline-stages"><span class="pipeline-stage success">✓ 构建</span><span class="pipeline-arrow">›</span><span class="pipeline-stage running">⟳ 单测</span><span class="pipeline-arrow">›</span><span class="pipeline-stage pending">— 部署</span></div></td><td>2m 10s</td><td><span class="badge badge-blue">运行中</span></td><td>5分钟前</td></tr>
+              <tr><td>main</td><td>Merge PR#45</td><td><div class="pipeline-stages"><span class="pipeline-stage success">✓ 构建</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 单测</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 部署</span></div></td><td>5m 44s</td><td><span class="badge badge-green">成功</span></td><td>30分钟前</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="svc-envs" style="display:none">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+          <div class="env-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px"><span class="badge badge-gray">DEV</span><span><span class="env-status-dot healthy"></span><span style="font-size:12px;color:var(--success)">健康</span></span></div>
+            <div class="env-name">开发环境</div>
+            <div class="env-url">dev-backend.company.internal</div>
+            <div style="font-size:12px;margin-bottom:12px">
+              <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">当前分支</span><span>feature/search</span></div>
+              <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--sub)">自动部署</span><span>每次 Push</span></div>
+            </div>
+            <button class="btn" style="width:100%;font-size:12px">查看日志</button>
+          </div>
+          <div class="env-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px"><span class="badge badge-yellow">STAGING</span><span><span class="env-status-dot healthy"></span><span style="font-size:12px;color:var(--success)">健康</span></span></div>
+            <div class="env-name">预发布环境</div>
+            <div class="env-url">staging-backend.company.internal</div>
+            <div style="font-size:12px;margin-bottom:12px">
+              <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">当前版本</span><span>main #7b9c4d</span></div>
+              <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--sub)">部署策略</span><span>手动 · 需审批</span></div>
+            </div>
+            <button class="btn" style="width:100%;font-size:12px">查看日志</button>
+          </div>
+          <div class="env-card" style="border-color:var(--success)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px"><span class="badge badge-green">PROD</span><span><span class="env-status-dot healthy"></span><span style="font-size:12px;color:var(--success)">健康</span></span></div>
+            <div class="env-name">生产环境</div>
+            <div class="env-url">api.mall.company.com</div>
+            <div style="font-size:12px;margin-bottom:12px">
+              <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">当前版本</span><span>v2.3.1 · 稳定</span></div>
+              <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--sub)">实例数</span><span>4 pods</span></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%;font-size:12px">🚀 发起部署</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="svc-mcp" style="display:none">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><span class="card-title">🔌 服务 MCP Server</span><span class="badge badge-green">● 运行中</span></div>
+            <div class="card-body">
+              <div style="font-size:13px;color:var(--sub);margin-bottom:12px">在 IDE 中接入此地址，AI 将自动拥有该服务的知识库、原子能力和操作工具</div>
+              <div class="code-block" style="margin-bottom:16px">
+                <span class="cm"># Cursor / Claude Code 配置</span><br>
+                {<br>
+                &nbsp;&nbsp;<span class="str">"mcpServers"</span>: {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"mall-backend"</span>: {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">"url"</span>: <span class="str">"https://mcp.ai.co/svc/mall-backend"</span>,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">"token"</span>: <span class="str">"sk-svc-xxxxxxxxxxxx"</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                &nbsp;&nbsp;}<br>
+                }
+              </div>
+              <div style="display:flex;gap:8px"><button class="btn btn-primary">📋 复制配置</button><button class="btn">🔄 重置 Token</button></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">MCP 暴露的工具</span></div>
+            <div class="card-body" style="padding:0 20px">
+              <div class="skill-item"><div class="skill-icon" style="background:#EEF1FF;font-size:14px">🔍</div><div><div class="skill-name">search_knowledge</div><div class="skill-desc">语义搜索项目知识库和需求文档</div></div></div>
+              <div class="skill-item"><div class="skill-icon" style="background:#ECFDF3;font-size:14px">⚛️</div><div><div class="skill-name">get_atomic_capability</div><div class="skill-desc">获取原子能力接入文档和示例代码</div></div></div>
+              <div class="skill-item"><div class="skill-icon" style="background:#FEF3F2;font-size:14px">🚨</div><div><div class="skill-name">report_bug</div><div class="skill-desc">在 IDE 中直接创建事故任务</div></div></div>
+              <div class="skill-item"><div class="skill-icon" style="background:#F9F5FF;font-size:14px">🚀</div><div><div class="skill-name">trigger_deploy</div><div class="skill-desc">触发指定环境的服务部署</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PROJECT: KNOWLEDGE ========== -->
+    <div class="page" id="page-proj-knowledge">
+      <div style="display:flex;gap:12px;margin-bottom:16px">
+        <input placeholder="搜索知识库..." style="max-width:280px">
+        <button class="btn btn-primary" style="margin-left:auto">+ 上传文档</button>
+        <button class="btn">🌐 启用全局知识库</button>
+      </div>
+      <div class="card">
+        <table>
+          <thead><tr><th>文件名</th><th>类型</th><th>大小</th><th>上传者</th><th>更新时间</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td>📄 商城需求文档 v2.3</td><td><span class="badge badge-blue">需求</span></td><td>245KB</td><td>张三</td><td>2026-03-06</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+            <tr><td>📐 商城原型图 v1.5</td><td><span class="badge badge-yellow">原型</span></td><td>3.2MB</td><td>产品部</td><td>2026-03-05</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+            <tr><td>📋 接口文档 - 商品模块</td><td><span class="badge badge-green">技术</span></td><td>88KB</td><td>AI生成</td><td>2026-03-04</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+            <tr><td>📋 接口文档 - 订单模块</td><td><span class="badge badge-green">技术</span></td><td>102KB</td><td>AI生成</td><td>2026-03-03</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+            <tr><td>🔒 安全规范手册</td><td><span class="badge badge-gray">全局</span></td><td>56KB</td><td>全局启用</td><td>2026-02-20</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== PROJECT: INCIDENTS ========== -->
+    <div class="page" id="page-proj-incidents">
+      <div class="card" style="margin-bottom:16px;border-color:var(--danger)">
+        <div class="card-header" style="background:#FEF3F2;border-radius:11px 11px 0 0">
+          <div style="display:flex;align-items:center;gap:10px"><span class="badge badge-red">🔴 严重</span><span style="font-weight:600">支付服务 NullPointerException - mall-backend</span></div>
+          <span class="badge badge-yellow">处理中</span>
+        </div>
+        <div class="card-body">
+          <div class="grid-2">
+            <div>
+              <div style="font-weight:600;font-size:13px;margin-bottom:8px">错误堆栈</div>
+              <div class="code-block" style="font-size:11px;height:100px;overflow:auto">java.lang.NullPointerException<br>&nbsp;&nbsp;at PaymentService.processOrder(:142)<br><span class="cm">Caused by: order.paymentMethod is null</span></div>
+            </div>
+            <div>
+              <div class="ai-label">🤖 AI 诊断</div>
+              <div class="ai-bubble"><strong>根因：</strong>checkout 接口未对 paymentMethod 做非空校验。<br><strong>修复：</strong>在 OrderController:89 加参数校验。<br><button class="btn btn-primary" style="font-size:12px;padding:4px 10px;margin-top:8px">🤖 在 IDE 中修复</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PROJECT: MEMBERS ========== -->
+    <div class="page" id="page-proj-members">
+      <div class="card">
+        <div class="card-header"><span class="card-title">项目成员权限</span><button class="btn btn-primary" style="font-size:12px;padding:5px 12px">+ 添加成员</button></div>
+        <table>
+          <thead><tr><th>成员</th><th>角色</th><th>Token 限额/月</th><th>知识库</th><th>Skill</th><th>MCP访问</th></tr></thead>
+          <tbody>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#4F6EF7">张</div>张三</div></td><td><span class="badge badge-blue">项目负责人</span></td><td>无限制</td><td>读写</td><td>全部</td><td><span class="badge badge-green">✓</span></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#F04438">李</div>李四</div></td><td><span class="badge badge-gray">开发</span></td><td>500K</td><td>只读</td><td>代码相关</td><td><span class="badge badge-green">✓</span></td></tr>
+            <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#12B76A">王</div>王五</div></td><td><span class="badge badge-gray">开发</span></td><td>500K</td><td>只读</td><td>代码相关</td><td><span class="badge badge-green">✓</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== PROJECT: SKILL CONFIG ========== -->
+    <div class="page" id="page-proj-skillconfig">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">已启用 Skill</span></div>
+          <div class="card-body" style="padding:0 20px">
+            <div class="skill-item"><div class="skill-icon" style="background:#EEF1FF">🔍</div><div style="flex:1"><div class="skill-name">Code Review</div><div class="skill-desc">自动审查 PR，检测代码质量和安全问题</div></div><button class="btn btn-danger" style="padding:4px 10px;font-size:12px">禁用</button></div>
+            <div class="skill-item"><div class="skill-icon" style="background:#ECFDF3">📝</div><div style="flex:1"><div class="skill-name">接口文档生成</div><div class="skill-desc">根据代码自动生成 OpenAPI 文档</div></div><button class="btn btn-danger" style="padding:4px 10px;font-size:12px">禁用</button></div>
+            <div class="skill-item"><div class="skill-icon" style="background:#FFFAEB">✅</div><div style="flex:1"><div class="skill-name">单元测试生成</div><div class="skill-desc">自动生成单元测试用例</div></div><button class="btn btn-danger" style="padding:4px 10px;font-size:12px">禁用</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">可用 Skill</span></div>
+          <div class="card-body" style="padding:0 20px">
+            <div class="skill-item"><div class="skill-icon" style="background:#FEF3F2">🚨</div><div style="flex:1"><div class="skill-name">故障诊断</div><div class="skill-desc">分析日志，定位根因并给出修复建议</div></div><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">启用</button></div>
+            <div class="skill-item"><div class="skill-icon" style="background:#F9F5FF">🔐</div><div style="flex:1"><div class="skill-name">SSO 集成助手</div><div class="skill-desc">一键生成公司 SSO 对接代码</div></div><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">启用</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PROJECT: SETTINGS ========== -->
+    <div class="page" id="page-proj-psettings">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">项目基础信息</span></div>
+          <div class="card-body">
+            <div class="form-group"><label class="form-label">项目名称</label><input value="商城系统"></div>
+            <div class="form-group"><label class="form-label">项目类型</label><select><option>对外产品</option><option>内部系统</option><option>技术中台</option><option>数据产品</option></select></div>
+            <div class="form-group"><label class="form-label">项目描述</label><textarea rows="3">B2C 电商平台，含商品、订单、支付模块</textarea></div>
+            <button class="btn btn-primary">保存</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">研发配置</span></div>
+          <div class="card-body">
+            <div class="form-group"><label class="form-label">Sprint 周期</label><select><option>2周</option><option>1周</option></select></div>
+            <div class="form-group"><label class="form-label">Token 月配额</label><select><option>跟随部门（500K）</option><option>1M</option><option>无限制</option></select></div>
+            <div class="form-group"><label class="form-label">关联原子能力</label><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"><span class="badge badge-green">🔐 SSO</span><span class="badge badge-blue">💳 支付网关</span><button class="btn" style="padding:2px 8px;font-size:11px">+ 添加</button></div></div>
+            <button class="btn btn-primary">保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== MCP 接入 ========== -->
+    <div class="page" id="page-mcp">
+      <div class="grid-3" style="margin-bottom:24px">
+        <div class="mcp-card" onclick="showPage('projectDetail');showPage('projectDetail')">
+          <div class="mcp-icon">➕</div>
+          <div class="mcp-title">接入新项目</div>
+          <div class="mcp-sub">为项目生成专属 MCP Server</div>
+        </div>
+        <div class="card" style="border:1px solid var(--border)">
+          <div class="card-body" style="text-align:center">
+            <div style="font-size:32px;margin-bottom:8px">🔌</div>
+            <div style="font-weight:600;margin-bottom:4px">已接入项目</div>
+            <div style="font-size:28px;font-weight:700;color:var(--primary)">8</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body" style="text-align:center">
+            <div style="font-size:32px;margin-bottom:8px">🖥️</div>
+            <div style="font-weight:600;margin-bottom:4px">活跃IDE连接</div>
+            <div style="font-size:28px;font-weight:700;color:var(--success)">23</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">快速接入指南</span></div>
+        <div class="card-body">
+          <div style="display:flex;gap:24px">
+            <div style="flex:1">
+              <div style="font-weight:600;margin-bottom:8px">Step 1: 选择项目</div>
+              <select style="margin-bottom:16px"><option>商城系统</option><option>用户中心</option></select>
+              <div style="font-weight:600;margin-bottom:8px">Step 2: 复制配置到 IDE</div>
+              <div class="code-block">
+                <span class="cm"># 粘贴到 Cursor Settings > MCP</span><br>
+                {<br>
+                &nbsp;&nbsp;<span class="str">"mcpServers"</span>: {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"mall-system"</span>: {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">"url"</span>: <span class="str">"https://mcp.ai.com/proj/mall"</span>,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">"token"</span>: <span class="str">"sk-proj-abc123"</span><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                &nbsp;&nbsp;}<br>
+                }
+              </div>
+            </div>
+            <div style="flex:1">
+              <div style="font-weight:600;margin-bottom:8px">Step 3: 验证连接</div>
+              <div style="background:var(--bg);border-radius:8px;padding:14px;margin-bottom:12px">
+                <div style="font-size:12px;color:var(--sub);margin-bottom:8px">在 IDE 对话框中输入：</div>
+                <div class="code-block">/mcp status</div>
+              </div>
+              <div style="background:#ECFDF3;border:1px solid #ABEFC6;border-radius:8px;padding:14px">
+                <div style="font-weight:600;color:#027A48;margin-bottom:6px">✓ 连接成功后 AI 将自动拥有：</div>
+                <ul style="color:#027A48;font-size:12px;padding-left:16px;line-height:2">
+                  <li>项目需求文档查询能力</li>
+                  <li>项目专属 Skill 工具集</li>
+                  <li>公司 SSO / 流程等能力</li>
+                  <li>事故任务创建和上报</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== INCIDENTS ========== -->
+    <div class="page" id="page-incidents">
+      <div style="display:flex;gap:12px;margin-bottom:20px">
+        <select style="width:auto"><option>全部项目</option></select>
+        <select style="width:auto"><option>全部级别</option><option>严重</option><option>警告</option></select>
+        <select style="width:auto"><option>全部状态</option><option>待处理</option><option>处理中</option><option>已解决</option></select>
+      </div>
+
+      <!-- Incident Detail -->
+      <div class="card" style="margin-bottom:16px;border-color:var(--danger)">
+        <div class="card-header" style="background:#FEF3F2;border-radius:11px 11px 0 0">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="badge badge-red">🔴 严重</span>
+            <span style="font-weight:600">支付服务 NullPointerException - order-service</span>
+          </div>
+          <div style="display:flex;gap:8px">
+            <span style="font-size:12px;color:var(--sub)">10分钟前</span>
+            <span class="badge badge-yellow">处理中</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="grid-2">
+            <div>
+              <div style="font-weight:600;font-size:13px;margin-bottom:8px">📋 错误堆栈</div>
+              <div class="code-block" style="font-size:11px;height:120px;overflow:auto">
+                java.lang.NullPointerException<br>
+                &nbsp;&nbsp;at PaymentService.processOrder(PaymentService.java:142)<br>
+                &nbsp;&nbsp;at OrderController.checkout(OrderController.java:89)<br>
+                &nbsp;&nbsp;at ...<br><br>
+                <span class="cm">Caused by: order.paymentMethod is null</span><br>
+                <span class="cm">Request: POST /api/orders/checkout</span>
+              </div>
+            </div>
+            <div>
+              <div class="ai-label">🤖 AI 诊断结果</div>
+              <div class="ai-bubble">
+                <strong>根因：</strong>checkout 接口未对 <code>paymentMethod</code> 字段做非空校验。当用户未选择支付方式直接提交时触发 NPE。<br><br>
+                <strong>影响范围：</strong>所有走快捷结算的订单请求，约占总流量 23%<br><br>
+                <strong>修复建议：</strong><br>
+                1. 在 <code>OrderController:89</code> 加入参数校验<br>
+                2. 在 <code>PaymentService:142</code> 加防御性判断<br>
+                3. 建议添加单元测试覆盖空支付方式场景
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:16px">
+            <button class="btn btn-primary">👤 领取任务 (在 IDE 中修复)</button>
+            <button class="btn">📋 查看相关代码</button>
+            <button class="btn">🔗 创建 GitHub Issue</button>
+            <button class="btn" style="margin-left:auto">✅ 标记已解决</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">其他事故</span></div>
+        <div class="card-body" style="padding:0 20px">
+          <div class="incident-item">
+            <div class="incident-dot warning"></div>
+            <div style="flex:1">
+              <div class="incident-title">用户中心接口 P99 延迟超阈值 (2.3s > 1s)</div>
+              <div class="incident-meta">user-service · 1小时前 · AI正在分析...</div>
+            </div>
+            <span class="badge badge-yellow">警告</span>
+            <button class="btn" style="padding:4px 10px;font-size:12px">查看</button>
+          </div>
+          <div class="incident-item">
+            <div class="incident-dot info"></div>
+            <div style="flex:1">
+              <div class="incident-title">前端打包体积超出 2MB 限制 (当前 2.8MB)</div>
+              <div class="incident-meta">mall-frontend · 3小时前 · AI已给出优化方案</div>
+            </div>
+            <span class="badge badge-blue">提示</span>
+            <button class="btn" style="padding:4px 10px;font-size:12px">查看</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== KNOWLEDGE ========== -->
+    <div class="page" id="page-knowledge">
+      <div style="display:flex;gap:12px;margin-bottom:20px">
+        <input placeholder="搜索知识库..." style="max-width:320px">
+        <button class="btn btn-primary" style="margin-left:auto">+ 上传文档</button>
+      </div>
+
+      <div class="tabs" id="knowledgeTabs">
+        <div class="tab active" onclick="switchTab('knowledgeTabs','kb-global')">🌐 全局知识库</div>
+        <div class="tab" onclick="switchTab('knowledgeTabs','kb-project')">📁 项目知识库</div>
+      </div>
+
+      <div id="kb-global">
+        <div class="card">
+          <table>
+            <thead><tr><th>文档名称</th><th>分类</th><th>被引用项目</th><th>更新时间</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr><td>📄 公司代码规范 v3.0</td><td><span class="badge badge-blue">规范</span></td><td>18个项目</td><td>2026-02-01</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+              <tr><td>🔒 安全开发手册</td><td><span class="badge badge-red">安全</span></td><td>18个项目</td><td>2026-01-15</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+              <tr><td>📐 UI 设计规范</td><td><span class="badge badge-yellow">设计</span></td><td>9个项目</td><td>2026-01-10</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+              <tr><td>🏗️ 微服务架构指南</td><td><span class="badge badge-green">架构</span></td><td>12个项目</td><td>2025-12-20</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="kb-project" style="display:none">
+        <div class="card">
+          <div class="card-header">
+            <select style="border:none;font-weight:600;font-size:14px;background:transparent;padding:0">
+              <option>商城系统</option><option>用户中心</option><option>支付网关</option>
+            </select>
+          </div>
+          <table>
+            <thead><tr><th>文档名称</th><th>类型</th><th>上传者</th><th>更新时间</th></tr></thead>
+            <tbody>
+              <tr><td>📄 商城需求文档 v2.3</td><td><span class="badge badge-blue">需求</span></td><td>张三</td><td>2026-03-06</td></tr>
+              <tr><td>📐 原型图 v1.5</td><td><span class="badge badge-yellow">原型</span></td><td>产品部</td><td>2026-03-05</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SKILLS ========== -->
+    <div class="page" id="page-skills">
+      <div style="display:flex;gap:12px;margin-bottom:20px">
+        <button class="btn btn-primary" style="margin-left:auto">+ 创建 Skill</button>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">⚡ 内置 Skill</span></div>
+          <div class="card-body" style="padding:0 20px">
+            <div class="skill-item">
+              <div class="skill-icon" style="background:#EEF1FF">🔍</div>
+              <div style="flex:1">
+                <div class="skill-name">Code Review</div>
+                <div class="skill-desc">自动审查代码质量、安全、性能</div>
+              </div>
+              <span class="badge badge-green">全局</span>
+            </div>
+            <div class="skill-item">
+              <div class="skill-icon" style="background:#ECFDF3">📝</div>
+              <div style="flex:1">
+                <div class="skill-name">接口文档生成</div>
+                <div class="skill-desc">代码→OpenAPI 文档自动生成</div>
+              </div>
+              <span class="badge badge-green">全局</span>
+            </div>
+            <div class="skill-item">
+              <div class="skill-icon" style="background:#FEF3F2">🚨</div>
+              <div style="flex:1">
+                <div class="skill-name">故障诊断</div>
+                <div class="skill-desc">日志分析、根因定位、修复建议</div>
+              </div>
+              <span class="badge badge-green">全局</span>
+            </div>
+            <div class="skill-item">
+              <div class="skill-icon" style="background:#FFFAEB">✅</div>
+              <div style="flex:1">
+                <div class="skill-name">单元测试生成</div>
+                <div class="skill-desc">根据代码自动生成单元测试用例</div>
+              </div>
+              <span class="badge badge-green">全局</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">🏢 公司自定义 Skill</span></div>
+          <div class="card-body" style="padding:0 20px">
+            <div class="skill-item">
+              <div class="skill-icon" style="background:#F9F5FF">🔐</div>
+              <div style="flex:1">
+                <div class="skill-name">SSO 集成助手</div>
+                <div class="skill-desc">一键生成公司 SSO 对接代码</div>
+              </div>
+              <span class="badge badge-blue">自定义</span>
+            </div>
+            <div class="skill-item">
+              <div class="skill-icon" style="background:#F0FDF4">🏷️</div>
+              <div style="flex:1">
+                <div class="skill-name">Git提交规范检查</div>
+                <div class="skill-desc">确保 commit message 符合公司规范</div>
+              </div>
+              <span class="badge badge-blue">自定义</span>
+            </div>
+            <div class="skill-item">
+              <div class="skill-icon" style="background:#FFFAEB">📊</div>
+              <div style="flex:1">
+                <div class="skill-name">BI 数据查询</div>
+                <div class="skill-desc">用自然语言查询公司 BI 数据</div>
+              </div>
+              <span class="badge badge-blue">自定义</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== TEMPLATES ========== -->
+    <div class="page" id="page-templates">
+      <div class="grid-3">
+        <div class="project-card">
+          <div style="font-size:28px;margin-bottom:8px">⚛️</div>
+          <div class="project-name">React + TypeScript 前端模板</div>
+          <div class="project-desc">含路由、状态管理、组件库、CI/CD、ESLint、单元测试</div>
+          <div class="project-meta" style="margin-top:12px">
+            <span class="project-tag">React 18</span>
+            <span class="project-tag">Vite</span>
+            <span class="project-tag">Tailwind</span>
+            <button class="btn btn-primary" style="margin-left:auto;padding:4px 12px;font-size:12px">使用模板</button>
+          </div>
+        </div>
+        <div class="project-card">
+          <div style="font-size:28px;margin-bottom:8px">🍃</div>
+          <div class="project-name">Spring Boot 微服务模板</div>
+          <div class="project-desc">含 SSO 对接、统一异常处理、日志规范、Swagger、Docker</div>
+          <div class="project-meta" style="margin-top:12px">
+            <span class="project-tag">Spring Boot 3</span>
+            <span class="project-tag">MySQL</span>
+            <button class="btn btn-primary" style="margin-left:auto;padding:4px 12px;font-size:12px">使用模板</button>
+          </div>
+        </div>
+        <div class="project-card">
+          <div style="font-size:28px;margin-bottom:8px">🟢</div>
+          <div class="project-name">Node.js BFF 模板</div>
+          <div class="project-desc">含接口聚合、鉴权中间件、Redis缓存、限流、Jest测试</div>
+          <div class="project-meta" style="margin-top:12px">
+            <span class="project-tag">Node 20</span>
+            <span class="project-tag">Fastify</span>
+            <button class="btn btn-primary" style="margin-left:auto;padding:4px 12px;font-size:12px">使用模板</button>
+          </div>
+        </div>
+        <div class="project-card">
+          <div style="font-size:28px;margin-bottom:8px">🐍</div>
+          <div class="project-name">Python 数据服务模板</div>
+          <div class="project-desc">含 FastAPI、数据处理管道、Celery 异步任务、Pytest</div>
+          <div class="project-meta" style="margin-top:12px">
+            <span class="project-tag">Python 3.12</span>
+            <span class="project-tag">FastAPI</span>
+            <button class="btn btn-primary" style="margin-left:auto;padding:4px 12px;font-size:12px">使用模板</button>
+          </div>
+        </div>
+        <div class="mcp-card" style="height:100%">
+          <div class="mcp-icon">➕</div>
+          <div class="mcp-title">上传自定义模板</div>
+          <div class="mcp-sub">将现有项目骨架注册为公司标准模板</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== KEYS ========== -->
+    <div class="page" id="page-keys">
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-label">总 Token 配额/月</div><div class="stat-value" style="color:var(--primary)">10M</div></div>
+        <div class="stat-card"><div class="stat-label">已使用</div><div class="stat-value">2.4M</div><div class="stat-delta">24% 已用</div></div>
+        <div class="stat-card"><div class="stat-label">超额部门</div><div class="stat-value" style="color:var(--danger)">1</div><div class="stat-delta down">产品团队</div></div>
+        <div class="stat-card"><div class="stat-label">接入模型</div><div class="stat-value">3</div><div class="stat-delta" style="color:var(--sub)">Claude / GPT / 文心</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">员工 Key 管理</span>
+          <button class="btn btn-primary" style="font-size:12px;padding:5px 12px">+ 分配 Key</button>
+        </div>
+        <table>
+          <thead><tr><th>员工</th><th>部门</th><th>月配额</th><th>本月已用</th><th>使用率</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#4F6EF7">张</div>张三</div></td>
+              <td>技术部</td><td>无限制</td><td>320K</td>
+              <td><div class="progress-wrap" style="width:80px"><div class="progress-bar" style="width:32%"></div></div></td>
+              <td><span class="badge badge-green">正常</span></td>
+              <td><button class="btn" style="padding:3px 8px;font-size:12px">调整</button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#F04438">李</div>李四</div></td>
+              <td>技术部</td><td>500K</td><td>480K</td>
+              <td><div class="progress-wrap" style="width:80px"><div class="progress-bar warning" style="width:96%"></div></div></td>
+              <td><span class="badge badge-yellow">接近上限</span></td>
+              <td><button class="btn" style="padding:3px 8px;font-size:12px">调整</button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#F79009">陈</div>陈六</div></td>
+              <td>产品部</td><td>400K</td><td><span style="color:var(--danger);font-weight:600">430K</span></td>
+              <td><div class="progress-wrap" style="width:80px"><div class="progress-bar danger" style="width:100%"></div></div></td>
+              <td><span class="badge badge-red">已超额</span></td>
+              <td><button class="btn btn-primary" style="padding:3px 8px;font-size:12px">扩容</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== AUDIT ========== -->
+    <div class="page" id="page-audit">
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-header"><span class="card-title">🛡️ 安全规则</span></div>
+          <div class="card-body" style="padding:0 20px">
+            <div class="skill-item">
+              <div style="flex:1">
+                <div class="skill-name">敏感信息过滤</div>
+                <div class="skill-desc">自动检测并屏蔽 API Key、密码、身份证号等敏感信息</div>
+              </div>
+              <div style="background:#12B76A;width:36px;height:20px;border-radius:10px;position:relative;cursor:pointer">
+                <div style="width:16px;height:16px;background:white;border-radius:50%;position:absolute;right:2px;top:2px"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div style="flex:1">
+                <div class="skill-name">代码外传检测</div>
+                <div class="skill-desc">阻止核心业务代码被发送到外部 AI 服务</div>
+              </div>
+              <div style="background:#12B76A;width:36px;height:20px;border-radius:10px;position:relative;cursor:pointer">
+                <div style="width:16px;height:16px;background:white;border-radius:50%;position:absolute;right:2px;top:2px"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div style="flex:1">
+                <div class="skill-name">Prompt 注入防护</div>
+                <div class="skill-desc">检测并阻断恶意 Prompt 注入攻击</div>
+              </div>
+              <div style="background:#12B76A;width:36px;height:20px;border-radius:10px;position:relative;cursor:pointer">
+                <div style="width:16px;height:16px;background:white;border-radius:50%;position:absolute;right:2px;top:2px"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div style="flex:1">
+                <div class="skill-name">合规审计日志</div>
+                <div class="skill-desc">记录所有 AI 对话，保留 180 天，支持合规审查</div>
+              </div>
+              <div style="background:#D0D5DD;width:36px;height:20px;border-radius:10px;position:relative;cursor:pointer">
+                <div style="width:16px;height:16px;background:white;border-radius:50%;position:absolute;left:2px;top:2px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">📊 近7日安全事件</span></div>
+          <div class="card-body" style="padding:0 20px">
+            <div class="incident-item">
+              <div class="incident-dot warning"></div>
+              <div>
+                <div class="incident-title">检测到 API Key 泄露风险</div>
+                <div class="incident-meta">李四 · 2分钟前 · 已自动屏蔽</div>
+              </div>
+            </div>
+            <div class="incident-item">
+              <div class="incident-dot info"></div>
+              <div>
+                <div class="incident-title">非常用地点登录</div>
+                <div class="incident-meta">王五 · 1天前 · 已验证通过</div>
+              </div>
+            </div>
+            <div class="incident-item">
+              <div class="incident-dot warning"></div>
+              <div>
+                <div class="incident-title">Token 异常突增 (5x均值)</div>
+                <div class="incident-meta">陈六 · 2天前 · 已人工核查</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">📋 操作审计日志</span></div>
+        <table>
+          <thead><tr><th>时间</th><th>用户</th><th>操作</th><th>项目</th><th>结果</th></tr></thead>
+          <tbody>
+            <tr><td>03-07 14:23</td><td>李四</td><td>AI 对话含敏感词</td><td>商城系统</td><td><span class="badge badge-yellow">已过滤</span></td></tr>
+            <tr><td>03-07 13:10</td><td>张三</td><td>新增成员权限</td><td>支付网关</td><td><span class="badge badge-green">成功</span></td></tr>
+            <tr><td>03-07 11:45</td><td>王五</td><td>MCP 接入</td><td>用户中心</td><td><span class="badge badge-green">成功</span></td></tr>
+            <tr><td>03-06 16:30</td><td>陈六</td><td>上传文档</td><td>数据看板</td><td><span class="badge badge-green">成功</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== SETTINGS ========== -->
+    <div class="page" id="page-settings">      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">大模型接入配置</span></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">主模型</label>
+              <select><option>Claude claude-sonnet-4-6 (推荐)</option><option>GPT-4o</option><option>文心一言</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Anthropic API Key</label>
+              <input type="password" value="sk-ant-xxxxxxxxxxxxxxxxxxxx">
+            </div>
+            <div class="form-group">
+              <label class="form-label">备用模型（Token超限时自动切换）</label>
+              <select><option>Claude Haiku (低成本)</option><option>GPT-3.5</option></select>
+            </div>
+            <button class="btn btn-primary">保存配置</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">全局 Token 策略</span></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">公司月总配额</label>
+              <input value="10,000,000 tokens">
+            </div>
+            <div class="form-group">
+              <label class="form-label">默认员工月配额</label>
+              <input value="500,000 tokens">
+            </div>
+            <div class="form-group">
+              <label class="form-label">超配额策略</label>
+              <select><option>降速（切换低价模型）</option><option>暂停使用</option><option>通知管理员</option></select>
+            </div>
+            <button class="btn btn-primary">保存策略</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== ATOMIC CAPABILITIES ========== -->
+    <div class="page" id="page-atomic">
+      <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center">
+        <input placeholder="搜索原子能力..." style="max-width:260px">
+        <select style="width:auto"><option>全部分类</option><option>基础设施</option><option>业务中台</option><option>数据服务</option></select>
+        <button class="btn btn-primary" style="margin-left:auto">+ 注册原子能力</button>
+      </div>
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-icon">⚛️</div><div class="stat-label">已注册能力</div><div class="stat-value" style="color:var(--primary)">24</div><div class="stat-delta">↑ 3 本月新增</div></div>
+        <div class="stat-card"><div class="stat-icon">🔗</div><div class="stat-label">项目接入次数</div><div class="stat-value">86</div><div class="stat-delta">↑ 12% 较上月</div></div>
+        <div class="stat-card"><div class="stat-icon">🤖</div><div class="stat-label">AI自动接入</div><div class="stat-value">41</div><div class="stat-delta">AI生成率 48%</div></div>
+        <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-label">本周版本更新</div><div class="stat-value">5</div><div class="stat-delta" style="color:var(--sub)">能力迭代升级</div></div>
+      </div>
+
+      <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">基础设施能力</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#EEF1FF">📨</div>
+          <div class="atomic-name">统一短信服务</div>
+          <div class="atomic-desc">支持阿里云/腾讯云短信，统一接口，自动降级切换</div>
+          <div class="atomic-git">📦 git.company.com/platform/sms-sdk<br>🌿 branch: main &nbsp;·&nbsp; version: v2.3.1</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">Java</span><span class="project-tag">Node.js</span><span class="project-tag">Python</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">已接入 12 个项目</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">🤖 AI接入</button></div>
+        </div>
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#ECFDF3">📧</div>
+          <div class="atomic-name">邮件推送服务</div>
+          <div class="atomic-desc">模板邮件、HTML邮件、附件支持，自动重试机制</div>
+          <div class="atomic-git">📦 git.company.com/platform/mail-sdk<br>🌿 branch: main &nbsp;·&nbsp; version: v1.8.0</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">Java</span><span class="project-tag">Node.js</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">已接入 8 个项目</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">🤖 AI接入</button></div>
+        </div>
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#FFFAEB">🗄️</div>
+          <div class="atomic-name">对象存储 OSS</div>
+          <div class="atomic-desc">文件上传下载、CDN加速、图片压缩裁剪、权限控制</div>
+          <div class="atomic-git">📦 git.company.com/platform/oss-sdk<br>🌿 branch: main &nbsp;·&nbsp; version: v3.1.2</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">Java</span><span class="project-tag">Node.js</span><span class="project-tag">Python</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">已接入 15 个项目</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">🤖 AI接入</button></div>
+        </div>
+      </div>
+
+      <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">业务中台能力</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#F9F5FF">🔐</div>
+          <div class="atomic-name">统一身份认证 SSO</div>
+          <div class="atomic-desc">OIDC/OAuth2标准，支持MFA，会话管理，RBAC权限</div>
+          <div class="atomic-git">📦 git.company.com/platform/sso-client<br>🌿 branch: main &nbsp;·&nbsp; version: v4.0.3</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">Java</span><span class="project-tag">Node.js</span><span class="project-tag">React</span><span class="project-tag">Vue</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">已接入 18 个项目</span><span class="badge badge-green">已标准化</span></div>
+        </div>
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#FEF3F2">💳</div>
+          <div class="atomic-name">统一支付网关</div>
+          <div class="atomic-desc">微信/支付宝/银联，退款、对账、风控一体化</div>
+          <div class="atomic-git">📦 git.company.com/platform/pay-sdk<br>🌿 branch: release-2.x &nbsp;·&nbsp; version: v2.5.1</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">Java</span><span class="project-tag">Node.js</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">已接入 6 个项目</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">🤖 AI接入</button></div>
+        </div>
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#F0FDF4">📊</div>
+          <div class="atomic-name">BI 数据查询服务</div>
+          <div class="atomic-desc">自然语言查询业务数据，自动生成SQL，结果可视化</div>
+          <div class="atomic-git">📦 git.company.com/platform/bi-query<br>🌿 branch: main &nbsp;·&nbsp; version: v1.2.0</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">REST API</span><span class="project-tag">GraphQL</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">已接入 9 个项目</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">🤖 AI接入</button></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">🤖 AI 接入工作流示例</span><span style="font-size:12px;color:var(--sub)">选择能力后 AI 自动读取 Git 文档生成接入代码</span></div>
+        <div class="card-body">
+          <div class="grid-2">
+            <div>
+              <div class="ai-label">在 IDE 中输入：</div>
+              <div class="code-block" style="margin-bottom:12px"><span class="cm"># 告诉AI要接入短信能力</span><br>帮我在这个 Spring Boot 项目中<br>接入公司的统一短信服务</div>
+              <div class="ai-label">🤖 AI 自动处理步骤：</div>
+              <div class="timeline" style="margin-top:8px">
+                <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">Step 1</div><div class="timeline-content">MCP调用 <code>get_atomic_capability("sms")</code> 获取Git地址</div></div>
+                <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">Step 2</div><div class="timeline-content">读取仓库 README 与接入文档，理解API设计</div></div>
+                <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">Step 3</div><div class="timeline-content">分析当前项目技术栈（Spring Boot 3 + Maven）</div></div>
+                <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">Step 4</div><div class="timeline-content">生成完整接入代码 + 配置项 + 单元测试用例</div></div>
+              </div>
+            </div>
+            <div>
+              <div class="ai-label">生成的接入代码：</div>
+              <div class="code-block" style="font-size:11px;line-height:1.8">
+                <span class="cm">// pom.xml 自动补充依赖</span><br>
+                <span class="str">&lt;dependency&gt;</span><br>
+                &nbsp;&nbsp;<span class="str">&lt;groupId&gt;</span>com.company<span class="str">&lt;/groupId&gt;</span><br>
+                &nbsp;&nbsp;<span class="str">&lt;artifactId&gt;</span>sms-sdk<span class="str">&lt;/artifactId&gt;</span><br>
+                &nbsp;&nbsp;<span class="str">&lt;version&gt;</span>2.3.1<span class="str">&lt;/version&gt;</span><br>
+                <span class="str">&lt;/dependency&gt;</span><br><br>
+                <span class="cm">// SmsService.java（自动生成）</span><br>
+                <span class="kw">@Service</span><br>
+                <span class="kw">public class</span> SmsService {<br>
+                &nbsp;&nbsp;<span class="kw">@Autowired</span><br>
+                &nbsp;&nbsp;<span class="kw">private</span> CompanySmsClient smsClient;<br><br>
+                &nbsp;&nbsp;<span class="kw">public void</span> sendVerifyCode(String phone) {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;smsClient.send(phone, <span class="str">"VERIFY_TPL"</span>,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Map.of(<span class="str">"code"</span>, genCode()));<br>
+                &nbsp;&nbsp;}<br>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== AGILE ========== -->
+    <div class="page" id="page-proj-agile">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        <select style="width:auto;font-weight:600"><option>商城系统</option><option>用户中心</option><option>支付网关</option></select>
+        <span class="badge badge-blue">Sprint 8 · 3月1日 - 3月14日</span>
+        <button class="btn" style="margin-left:auto">+ 新建Sprint</button>
+        <button class="btn btn-primary">🤖 AI拆分需求</button>
+      </div>
+      <div class="tabs" id="agileTabs">
+        <div class="tab active" onclick="switchTab('agileTabs','ag-board')">🗂️ Sprint看板</div>
+        <div class="tab" onclick="switchTab('agileTabs','ag-backlog')">📋 Backlog</div>
+        <div class="tab" onclick="switchTab('agileTabs','ag-burndown')">📉 燃尽图</div>
+        <div class="tab" onclick="switchTab('agileTabs','ag-retro')">🔄 迭代回顾</div>
+      </div>
+
+      <div id="ag-board">
+        <div class="kanban-board">
+          <div class="kanban-col">
+            <div class="kanban-col-header"><span>📋 待办</span><span class="badge badge-gray">5</span></div>
+            <div class="kanban-card"><div class="kanban-card-title">商品搜索优化（ES接入）</div><div class="kanban-card-meta"><span class="sp-badge">5 SP</span><div class="avatar" style="width:18px;height:18px;font-size:9px">张</div><span>后端</span></div></div>
+            <div class="kanban-card"><div class="kanban-card-title">购物车并发问题修复</div><div class="kanban-card-meta"><span class="sp-badge">3 SP</span><div class="avatar" style="width:18px;height:18px;font-size:9px;background:#F04438">李</div><span>后端</span></div></div>
+            <div class="kanban-card"><div class="kanban-card-title">商品详情页骨架屏</div><div class="kanban-card-meta"><span class="sp-badge">2 SP</span><div class="avatar" style="width:18px;height:18px;font-size:9px;background:#12B76A">王</div><span>前端</span></div></div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-header"><span>⚡ 进行中</span><span class="badge badge-blue">2</span></div>
+            <div class="kanban-card" style="border-color:var(--primary)">
+              <div class="kanban-card-title">订单状态机重构</div>
+              <div class="kanban-card-meta"><span class="sp-badge">8 SP</span><div class="avatar" style="width:18px;height:18px;font-size:9px">张</div><span>⏱ 2天</span></div>
+              <div style="margin-top:6px"><div class="progress-wrap"><div class="progress-bar" style="width:65%"></div></div></div>
+            </div>
+            <div class="kanban-card" style="border-color:var(--primary)">
+              <div class="kanban-card-title">支付回调接口联调</div>
+              <div class="kanban-card-meta"><span class="sp-badge">5 SP</span><div class="avatar" style="width:18px;height:18px;font-size:9px;background:#F79009">陈</div><span>⏱ 1天</span></div>
+            </div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-header"><span>🔍 Code Review</span><span class="badge badge-yellow">2</span></div>
+            <div class="kanban-card"><div class="kanban-card-title">用户优惠券模块</div><div class="kanban-card-meta"><span class="sp-badge">3 SP</span><span class="badge badge-blue" style="font-size:10px">AI Review中</span></div></div>
+            <div class="kanban-card"><div class="kanban-card-title">首页推荐算法接入</div><div class="kanban-card-meta"><span class="sp-badge">5 SP</span><div class="avatar" style="width:18px;height:18px;font-size:9px;background:#12B76A">王</div></div></div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-header"><span>🧪 测试</span><span class="badge badge-yellow">1</span></div>
+            <div class="kanban-card"><div class="kanban-card-title">商品发布流程E2E测试</div><div class="kanban-card-meta"><span class="sp-badge">3 SP</span><span class="badge badge-yellow" style="font-size:10px">UAT中</span></div></div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-header"><span>✅ 完成</span><span class="badge badge-green">6</span></div>
+            <div class="kanban-card" style="opacity:0.7"><div class="kanban-card-title">商品列表分页优化</div><div class="kanban-card-meta"><span class="sp-badge">3 SP</span><span style="color:var(--success)">✓ 已合并</span></div></div>
+            <div class="kanban-card" style="opacity:0.7"><div class="kanban-card-title">用户地址管理</div><div class="kanban-card-meta"><span class="sp-badge">5 SP</span><span style="color:var(--success)">✓ 已合并</span></div></div>
+            <div class="kanban-card" style="opacity:0.7"><div class="kanban-card-title">SKU规格选择交互</div><div class="kanban-card-meta"><span class="sp-badge">2 SP</span><span style="color:var(--success)">✓ 已合并</span></div></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <div class="card-body" style="padding:16px 20px">
+            <div style="display:flex;gap:24px;align-items:center">
+              <div style="flex:1">
+                <div style="font-size:13px;font-weight:600;margin-bottom:8px">Sprint 8 进度</div>
+                <div class="progress-wrap" style="height:10px;margin-bottom:6px"><div class="progress-bar" style="width:58%"></div></div>
+                <div style="font-size:12px;color:var(--sub)">已完成 23 SP / 总计 40 SP · 剩余 6 天</div>
+              </div>
+              <div class="ai-bubble" style="flex:1.2">
+                <strong>🤖 AI Sprint分析：</strong>当前进度符合预期。订单状态机重构任务复杂度偏高（8SP），建议明天组织技术对齐。风险点：支付联调依赖外部沙箱环境，建议提前协调。
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="ag-backlog" style="display:none">
+        <div style="display:flex;gap:8px;margin-bottom:16px;align-items:flex-start">
+          <div class="ai-bubble" style="flex:1">
+            <strong>🤖 AI需求拆分助手：</strong>已分析需求文档《商城系统 v2.3》，可自动拆分为 Epic → User Story → Task，并估算 Story Points。点击「AI 拆分 PRD」即可生成待评估的 Backlog 条目。
+          </div>
+          <button class="btn btn-primary" style="white-space:nowrap;flex-shrink:0">🤖 AI 拆分 PRD</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>优先级</th><th>User Story</th><th>Epic</th><th>Story Points</th><th>状态</th><th>负责人</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge badge-red">P0</span></td><td>作为用户，我希望能快速搜索到商品</td><td>搜索优化</td><td><span class="sp-badge">5 SP</span></td><td><span class="badge badge-yellow">本Sprint</span></td><td>张三</td></tr>
+              <tr><td><span class="badge badge-red">P0</span></td><td>购物车操作应保证高并发下数据一致性</td><td>购物车</td><td><span class="sp-badge">3 SP</span></td><td><span class="badge badge-yellow">本Sprint</span></td><td>李四</td></tr>
+              <tr><td><span class="badge badge-yellow">P1</span></td><td>作为运营，我希望能配置限时活动价格</td><td>促销系统</td><td><span class="sp-badge">8 SP</span></td><td><span class="badge badge-gray">Backlog</span></td><td>未分配</td></tr>
+              <tr><td><span class="badge badge-yellow">P1</span></td><td>作为用户，收藏商品后可在个人中心查看</td><td>个人中心</td><td><span class="sp-badge">3 SP</span></td><td><span class="badge badge-gray">Backlog</span></td><td>未分配</td></tr>
+              <tr><td><span class="badge badge-blue">P2</span></td><td>支持商品评论图片上传功能</td><td>评论系统</td><td><span class="sp-badge">5 SP</span></td><td><span class="badge badge-gray">Backlog</span></td><td>未分配</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="ag-burndown" style="display:none">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><span class="card-title">📉 Sprint 8 燃尽图</span><span style="font-size:12px;color:var(--sub)">剩余SP趋势</span></div>
+            <div class="card-body">
+              <div style="display:flex;gap:16px;margin-bottom:8px;font-size:12px">
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:20px;height:2px;background:var(--border);display:inline-block;border-top:2px dashed var(--border)"></span>理想线</span>
+                <span style="display:flex;align-items:center;gap:4px"><span style="width:20px;height:3px;background:var(--primary);display:inline-block;border-radius:2px"></span>实际线</span>
+              </div>
+              <div style="height:140px;background:var(--bg);border-radius:8px;position:relative;overflow:hidden">
+                <svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 300 140" preserveAspectRatio="none">
+                  <line x1="20" y1="15" x2="280" y2="125" stroke="#E4E7EC" stroke-width="1.5" stroke-dasharray="6,3"/>
+                  <polyline points="20,15 60,38 100,55 140,68 180,82 220,82" stroke="#4F6EF7" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+                  <circle cx="220" cy="82" r="4" fill="#4F6EF7"/>
+                </svg>
+                <div style="position:absolute;bottom:6px;left:10px;right:10px;display:flex;justify-content:space-between;font-size:10px;color:var(--sub)"><span>3/1</span><span>3/4</span><span>3/7</span><span>3/10</span><span>3/14</span></div>
+                <div style="position:absolute;top:8px;left:10px;font-size:10px;color:var(--sub)">40 SP</div>
+                <div style="position:absolute;bottom:20px;left:10px;font-size:10px;color:var(--sub)">0</div>
+              </div>
+              <div style="display:flex;gap:16px;margin-top:10px;font-size:12px">
+                <div><span style="color:var(--sub)">已完成</span> <strong>23 SP</strong></div>
+                <div><span style="color:var(--sub)">剩余</span> <strong>17 SP</strong></div>
+                <div><span style="color:var(--sub)">剩余天数</span> <strong>6天</strong></div>
+                <div><span style="color:var(--warning)">⚠ 轻微滞后</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">🤖 AI Sprint预测</span></div>
+            <div class="card-body">
+              <div class="ai-bubble" style="margin-bottom:12px">
+                <strong>完成概率：78%</strong><br><br>
+                当前速度 3.8 SP/天，按此趋势剩余 17 SP 需 4.5 天，Sprint到期前可完成。<br><br>
+                <strong>⚠ 风险项：</strong><br>
+                · 订单状态机重构（8SP）进度65%，预计还需2天，有延期风险<br>
+                · 支付联调依赖第三方沙箱，建议今天提前协调
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-primary" style="font-size:12px">📧 发送Sprint周报</button>
+                <button class="btn" style="font-size:12px">📋 生成站会摘要</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="ag-retro" style="display:none">
+        <div class="card">
+          <div class="card-header"><span class="card-title">🔄 Sprint 7 迭代回顾（AI生成）</span><span class="badge badge-blue">3月1日已完成</span></div>
+          <div class="card-body">
+            <div class="grid-3">
+              <div style="background:#ECFDF3;border-radius:10px;padding:14px">
+                <div style="font-weight:600;color:#027A48;margin-bottom:8px">👍 做得好的</div>
+                <ul style="font-size:13px;color:#027A48;padding-left:16px;line-height:2"><li>Sprint完成率 92%（高于均值）</li><li>AI Code Review覆盖率 100%</li><li>零线上事故</li></ul>
+              </div>
+              <div style="background:#FEF3F2;border-radius:10px;padding:14px">
+                <div style="font-weight:600;color:#B42318;margin-bottom:8px">👎 需要改进</div>
+                <ul style="font-size:13px;color:#B42318;padding-left:16px;line-height:2"><li>2个任务临时扩大范围</li><li>联调阶段沟通成本高</li><li>测试用例覆盖不足</li></ul>
+              </div>
+              <div style="background:var(--primary-light);border-radius:10px;padding:14px">
+                <div style="font-weight:600;color:var(--primary);margin-bottom:8px">💡 下Sprint行动项</div>
+                <ul style="font-size:13px;color:var(--primary);padding-left:16px;line-height:2"><li>Sprint内冻结需求范围</li><li>接口联调提前2天介入</li><li>开启AI自动生成单测</li></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== CI/CD ========== -->
+    <div class="page" id="page-cicd">
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-icon">🚀</div><div class="stat-label">今日构建</div><div class="stat-value" style="color:var(--primary)">24</div><div class="stat-delta">↑ 成功率 87%</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">部署成功</div><div class="stat-value" style="color:var(--success)">21</div><div class="stat-delta">含 4 次生产部署</div></div>
+        <div class="stat-card"><div class="stat-icon">❌</div><div class="stat-label">构建失败</div><div class="stat-value" style="color:var(--danger)">3</div><div class="stat-delta down">AI已分析根因</div></div>
+        <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-label">平均构建时长</div><div class="stat-value">4.2m</div><div class="stat-delta">↓ 较上周 -30s</div></div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header">
+          <span class="card-title">近期流水线</span>
+          <select style="border:none;font-size:12px;color:var(--sub);background:transparent;padding:0"><option>全部项目</option><option>商城系统</option></select>
+        </div>
+        <table>
+          <thead><tr><th>项目/分支</th><th>触发方式</th><th>流水线阶段</th><th>时长</th><th>状态</th><th>时间</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>商城系统</strong> / feature/search</td>
+              <td>李四 · Push</td>
+              <td><div class="pipeline-stages"><span class="pipeline-stage success">✓ 构建</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 单测</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 扫描</span><span class="pipeline-arrow">›</span><span class="pipeline-stage running">⟳ 部署</span></div></td>
+              <td>3m 12s</td>
+              <td><span class="badge badge-blue">运行中</span></td>
+              <td>2分钟前</td>
+              <td><button class="btn" style="padding:3px 8px;font-size:12px">日志</button></td>
+            </tr>
+            <tr>
+              <td><strong>用户中心</strong> / main</td>
+              <td>Merge PR#45</td>
+              <td><div class="pipeline-stages"><span class="pipeline-stage success">✓ 构建</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 单测</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 扫描</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 部署</span></div></td>
+              <td>5m 44s</td>
+              <td><span class="badge badge-green">成功</span></td>
+              <td>30分钟前</td>
+              <td><button class="btn" style="padding:3px 8px;font-size:12px">日志</button></td>
+            </tr>
+            <tr>
+              <td><strong>支付网关</strong> / feature/refund</td>
+              <td>张三 · Push</td>
+              <td><div class="pipeline-stages"><span class="pipeline-stage success">✓ 构建</span><span class="pipeline-arrow">›</span><span class="pipeline-stage failed">✗ 单测</span><span class="pipeline-arrow">›</span><span class="pipeline-stage pending">— 扫描</span><span class="pipeline-arrow">›</span><span class="pipeline-stage pending">— 部署</span></div></td>
+              <td>2m 03s</td>
+              <td><span class="badge badge-red">失败</span></td>
+              <td>1小时前</td>
+              <td><button class="btn" style="padding:3px 8px;font-size:12px">日志</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card" style="border-color:var(--danger)">
+        <div class="card-header" style="background:#FEF3F2;border-radius:11px 11px 0 0">
+          <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-red">✗ 单测失败</span><span style="font-weight:600">支付网关 / feature/refund</span></div>
+          <span style="font-size:12px;color:var(--sub)">1小时前</span>
+        </div>
+        <div class="card-body">
+          <div class="grid-2">
+            <div>
+              <div style="font-weight:600;font-size:13px;margin-bottom:8px">失败日志</div>
+              <div class="code-block" style="font-size:11px;height:110px;overflow:auto">
+                FAIL RefundServiceTest<br>
+                <span style="color:#F04438">✗ testRefundWithInvalidAmount</span><br>
+                &nbsp;&nbsp;Expected: RefundException<br>
+                &nbsp;&nbsp;Actual: NullPointerException<br>
+                &nbsp;&nbsp;at RefundService.java:203<br><br>
+                <span class="cm">Tests run: 42, Failures: 1</span>
+              </div>
+            </div>
+            <div>
+              <div class="ai-label">🤖 AI 根因诊断</div>
+              <div class="ai-bubble">
+                <strong>原因：</strong><code>RefundService:203</code> 未处理 amount 为负数的边界情况，应抛 RefundException 而非空指针。<br><br>
+                <strong>修复：</strong>方法入口添加 <code>Preconditions.checkArgument(amount > 0)</code><br><br>
+                <div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-primary" style="font-size:12px;padding:4px 10px">🤖 在IDE中修复</button><button class="btn" style="font-size:12px;padding:4px 10px">重新触发</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== ENVIRONMENTS ========== -->
+    <div class="page" id="page-envs">
+      <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center">
+        <select style="width:auto;font-weight:600"><option>商城系统</option><option>用户中心</option><option>支付网关</option></select>
+        <button class="btn" style="margin-left:auto">⚙️ 环境配置</button>
+        <button class="btn btn-primary">🚀 发起部署</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px">
+        <div class="env-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+            <span class="badge badge-gray">DEV</span>
+            <span><span class="env-status-dot healthy"></span><span style="font-size:12px;color:var(--success)">健康</span></span>
+          </div>
+          <div class="env-name">开发环境</div>
+          <div class="env-url">dev-mall.company.internal</div>
+          <div style="font-size:12px;color:var(--sub);margin-bottom:12px">自动部署 · 每次 feature 分支 push</div>
+          <div style="font-size:12px;margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">最后部署</span><span>2分钟前 · 李四</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">当前版本</span><span>feature/search #a3f2e1</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--sub)">实例数</span><span>1 pod</span></div>
+          </div>
+          <button class="btn" style="width:100%;font-size:12px">查看日志</button>
+        </div>
+        <div class="env-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+            <span class="badge badge-yellow">STAGING</span>
+            <span><span class="env-status-dot healthy"></span><span style="font-size:12px;color:var(--success)">健康</span></span>
+          </div>
+          <div class="env-name">预发布环境</div>
+          <div class="env-url">staging-mall.company.internal</div>
+          <div style="font-size:12px;color:var(--sub);margin-bottom:12px">手动部署 · 需 Tech Lead 审批</div>
+          <div style="font-size:12px;margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">最后部署</span><span>2小时前 · 张三</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">当前版本</span><span>main #7b9c4d</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--sub)">实例数</span><span>2 pods</span></div>
+          </div>
+          <button class="btn" style="width:100%;font-size:12px">查看日志</button>
+        </div>
+        <div class="env-card" style="border-color:var(--success)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+            <span class="badge badge-green">PROD</span>
+            <span><span class="env-status-dot healthy"></span><span style="font-size:12px;color:var(--success)">健康</span></span>
+          </div>
+          <div class="env-name">生产环境</div>
+          <div class="env-url">mall.company.com</div>
+          <div style="font-size:12px;color:var(--sub);margin-bottom:12px">灰度发布 · 需2人审批 + 变更单</div>
+          <div style="font-size:12px;margin-bottom:14px">
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">最后部署</span><span>昨天 18:30 · 张三</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg)"><span style="color:var(--sub)">当前版本</span><span>v2.3.1 · 稳定</span></div>
+            <div style="display:flex;justify-content:space-between;padding:4px 0"><span style="color:var(--sub)">实例数</span><span>6 pods (3AZ)</span></div>
+          </div>
+          <button class="btn btn-primary" style="width:100%;font-size:12px">🚀 发起生产部署</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">📋 部署历史</span><span style="font-size:12px;color:var(--sub)">最近 20 次</span></div>
+        <table>
+          <thead><tr><th>时间</th><th>环境</th><th>版本/分支</th><th>部署人</th><th>变更内容</th><th>耗时</th><th>状态</th></tr></thead>
+          <tbody>
+            <tr><td>03-08 14:02</td><td><span class="badge badge-gray">DEV</span></td><td>feature/search</td><td>李四</td><td>商品搜索ES接入（AI自动触发）</td><td>1m 23s</td><td><span class="badge badge-green">成功</span></td></tr>
+            <tr><td>03-08 11:30</td><td><span class="badge badge-yellow">STG</span></td><td>main #7b9c4d</td><td>张三</td><td>合并4个feature，预发联调</td><td>3m 11s</td><td><span class="badge badge-green">成功</span></td></tr>
+            <tr><td>03-07 18:30</td><td><span class="badge badge-green">PROD</span></td><td>v2.3.1</td><td>张三</td><td>用户中心、购物车优化，灰度10%→100%</td><td>8m 40s</td><td><span class="badge badge-green">成功</span></td></tr>
+            <tr><td>03-07 10:15</td><td><span class="badge badge-gray">DEV</span></td><td>feature/refund</td><td>张三</td><td>退款流程重构（构建失败已回滚）</td><td>2m 03s</td><td><span class="badge badge-red">回滚</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== EFFICIENCY ========== -->
+    <div class="page" id="page-efficiency">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        <span style="font-size:15px;font-weight:700">研发效能看板</span>
+        <select style="width:auto"><option>本月（3月）</option><option>上月（2月）</option><option>近3月</option></select>
+        <button class="btn" style="margin-left:auto">📊 导出月报</button>
+      </div>
+
+      <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">AI 使用效率</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px">
+        <div class="metric-card"><div class="metric-value" style="color:var(--primary)">43%</div><div class="metric-label">AI代码贡献率</div><div class="metric-trend" style="color:var(--success)">↑ +8% 较上月</div></div>
+        <div class="metric-card"><div class="metric-value" style="color:var(--success)">2.8x</div><div class="metric-label">AI辅助开发提速比</div><div class="metric-trend" style="color:var(--success)">↑ +0.3x 较上月</div></div>
+        <div class="metric-card"><div class="metric-value" style="color:var(--warning)">¥12,400</div><div class="metric-label">AI使用成本/月</div><div class="metric-trend" style="color:var(--sub)">— 成本稳定</div></div>
+        <div class="metric-card"><div class="metric-value" style="color:var(--success)">68x</div><div class="metric-label">AI投入产出比（ROI）</div><div class="metric-trend" style="color:var(--success)">节省人效约 ¥840K</div></div>
+      </div>
+
+      <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">DORA 研发效能指标</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px">
+        <div class="metric-card"><div class="metric-value" style="color:var(--success)">8.3</div><div class="metric-label">部署频率（次/天）</div><div class="metric-trend" style="color:var(--success)">精英水平 🏆</div></div>
+        <div class="metric-card"><div class="metric-value" style="color:var(--success)">1.2h</div><div class="metric-label">变更前置时间</div><div class="metric-trend" style="color:var(--success)">精英水平 🏆</div></div>
+        <div class="metric-card"><div class="metric-value" style="color:var(--primary)">4.2%</div><div class="metric-label">变更失败率</div><div class="metric-trend" style="color:var(--success)">↓ -1.3% 较上月</div></div>
+        <div class="metric-card"><div class="metric-value" style="color:var(--primary)">18m</div><div class="metric-label">故障恢复时间 MTTR</div><div class="metric-trend" style="color:var(--success)">↓ -12m 较上月</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Sprint完成率趋势</span></div>
+          <div class="card-body">
+            <div class="chart-area" id="sprintChart" style="height:120px"></div>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--sub)"><span>S3</span><span>S4</span><span>S5</span><span>S6</span><span>S7</span><span>S8</span></div>
+            <div style="margin-top:10px;font-size:12px;color:var(--sub)">平均完成率 <strong style="color:var(--text)">88%</strong> · 最近Sprint 92%</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">🤖 AI 效能月度摘要</span></div>
+          <div class="card-body">
+            <div class="ai-bubble" style="margin-bottom:12px">
+              <strong>本月研发效能总结：</strong><br><br>
+              · 团队整体达到 DORA <strong>精英水平</strong>，部署频率和前置时间均优秀<br>
+              · AI代码贡献率提升至43%，主要集中在单测生成、文档编写、原子能力接入<br>
+              · 变更失败率下降，得益于AI Code Review覆盖率从82%提升至100%<br><br>
+              <strong>⚠ 建议：</strong>产品团队Token超配，建议调整配额或引导使用轻量模型
+            </div>
+            <button class="btn btn-primary" style="font-size:12px">📧 生成月度效能报告</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== AGENT WORKFLOWS ========== -->
+    <div class="page" id="page-workflows">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        <button class="btn btn-primary">+ 创建工作流</button>
+        <span style="font-size:12px;color:var(--sub);margin-left:auto">基于 LangGraph 编排引擎 · 支持多步骤 Agent、条件分支、Human-in-the-loop</span>
+      </div>
+
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-icon">🔀</div><div class="stat-label">已定义工作流</div><div class="stat-value" style="color:var(--primary)">6</div><div class="stat-delta">↑ 2 本月新增</div></div>
+        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-label">今日执行次数</div><div class="stat-value">142</div><div class="stat-delta" style="color:var(--success)">成功率 94.4%</div></div>
+        <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-label">平均执行时长</div><div class="stat-value">23s</div><div class="stat-delta">↓ -4s 较昨日</div></div>
+        <div class="stat-card"><div class="stat-icon">👤</div><div class="stat-label">等待人工审批</div><div class="stat-value" style="color:var(--warning)">3</div><div class="stat-delta down">需要人工干预</div></div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-header"><span class="card-title">工作流列表</span></div>
+          <div class="card-body" style="padding:0 20px">
+            <div class="skill-item" onclick="showWorkflowDetail('review')" style="cursor:pointer">
+              <div class="skill-icon" style="background:#F9F5FF">🔍</div>
+              <div style="flex:1"><div class="skill-name">代码 Review Agent</div><div class="skill-desc">PR创建 → 理解变更 → 搜索规范 → 条件审查 → 发布评论 → 人工确认</div></div>
+              <div style="text-align:right;flex-shrink:0"><span class="badge badge-green">● 运行中</span><div style="font-size:11px;color:var(--sub);margin-top:3px">今日 87 次</div></div>
+            </div>
+            <div class="skill-item" onclick="showWorkflowDetail('bugfix')" style="cursor:pointer">
+              <div class="skill-icon" style="background:#FEF3F2">🐛</div>
+              <div style="flex:1"><div class="skill-name">Bug 诊断修复 Agent</div><div class="skill-desc">报警触发 → 日志分析 → 定位根因 → 生成修复代码 → 人工确认 → 提 PR</div></div>
+              <div style="text-align:right;flex-shrink:0"><span class="badge badge-green">● 运行中</span><div style="font-size:11px;color:var(--sub);margin-top:3px">今日 12 次</div></div>
+            </div>
+            <div class="skill-item" onclick="showWorkflowDetail('prd')" style="cursor:pointer">
+              <div class="skill-icon" style="background:#ECFDF3">📋</div>
+              <div style="flex:1"><div class="skill-name">需求拆分 Agent</div><div class="skill-desc">PRD上传 → 解析需求 → 识别模块 → 并行拆分Story → 估算SP → 写入Backlog</div></div>
+              <div style="text-align:right;flex-shrink:0"><span class="badge badge-green">● 运行中</span><div style="font-size:11px;color:var(--sub);margin-top:3px">今日 5 次</div></div>
+            </div>
+            <div class="skill-item" style="cursor:pointer">
+              <div class="skill-icon" style="background:#EEF1FF">🚀</div>
+              <div style="flex:1"><div class="skill-name">AI 接入原子能力 Agent</div><div class="skill-desc">读取能力文档 → 分析技术栈 → 生成接入代码 → 写入单测 → 人工确认</div></div>
+              <div style="text-align:right;flex-shrink:0"><span class="badge badge-green">● 运行中</span><div style="font-size:11px;color:var(--sub);margin-top:3px">今日 31 次</div></div>
+            </div>
+            <div class="skill-item" style="cursor:pointer">
+              <div class="skill-icon" style="background:#FFFAEB">📊</div>
+              <div style="flex:1"><div class="skill-name">Sprint 日报 Agent</div><div class="skill-desc">定时触发 → 汇聚各项目数据 → 生成摘要 → 并行发送通知</div></div>
+              <div style="text-align:right;flex-shrink:0"><span class="badge badge-green">● 运行中</span><div style="font-size:11px;color:var(--sub);margin-top:3px">每日 1 次</div></div>
+            </div>
+            <div class="skill-item" style="cursor:pointer">
+              <div class="skill-icon" style="background:#F0FDF4">🔌</div>
+              <div style="flex:1"><div class="skill-name">接口文档同步 Agent</div><div class="skill-desc">代码变更检测 → 解析注解 → 生成OpenAPI → 推送知识库</div></div>
+              <div style="text-align:right;flex-shrink:0"><span class="badge badge-gray">● 已停用</span><div style="font-size:11px;color:var(--sub);margin-top:3px">昨日停用</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title" id="wf-detail-title">🔍 代码 Review Agent · 流程图</span>
+            <div style="display:flex;gap:6px">
+              <button class="btn" style="font-size:12px;padding:4px 10px">✏️ 编辑</button>
+              <button class="btn btn-primary" style="font-size:12px;padding:4px 10px">▶ 手动触发</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- Code Review Workflow -->
+            <div class="workflow-canvas" id="wf-canvas-review">
+              <div class="wf-flow">
+                <div class="wf-node type-trigger"><div class="wf-node-type">触发器</div><div class="wf-node-icon">⚡</div><div class="wf-node-label">PR 创建 / 更新</div></div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-llm"><div class="wf-node-type">LLM 节点</div><div class="wf-node-icon">🧠</div><div class="wf-node-label">理解代码变更意图</div></div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-tool"><div class="wf-node-type">Tool 调用</div><div class="wf-node-icon">🔍</div><div class="wf-node-label">search_knowledge(规范文档)</div></div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-condition" style="min-width:170px"><div class="wf-node-type">条件分支</div><div class="wf-node-icon">◆</div><div class="wf-node-label">涉及安全 / 核心代码?</div></div>
+                <div class="wf-branch" style="margin-top:8px">
+                  <div class="wf-branch-col">
+                    <div class="wf-branch-label" style="color:#B42318">YES · 深度审查</div>
+                    <div class="wf-node type-llm" style="min-width:130px"><div class="wf-node-icon">🔐</div><div class="wf-node-label">安全审查 + 性能分析</div></div>
+                  </div>
+                  <div class="wf-branch-col">
+                    <div class="wf-branch-label" style="color:#027A48">NO · 标准审查</div>
+                    <div class="wf-node type-llm" style="min-width:130px"><div class="wf-node-icon">✔</div><div class="wf-node-label">代码质量 + 规范检查</div></div>
+                  </div>
+                </div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-tool"><div class="wf-node-type">Tool 调用</div><div class="wf-node-icon">💬</div><div class="wf-node-label">post_review_comment(PR)</div></div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-human"><div class="wf-node-type">Human-in-the-loop</div><div class="wf-node-icon">👤</div><div class="wf-node-label">开发者确认并处理评论</div></div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-tool"><div class="wf-node-type">Tool 调用</div><div class="wf-node-icon">✅</div><div class="wf-node-label">update_pr_status(通过/拒绝)</div></div>
+              </div>
+            </div>
+            <!-- Bug Fix Workflow -->
+            <div class="workflow-canvas" id="wf-canvas-bugfix" style="display:none">
+              <div class="wf-flow">
+                <div class="wf-node type-trigger"><div class="wf-node-type">触发器</div><div class="wf-node-icon">🚨</div><div class="wf-node-label">监控报警触发</div></div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-tool"><div class="wf-node-type">Tool 调用</div><div class="wf-node-icon">📋</div><div class="wf-node-label">query_metrics(日志 + 堆栈)</div></div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-llm"><div class="wf-node-type">LLM 节点</div><div class="wf-node-icon">🧠</div><div class="wf-node-label">分析根因 + 影响范围</div></div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-tool"><div class="wf-node-type">Tool 调用</div><div class="wf-node-icon">🔍</div><div class="wf-node-label">search_knowledge(历史相似Bug)</div></div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-llm"><div class="wf-node-type">LLM 节点</div><div class="wf-node-icon">🔧</div><div class="wf-node-label">生成修复代码 + 单元测试</div></div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-human"><div class="wf-node-type">Human-in-the-loop</div><div class="wf-node-icon">👤</div><div class="wf-node-label">工程师确认修复方案</div></div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-tool"><div class="wf-node-type">Tool 调用</div><div class="wf-node-icon">🚀</div><div class="wf-node-label">create_pr(修复代码) + 通知团队</div></div>
+              </div>
+            </div>
+            <!-- PRD Split Workflow -->
+            <div class="workflow-canvas" id="wf-canvas-prd" style="display:none">
+              <div class="wf-flow">
+                <div class="wf-node type-trigger"><div class="wf-node-type">触发器</div><div class="wf-node-icon">📄</div><div class="wf-node-label">PRD 文档上传</div></div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-llm"><div class="wf-node-type">LLM 节点</div><div class="wf-node-icon">🧠</div><div class="wf-node-label">解析需求 + 识别模块边界</div></div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-condition" style="min-width:160px"><div class="wf-node-type">并行分支</div><div class="wf-node-icon">⚡</div><div class="wf-node-label">按模块并行拆分</div></div>
+                <div class="wf-branch" style="margin-top:8px">
+                  <div class="wf-branch-col"><div class="wf-branch-label">前端</div><div class="wf-node type-llm" style="min-width:100px"><div class="wf-node-icon">⚛️</div><div class="wf-node-label">拆分前端 Story</div></div></div>
+                  <div class="wf-branch-col"><div class="wf-branch-label">后端</div><div class="wf-node type-llm" style="min-width:100px"><div class="wf-node-icon">🍃</div><div class="wf-node-label">拆分后端 Story</div></div></div>
+                  <div class="wf-branch-col"><div class="wf-branch-label">测试</div><div class="wf-node type-llm" style="min-width:100px"><div class="wf-node-icon">🧪</div><div class="wf-node-label">生成测试用例</div></div></div>
+                </div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-llm"><div class="wf-node-type">LLM 节点</div><div class="wf-node-icon">📊</div><div class="wf-node-label">估算 Story Points</div></div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-human"><div class="wf-node-type">Human-in-the-loop</div><div class="wf-node-icon">👥</div><div class="wf-node-label">团队评审 Story 合理性</div></div>
+                <div class="wf-arrow">↓</div>
+                <div class="wf-node type-tool"><div class="wf-node-type">Tool 调用</div><div class="wf-node-icon">✅</div><div class="wf-node-label">create_task(批量写入 Backlog)</div></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:12px" id="wf-stats-bar">
+              <div><span style="color:var(--sub)">今日执行</span> <strong id="wf-stat-count">87 次</strong></div>
+              <div><span style="color:var(--sub)">成功率</span> <strong id="wf-stat-rate" style="color:var(--success)">96.6%</strong></div>
+              <div><span style="color:var(--sub)">平均耗时</span> <strong id="wf-stat-time">18s</strong></div>
+              <div><span style="color:var(--sub)">平均 Token</span> <strong id="wf-stat-token">3,200</strong></div>
+              <div><span style="color:var(--sub)">模型</span> <strong>claude-sonnet-4-6</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">👤 等待人工审批的任务</span><span class="badge badge-yellow">3 个待处理</span></div>
+        <table>
+          <thead><tr><th>工作流</th><th>触发来源</th><th>当前节点</th><th>等待内容</th><th>等待时长</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Bug 诊断修复 Agent</strong></td><td>支付服务 NPE 报警</td>
+              <td><span class="badge badge-red">👤 Human-in-the-loop</span></td>
+              <td style="font-size:12px;color:var(--sub)">AI 已生成修复代码，等待确认后自动提交 PR</td>
+              <td><span style="color:var(--warning)">23 分钟</span></td>
+              <td><div style="display:flex;gap:6px"><button class="btn btn-primary" style="padding:3px 10px;font-size:12px">查看并批准</button><button class="btn" style="padding:3px 10px;font-size:12px">拒绝</button></div></td>
+            </tr>
+            <tr>
+              <td><strong>AI 接入原子能力 Agent</strong></td><td>商城系统 · 短信接入</td>
+              <td><span class="badge badge-red">👤 Human-in-the-loop</span></td>
+              <td style="font-size:12px;color:var(--sub)">AI 已生成短信接入代码，等待确认后写入代码仓库</td>
+              <td><span style="color:var(--success)">5 分钟</span></td>
+              <td><div style="display:flex;gap:6px"><button class="btn btn-primary" style="padding:3px 10px;font-size:12px">查看并批准</button><button class="btn" style="padding:3px 10px;font-size:12px">拒绝</button></div></td>
+            </tr>
+            <tr>
+              <td><strong>代码 Review Agent</strong></td><td>mall-backend · PR #51</td>
+              <td><span class="badge badge-yellow">👤 等待开发者处理</span></td>
+              <td style="font-size:12px;color:var(--sub)">AI 发现 3 个问题，等待李四处理评论后工作流继续</td>
+              <td><span style="color:var(--warning)">1 小时 12 分</span></td>
+              <td><div style="display:flex;gap:6px"><button class="btn" style="padding:3px 10px;font-size:12px">查看 PR</button><button class="btn" style="padding:3px 10px;font-size:12px">催一催</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== FUNCTION CALLING 管理台 ========== -->
+    <div class="page" id="page-functions">
+      <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center">
+        <input placeholder="搜索 Tool / Function..." style="max-width:260px">
+        <select style="width:auto"><option>全部分类</option><option>知识库</option><option>项目管理</option><option>代码操作</option><option>监控</option></select>
+        <button class="btn btn-primary" style="margin-left:auto">+ 注册新 Tool</button>
+      </div>
+
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-icon">🔩</div><div class="stat-label">已注册 Tool</div><div class="stat-value" style="color:var(--primary)">18</div><div class="stat-delta">↑ 3 本月新增</div></div>
+        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-label">今日调用次数</div><div class="stat-value">1,247</div><div class="stat-delta" style="color:var(--success)">成功率 98.6%</div></div>
+        <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-label">平均响应时长</div><div class="stat-value">340ms</div><div class="stat-delta">↓ -60ms 较昨日</div></div>
+        <div class="stat-card"><div class="stat-icon">❌</div><div class="stat-label">今日调用失败</div><div class="stat-value" style="color:var(--danger)">17</div><div class="stat-delta down">主要：超时 12 次</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="tool-card selected" onclick="selectTool(this)">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+              <div class="skill-icon" style="background:#EEF1FF;width:32px;height:32px;font-size:14px">🔍</div>
+              <div style="flex:1"><div style="font-weight:600;font-size:13px">search_knowledge</div><div style="font-size:11px;color:var(--sub)">知识库 · 今日调用 312 次</div></div>
+              <span class="badge badge-green">● 正常</span>
+            </div>
+            <div style="font-size:12px;color:var(--sub)">语义搜索项目知识库和全局规范文档，返回最相关的文档片段</div>
+          </div>
+          <div class="tool-card" onclick="selectTool(this)">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+              <div class="skill-icon" style="background:#ECFDF3;width:32px;height:32px;font-size:14px">⚛️</div>
+              <div style="flex:1"><div style="font-weight:600;font-size:13px">get_atomic_capability</div><div style="font-size:11px;color:var(--sub)">原子能力 · 今日调用 89 次</div></div>
+              <span class="badge badge-green">● 正常</span>
+            </div>
+            <div style="font-size:12px;color:var(--sub)">根据能力名称获取 Git 地址、接入文档和示例代码</div>
+          </div>
+          <div class="tool-card" onclick="selectTool(this)">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+              <div class="skill-icon" style="background:#FFFAEB;width:32px;height:32px;font-size:14px">📋</div>
+              <div style="flex:1"><div style="font-weight:600;font-size:13px">create_task</div><div style="font-size:11px;color:var(--sub)">项目管理 · 今日调用 234 次</div></div>
+              <span class="badge badge-green">● 正常</span>
+            </div>
+            <div style="font-size:12px;color:var(--sub)">在指定项目和 Sprint 中创建任务，支持负责人、优先级、Story Points</div>
+          </div>
+          <div class="tool-card" onclick="selectTool(this)">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+              <div class="skill-icon" style="background:#F9F5FF;width:32px;height:32px;font-size:14px">💬</div>
+              <div style="flex:1"><div style="font-weight:600;font-size:13px">post_review_comment</div><div style="font-size:11px;color:var(--sub)">代码操作 · 今日调用 87 次</div></div>
+              <span class="badge badge-green">● 正常</span>
+            </div>
+            <div style="font-size:12px;color:var(--sub)">向指定 PR 发布 Code Review 评论，支持行内评论和总体评论</div>
+          </div>
+          <div class="tool-card" onclick="selectTool(this)">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+              <div class="skill-icon" style="background:#FEF3F2;width:32px;height:32px;font-size:14px">🚀</div>
+              <div style="flex:1"><div style="font-weight:600;font-size:13px">trigger_deploy</div><div style="font-size:11px;color:var(--sub)">部署 · 今日调用 41 次 · 生产需审批</div></div>
+              <span class="badge badge-yellow">⚠ 需审批</span>
+            </div>
+            <div style="font-size:12px;color:var(--sub)">触发指定服务在指定环境的部署，生产环境走 Human-in-the-loop 审批节点</div>
+          </div>
+          <div class="tool-card" onclick="selectTool(this)">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+              <div class="skill-icon" style="background:#F0FDF4;width:32px;height:32px;font-size:14px">📊</div>
+              <div style="flex:1"><div style="font-weight:600;font-size:13px">query_metrics</div><div style="font-size:11px;color:var(--sub)">监控 · 今日调用 484 次</div></div>
+              <span class="badge badge-green">● 正常</span>
+            </div>
+            <div style="font-size:12px;color:var(--sub)">查询服务运行指标：错误率、P99延迟、QPS、日志关键词</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🔍 search_knowledge · 详情</span>
+            <div style="display:flex;gap:6px">
+              <button class="btn" style="font-size:12px;padding:4px 10px">✏️ 编辑</button>
+              <button class="btn btn-primary" style="font-size:12px;padding:4px 10px">▶ 测试调用</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="tabs" id="toolTabs">
+              <div class="tab active" onclick="switchTab('toolTabs','tool-schema')">Schema 定义</div>
+              <div class="tab" onclick="switchTab('toolTabs','tool-logs')">调用日志</div>
+              <div class="tab" onclick="switchTab('toolTabs','tool-metrics-tab')">性能指标</div>
+            </div>
+
+            <div id="tool-schema">
+              <div style="font-size:12px;color:var(--sub);margin-bottom:12px">Tool 描述质量直接影响 AI 选择工具的准确率。当前质量评分：<strong style="color:var(--success)">良好（92/100）</strong></div>
+              <div class="form-group">
+                <label class="form-label" style="font-size:11px;color:var(--sub)">工具名称（snake_case）</label>
+                <input value="search_knowledge" style="font-family:monospace;font-size:12px">
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="font-size:11px;color:var(--sub)">功能描述（AI 依据此描述决策是否调用本工具）</label>
+                <textarea rows="2" style="font-size:12px">语义搜索项目知识库、全局规范文档和历史技术方案。当需要查找需求文档、代码规范、架构说明时调用此工具。</textarea>
+              </div>
+              <div style="font-weight:600;font-size:12px;margin-bottom:8px">入参定义（Function Calling Schema）</div>
+              <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:12px">
+                <div class="param-row">
+                  <span class="param-name">query</span><span class="param-type">string</span>
+                  <span style="color:var(--danger);font-size:11px;flex-shrink:0">必填</span>
+                  <span style="color:var(--sub)">搜索关键词或自然语言问题描述</span>
+                </div>
+                <div class="param-row">
+                  <span class="param-name">scope</span><span class="param-type">enum</span>
+                  <span style="color:var(--sub);font-size:11px;flex-shrink:0">选填</span>
+                  <span style="color:var(--sub)">搜索范围：<code>project</code> | <code>global</code> | <code>all</code>（默认 all）</span>
+                </div>
+                <div class="param-row">
+                  <span class="param-name">top_k</span><span class="param-type">integer</span>
+                  <span style="color:var(--sub);font-size:11px;flex-shrink:0">选填</span>
+                  <span style="color:var(--sub)">返回结果数量，默认 5，最大 20</span>
+                </div>
+              </div>
+              <div style="font-weight:600;font-size:12px;margin-bottom:6px">返回值结构</div>
+              <div class="code-block" style="font-size:11px">
+                [{<br>
+                &nbsp;&nbsp;<span class="str">"content"</span>: <span class="str">"文档片段内容..."</span>,<br>
+                &nbsp;&nbsp;<span class="str">"source"</span>: <span class="str">"商城需求文档 v2.3 · 第3章"</span>,<br>
+                &nbsp;&nbsp;<span class="str">"score"</span>: <span class="kw">0.87</span>,<br>
+                &nbsp;&nbsp;<span class="str">"doc_type"</span>: <span class="str">"requirement"</span><br>
+                }]
+              </div>
+            </div>
+
+            <div id="tool-logs" style="display:none">
+              <table>
+                <thead><tr><th>时间</th><th>调用来源</th><th>入参</th><th>耗时</th><th>状态</th></tr></thead>
+                <tbody>
+                  <tr><td>14:23:01</td><td>代码Review Agent</td><td><code style="font-size:11px">query="事务处理规范"</code></td><td>187ms</td><td><span class="badge badge-green">成功</span></td></tr>
+                  <tr><td>14:21:44</td><td>Bug诊断 Agent</td><td><code style="font-size:11px">query="NPE最佳实践"</code></td><td>234ms</td><td><span class="badge badge-green">成功</span></td></tr>
+                  <tr><td>14:19:12</td><td>需求拆分 Agent</td><td><code style="font-size:11px">query="User Story格式"</code></td><td>156ms</td><td><span class="badge badge-green">成功</span></td></tr>
+                  <tr><td>14:10:33</td><td>代码Review Agent</td><td><code style="font-size:11px">query="SQL注入防护"</code></td><td>2340ms</td><td><span class="badge badge-red">超时</span></td></tr>
+                  <tr><td>14:08:11</td><td>AI接入原子能力</td><td><code style="font-size:11px">query="短信SDK接入"</code></td><td>201ms</td><td><span class="badge badge-green">成功</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div id="tool-metrics-tab" style="display:none">
+              <div class="stats-grid" style="margin-bottom:16px">
+                <div class="stat-card"><div class="stat-label">今日调用</div><div class="stat-value" style="color:var(--primary)">312</div></div>
+                <div class="stat-card"><div class="stat-label">成功率</div><div class="stat-value" style="color:var(--success)">98.4%</div></div>
+                <div class="stat-card"><div class="stat-label">P50 延迟</div><div class="stat-value">180ms</div></div>
+                <div class="stat-card"><div class="stat-label">P99 延迟</div><div class="stat-value" style="color:var(--warning)">1.8s</div></div>
+              </div>
+              <div style="font-size:12px;color:var(--sub);margin-bottom:6px">24小时调用量趋势</div>
+              <div class="chart-area" id="toolMetricsChart" style="height:80px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== AI 执行监控 ========== -->
+    <div class="page" id="page-ai-monitor">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        <select style="width:auto"><option>全部工作流</option><option>代码Review Agent</option><option>Bug诊断 Agent</option><option>需求拆分 Agent</option></select>
+        <select style="width:auto"><option>全部状态</option><option>运行中</option><option>等待审批</option><option>成功</option><option>失败</option></select>
+        <button class="btn" style="margin-left:auto">🔄 自动刷新</button>
+      </div>
+
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-label">当前运行中</div><div class="stat-value" style="color:var(--primary)">7</div><div class="stat-delta">实时更新</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">今日成功</div><div class="stat-value" style="color:var(--success)">134</div><div class="stat-delta">成功率 94.4%</div></div>
+        <div class="stat-card"><div class="stat-icon">❌</div><div class="stat-label">今日失败</div><div class="stat-value" style="color:var(--danger)">8</div><div class="stat-delta down">主要：Tool 调用超时</div></div>
+        <div class="stat-card"><div class="stat-icon">🪙</div><div class="stat-label">今日 Token 消耗</div><div class="stat-value">186K</div><div class="stat-delta">≈ ¥ 37.2</div></div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-header"><span class="card-title">⚡ 实时执行列表</span><span class="badge badge-blue">7 运行中</span></div>
+          <div class="card-body" style="padding:0 20px">
+            <div class="incident-item" style="cursor:pointer">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--primary);flex-shrink:0;margin-top:5px;animation:pulse 1.5s infinite"></div>
+              <div style="flex:1">
+                <div class="incident-title">代码 Review Agent <span style="font-size:11px;color:var(--sub);font-weight:400">#EX-1042</span></div>
+                <div class="incident-meta">mall-backend PR#51 · 当前：发布评论 · 已耗时 18s</div>
+                <div style="margin-top:4px"><div class="progress-wrap" style="height:4px"><div class="progress-bar" style="width:75%"></div></div></div>
+              </div>
+              <button class="btn" style="padding:2px 8px;font-size:11px;flex-shrink:0">查看追踪</button>
+            </div>
+            <div class="incident-item" style="cursor:pointer">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--warning);flex-shrink:0;margin-top:5px"></div>
+              <div style="flex:1">
+                <div class="incident-title">Bug 诊断修复 Agent <span style="font-size:11px;color:var(--sub);font-weight:400">#EX-1041</span></div>
+                <div class="incident-meta">支付服务NPE · 当前：等待人工审批 · 已等待 23 分钟</div>
+                <div style="margin-top:4px"><div class="progress-wrap" style="height:4px"><div class="progress-bar warning" style="width:60%"></div></div></div>
+              </div>
+              <button class="btn" style="padding:2px 8px;font-size:11px;flex-shrink:0">去审批</button>
+            </div>
+            <div class="incident-item" style="cursor:pointer">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--primary);flex-shrink:0;margin-top:5px;animation:pulse 1.5s infinite"></div>
+              <div style="flex:1">
+                <div class="incident-title">AI 接入原子能力 Agent <span style="font-size:11px;color:var(--sub);font-weight:400">#EX-1040</span></div>
+                <div class="incident-meta">商城系统 · 短信接入 · 当前：生成代码 · 已耗时 8s</div>
+                <div style="margin-top:4px"><div class="progress-wrap" style="height:4px"><div class="progress-bar" style="width:40%"></div></div></div>
+              </div>
+              <button class="btn" style="padding:2px 8px;font-size:11px;flex-shrink:0">查看追踪</button>
+            </div>
+            <div class="incident-item" style="cursor:pointer">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--primary);flex-shrink:0;margin-top:5px;animation:pulse 1.5s infinite"></div>
+              <div style="flex:1">
+                <div class="incident-title">需求拆分 Agent <span style="font-size:11px;color:var(--sub);font-weight:400">#EX-1039</span></div>
+                <div class="incident-meta">数据看板 PRD v2.0 · 当前：并行拆分 Story · 已耗时 31s</div>
+                <div style="margin-top:4px"><div class="progress-wrap" style="height:4px"><div class="progress-bar" style="width:55%"></div></div></div>
+              </div>
+              <button class="btn" style="padding:2px 8px;font-size:11px;flex-shrink:0">查看追踪</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🔭 执行追踪 · #EX-1042</span>
+            <span class="badge badge-blue">运行中</span>
+          </div>
+          <div class="card-body">
+            <div style="font-size:12px;color:var(--sub);margin-bottom:14px">代码 Review Agent · mall-backend PR#51 · 开始于 14:23:01</div>
+            <div style="position:relative;padding-left:18px">
+              <div style="position:absolute;left:6px;top:8px;bottom:20px;width:1px;background:var(--border)"></div>
+              <div style="position:relative;margin-bottom:14px">
+                <div style="position:absolute;left:-15px;top:3px;width:9px;height:9px;border-radius:50%;background:var(--success);border:2px solid white;box-shadow:0 0 0 2px var(--success)"></div>
+                <div style="font-size:12px;font-weight:600">触发器：PR#51 创建事件</div>
+                <div style="font-size:11px;color:var(--sub);margin:2px 0">+0s · 输入：PR diff 2,340 行代码变更</div>
+              </div>
+              <div style="position:relative;margin-bottom:14px">
+                <div style="position:absolute;left:-15px;top:3px;width:9px;height:9px;border-radius:50%;background:var(--success);border:2px solid white;box-shadow:0 0 0 2px var(--success)"></div>
+                <div style="font-size:12px;font-weight:600">LLM 节点：理解代码变更意图</div>
+                <div style="font-size:11px;color:var(--sub);margin:2px 0">+2s · claude-sonnet-4-6 · 1,240 tokens · 耗时 2s</div>
+                <div class="ai-bubble" style="margin-top:6px;font-size:11px">识别：支付模块重构，涉及事务处理和并发控制 → 进入「深度审查」分支。</div>
+              </div>
+              <div style="position:relative;margin-bottom:14px">
+                <div style="position:absolute;left:-15px;top:3px;width:9px;height:9px;border-radius:50%;background:var(--success);border:2px solid white;box-shadow:0 0 0 2px var(--success)"></div>
+                <div style="font-size:12px;font-weight:600">Tool 调用：search_knowledge</div>
+                <div style="font-size:11px;color:var(--sub);margin:2px 0">+4s · 入参：<code>query="事务处理规范"</code> · 耗时 187ms · 返回 4 条</div>
+              </div>
+              <div style="position:relative;margin-bottom:14px">
+                <div style="position:absolute;left:-15px;top:3px;width:9px;height:9px;border-radius:50%;background:var(--success);border:2px solid white;box-shadow:0 0 0 2px var(--success)"></div>
+                <div style="font-size:12px;font-weight:600">LLM 节点：安全审查 + 性能分析（深度分支）</div>
+                <div style="font-size:11px;color:var(--sub);margin:2px 0">+5s · claude-sonnet-4-6 · 3,780 tokens · 耗时 12s</div>
+              </div>
+              <div style="position:relative;margin-bottom:14px">
+                <div style="position:absolute;left:-15px;top:3px;width:9px;height:9px;border-radius:50%;background:var(--primary);border:2px solid white;box-shadow:0 0 0 2px var(--primary);animation:pulse 1.5s infinite"></div>
+                <div style="font-size:12px;font-weight:600;color:var(--primary)">Tool 调用：post_review_comment(PR#51) <span class="badge badge-blue" style="font-size:10px">运行中</span></div>
+                <div style="font-size:11px;color:var(--sub);margin:2px 0">+17s · 正在发布 3 条行内评论...</div>
+              </div>
+              <div style="position:relative;opacity:0.35">
+                <div style="position:absolute;left:-15px;top:3px;width:9px;height:9px;border-radius:50%;background:var(--border);border:2px solid white"></div>
+                <div style="font-size:12px;font-weight:600;color:var(--sub)">Human-in-the-loop：开发者处理评论</div>
+                <div style="font-size:11px;color:var(--sub)">等待中（节点暂停，等待人工操作后继续）</div>
+              </div>
+            </div>
+            <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
+              <div style="font-size:12px;font-weight:600;margin-bottom:8px">Token 消耗明细</div>
+              <div style="display:flex;gap:16px;font-size:12px">
+                <div><span style="color:var(--sub)">LLM 推理</span> <strong>5,020</strong></div>
+                <div><span style="color:var(--sub)">Tool 调用</span> <strong>180</strong></div>
+                <div><span style="color:var(--sub)">合计</span> <strong style="color:var(--primary)">5,200 tokens</strong></div>
+                <div><span style="color:var(--sub)">费用</span> <strong>≈ ¥ 0.26</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">📋 执行历史记录</span><span style="font-size:12px;color:var(--sub)">今日 142 次</span></div>
+        <table>
+          <thead><tr><th>执行 ID</th><th>工作流</th><th>触发来源</th><th>步骤</th><th>Token</th><th>耗时</th><th>状态</th><th>时间</th></tr></thead>
+          <tbody>
+            <tr><td><span style="font-family:monospace;font-size:12px">#EX-1038</span></td><td>代码 Review Agent</td><td>用户中心 PR#44</td><td>6/6</td><td>4,120</td><td>21s</td><td><span class="badge badge-green">成功</span></td><td>14:18</td></tr>
+            <tr><td><span style="font-family:monospace;font-size:12px">#EX-1037</span></td><td>需求拆分 Agent</td><td>数据看板 PRD v2.0</td><td>7/7</td><td>8,900</td><td>45s</td><td><span class="badge badge-green">成功</span></td><td>14:10</td></tr>
+            <tr><td><span style="font-family:monospace;font-size:12px">#EX-1036</span></td><td>AI接入原子能力</td><td>支付网关 · OSS接入</td><td>3/6</td><td>2,340</td><td>—</td><td><span class="badge badge-red">失败：超时</span></td><td>13:55</td></tr>
+            <tr><td><span style="font-family:monospace;font-size:12px">#EX-1035</span></td><td>Sprint 日报 Agent</td><td>定时触发 · 08:00</td><td>4/4</td><td>3,200</td><td>28s</td><td><span class="badge badge-green">成功</span></td><td>08:00</td></tr>
+            <tr><td><span style="font-family:monospace;font-size:12px">#EX-1034</span></td><td>Bug 诊断修复 Agent</td><td>用户中心延迟报警</td><td>5/7</td><td>6,100</td><td>120s+</td><td><span class="badge badge-yellow">等待审批</span></td><td>昨天</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== AI 评估中心 ========== -->
+    <div class="page" id="page-evals">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        <select style="width:auto"><option>本月（3月）</option><option>上月（2月）</option><option>近3月</option><option>近6月</option></select>
+        <select style="width:auto"><option>全部 Agent / Skill</option><option>代码 Review Agent</option><option>Bug 诊断 Agent</option><option>需求拆分 Agent</option></select>
+        <button class="btn" style="margin-left:auto">📊 生成评估报告</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px">
+        <div class="metric-card"><div class="eval-score" style="color:var(--success)">91</div><div class="metric-label">代码 Review 准确率</div><div><span class="eval-grade A">A 级</span></div><div class="metric-trend" style="color:var(--success);margin-top:6px">↑ +3% 较上月</div></div>
+        <div class="metric-card"><div class="eval-score" style="color:var(--success)">87</div><div class="metric-label">Bug 诊断准确率</div><div><span class="eval-grade A">A 级</span></div><div class="metric-trend" style="color:var(--success);margin-top:6px">↑ +5% 较上月</div></div>
+        <div class="metric-card"><div class="eval-score" style="color:var(--primary)">76</div><div class="metric-label">需求拆分质量</div><div><span class="eval-grade B">B 级</span></div><div class="metric-trend" style="color:var(--sub);margin-top:6px">— 基本持平</div></div>
+        <div class="metric-card"><div class="eval-score" style="color:var(--warning)">68</div><div class="metric-label">Sprint 预测准确率</div><div><span class="eval-grade C">C 级</span></div><div class="metric-trend" style="color:var(--danger);margin-top:6px">↓ -4% 较上月</div></div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-header"><span class="card-title">📊 代码 Review 质量详情</span><span class="eval-grade A">A 级 · 91分</span></div>
+          <div class="card-body">
+            <div style="margin-bottom:14px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span>安全漏洞识别率</span><span style="font-weight:600;color:var(--success)">94%</span></div>
+              <div class="progress-wrap"><div class="progress-bar" style="width:94%;background:var(--success)"></div></div>
+            </div>
+            <div style="margin-bottom:14px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span>代码规范违反识别率</span><span style="font-weight:600;color:var(--success)">96%</span></div>
+              <div class="progress-wrap"><div class="progress-bar" style="width:96%;background:var(--success)"></div></div>
+            </div>
+            <div style="margin-bottom:14px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span>性能问题识别率</span><span style="font-weight:600;color:var(--primary)">82%</span></div>
+              <div class="progress-wrap"><div class="progress-bar" style="width:82%"></div></div>
+            </div>
+            <div style="margin-bottom:16px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px"><span>误报率（人工驳回）</span><span style="font-weight:600;color:var(--success)">8%</span></div>
+              <div class="progress-wrap"><div class="progress-bar" style="width:8%;background:var(--warning)"></div></div>
+            </div>
+            <div class="ai-bubble" style="font-size:12px"><strong>🤖 提升建议：</strong>性能问题识别率偏低（82%），主要集中在 N+1 查询场景。建议在 Prompt 模板中补充 Hibernate / MyBatis 延迟加载识别规则，预计可提升至 90% 以上。</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">🤖 模型能力对比（同一评测集）</span></div>
+          <div class="card-body">
+            <table>
+              <thead><tr><th>模型</th><th>Code Review</th><th>Bug 诊断</th><th>平均 Token</th><th>推荐场景</th></tr></thead>
+              <tbody>
+                <tr><td><strong>claude-sonnet-4-6</strong></td><td><span style="color:var(--success)">91%</span></td><td><span style="color:var(--success)">87%</span></td><td>4,200</td><td><span class="badge badge-green">当前主力</span></td></tr>
+                <tr><td>claude-opus-4-6</td><td><span style="color:var(--success)">96%</span></td><td><span style="color:var(--success)">93%</span></td><td>6,800</td><td><span class="badge badge-yellow">高风险任务</span></td></tr>
+                <tr><td>claude-haiku-4-5</td><td><span style="color:var(--warning)">74%</span></td><td><span style="color:var(--warning)">71%</span></td><td>1,100</td><td><span class="badge badge-gray">低成本场景</span></td></tr>
+                <tr><td>GPT-4o</td><td><span style="color:var(--primary)">88%</span></td><td><span style="color:var(--primary)">82%</span></td><td>3,900</td><td><span class="badge badge-gray">备用模型</span></td></tr>
+              </tbody>
+            </table>
+            <div style="margin-top:12px;padding:10px;background:var(--primary-light);border-radius:8px;font-size:12px;color:var(--primary)">
+              💡 生产安全审查建议切换 Claude Opus 4.6，准确率提升 5%，Token 成本增约 60%。可在工作流「安全审查」节点单独配置模型路由。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">📈 Agent 质量趋势（近6个月）</span></div>
+        <div class="card-body">
+          <div style="display:flex;gap:24px;margin-bottom:12px">
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px"><div style="width:20px;height:3px;background:var(--primary);border-radius:2px"></div>Code Review</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px"><div style="width:20px;height:3px;background:var(--success);border-radius:2px"></div>Bug 诊断</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px"><div style="width:20px;height:3px;background:var(--warning);border-radius:2px"></div>需求拆分</div>
+          </div>
+          <div class="chart-area" id="evalsChart" style="height:120px"></div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--sub)"><span>10月</span><span>11月</span><span>12月</span><span>1月</span><span>2月</span><span>3月</span></div>
+          <div class="ai-bubble" style="margin-top:16px;font-size:12px">
+            <strong>🤖 评估分析：</strong>Code Review 和 Bug 诊断准确率持续提升，得益于 1 月对 Prompt 模板的优化迭代。需求拆分 2 月短暂下降后回升，与当月引入新 Story 格式规范相关。<br><br>
+            <strong>⚠ 重点改进：</strong>Sprint 预测准确率偏低（68%），建议增加历史团队速度数据作为 Few-shot 示例，预期提升至 80% 以上。
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- Modal: New Project -->
+<div class="modal" id="modal-newProject">
+  <div class="modal-box" style="width:560px">
+    <div class="modal-title">新建项目空间</div>
+
+    <div class="modal-section-label">基础信息</div>
+    <div class="form-group">
+      <label class="form-label">项目名称</label>
+      <input placeholder="例：支付网关 v2">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-group">
+        <label class="form-label">所属部门</label>
+        <select><option>技术部</option><option>产品部</option><option>数据部</option><option>移动端</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">项目类型</label>
+        <select><option>对外产品</option><option>内部系统</option><option>技术中台</option><option>数据产品</option></select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">项目描述</label>
+      <textarea rows="2" placeholder="简要描述项目背景和目标..."></textarea>
+    </div>
+
+    <div class="modal-section-label">代码仓库</div>
+    <div class="form-group">
+      <label class="form-label">Git 仓库地址</label>
+      <input placeholder="git.company.com/team/project-name">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-group">
+        <label class="form-label">主干分支</label>
+        <input value="main">
+      </div>
+      <div class="form-group">
+        <label class="form-label">分支策略</label>
+        <select><option>Git Flow（推荐）</option><option>Trunk Based</option><option>Feature Branch</option></select>
+      </div>
+    </div>
+
+    <div class="modal-section-label">模板与知识库</div>
+    <div class="form-group">
+      <label class="form-label">选择项目模板</label>
+      <select>
+        <option>React + TypeScript 前端模板</option>
+        <option>Spring Boot 微服务模板</option>
+        <option>Node.js BFF 模板</option>
+        <option>Python 数据服务模板</option>
+        <option>不使用模板（空白项目）</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">启用全局知识库</label>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" checked style="width:auto"> 代码规范</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" checked style="width:auto"> 安全手册</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" style="width:auto"> UI规范</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" style="width:auto"> 架构指南</label>
+      </div>
+    </div>
+
+    <div class="modal-section-label">关联原子能力</div>
+    <div class="form-group">
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" checked style="width:auto"> 🔐 SSO认证</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" style="width:auto"> 📨 短信服务</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" style="width:auto"> 💳 支付网关</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" style="width:auto"> 🗄️ OSS存储</label>
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" style="width:auto"> 📊 BI查询</label>
+      </div>
+      <div style="font-size:11px;color:var(--sub);margin-top:6px">💡 AI将自动读取所选能力的 Git 文档，开发时可一键生成接入代码</div>
+    </div>
+
+    <div class="modal-section-label">研发流程配置</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-group">
+        <label class="form-label">Sprint 周期</label>
+        <select><option>2周（推荐）</option><option>1周</option><option>3周</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">CI/CD 流水线</label>
+        <select><option>标准（构建+单测+扫描+部署）</option><option>仅构建与测试</option><option>自定义流水线</option></select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Token 月配额</label>
+      <select><option>跟随部门配额（500K）</option><option>100K</option><option>300K</option><option>1M</option><option>无限制（需管理员审批）</option></select>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px">
+      <button class="btn" onclick="closeModal('newProject')">取消</button>
+      <button class="btn btn-primary">🚀 创建项目 + 生成 MCP Server</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Generate dashboard chart bars
+  const heights = [40,55,35,70,85,60,90,75,65,80,95,70,55,85,100,75,60,80,70,65,90,85,75,60,50,70,80,90];
+  const chart = document.getElementById('chartArea');
+  heights.forEach(h => {
+    const bar = document.createElement('div');
+    bar.className = 'chart-bar';
+    bar.style.height = h + '%';
+    chart.appendChild(bar);
+  });
+
+  // Generate sprint completion chart bars
+  const sprintHeights = [72, 78, 85, 80, 92, 88];
+  const sprintChart = document.getElementById('sprintChart');
+  sprintHeights.forEach(h => {
+    const bar = document.createElement('div');
+    bar.className = 'chart-bar';
+    bar.style.height = h + '%';
+    bar.style.background = '#12B76A';
+    sprintChart.appendChild(bar);
+  });
+
+  // ── 全局页面导航 ──
+  function showPage(name) {
+    // 切换回全局 sidebar（如果在项目内）
+    document.getElementById('sidebar-global').style.display = 'flex';
+    document.getElementById('sidebar-project').style.display = 'none';
+
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('#sidebar-global .nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    const titles = {
+      dashboard:'工作台', efficiency:'效能看板',
+      projects:'项目空间', mcp:'MCP 接入', incidents:'事故中心',
+      cicd:'CI / CD', envs:'环境管理',
+      atomic:'原子能力库', knowledge:'知识库（全局）',
+      skills:'Skill 库', templates:'模板库',
+      keys:'Key 管理', audit:'审计安全', settings:'设置',
+      workflows:'Agent 工作流', functions:'Function 管理台',
+      'ai-monitor':'AI 执行监控', evals:'AI 评估中心'
+    };
+    document.getElementById('topbar-title').textContent = titles[name] || name;
+    document.querySelectorAll('#sidebar-global .nav-item').forEach(item => {
+      if(item.getAttribute('onclick') && item.getAttribute('onclick').includes("'"+name+"'")) {
+        item.classList.add('active');
+      }
+    });
+  }
+
+  // ── 进入项目 ──
+  function enterProject(icon, name, sprint) {
+    document.getElementById('sidebar-global').style.display = 'none';
+    document.getElementById('sidebar-project').style.display = 'flex';
+    document.getElementById('proj-icon').textContent = icon;
+    document.getElementById('proj-name').textContent = name;
+    document.getElementById('proj-sprint').textContent = sprint;
+    showProjectPage('overview');
+  }
+
+  // ── 退出项目 ──
+  function exitProject() {
+    document.getElementById('sidebar-global').style.display = 'flex';
+    document.getElementById('sidebar-project').style.display = 'none';
+    showPage('projects');
+  }
+
+  // ── 项目内部页面导航 ──
+  const projPageTitles = {
+    overview:'概览', agile:'研发流程', knowledge:'知识库',
+    incidents:'事故', services:'代码服务', members:'成员权限',
+    skillconfig:'Skill 配置', psettings:'项目设置'
+  };
+
+  function showProjectPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('#sidebar-project .nav-item').forEach(n => n.classList.remove('active'));
+    const pageId = name === 'agile' ? 'page-proj-agile' : 'page-proj-' + name;
+    const el = document.getElementById(pageId);
+    if(el) el.classList.add('active');
+    document.getElementById('topbar-title').textContent =
+      document.getElementById('proj-name').textContent + ' · ' + (projPageTitles[name] || name);
+    const nav = document.getElementById('pnav-' + name);
+    if(nav) nav.classList.add('active');
+  }
+
+  // ── 服务详情页 ──
+  const svcData = {
+    backend:  { icon:'🍃', name:'mall-backend',  tech:'Spring Boot 3' },
+    frontend: { icon:'⚛️', name:'mall-frontend', tech:'React 18' },
+    mobile:   { icon:'📱', name:'mall-mobile',   tech:'React Native' }
+  };
+
+  function showServiceDetail(svcKey) {
+    const svc = svcData[svcKey] || { icon:'⚙️', name:svcKey, tech:'' };
+    document.getElementById('svc-icon').textContent = svc.icon;
+    document.getElementById('svc-name').textContent = svc.name;
+    document.getElementById('svc-tech').textContent = svc.tech;
+    // 重置 tabs
+    const tabs = document.querySelectorAll('#svcTabs .tab');
+    tabs.forEach(t => t.classList.remove('active'));
+    if(tabs[0]) tabs[0].classList.add('active');
+    document.querySelectorAll('[id^="svc-"]').forEach(s => s.style.display = 'none');
+    const ov = document.getElementById('svc-overview');
+    if(ov) ov.style.display = '';
+    // 显示服务详情页
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-svc-detail').classList.add('active');
+    document.getElementById('topbar-title').textContent =
+      document.getElementById('proj-name').textContent + ' · ' + svc.name;
+    document.querySelectorAll('#sidebar-project .nav-item').forEach(n => n.classList.remove('active'));
+    const pnav = document.getElementById('pnav-services');
+    if(pnav) pnav.classList.add('active');
+  }
+
+  function switchTab(groupId, showId) {
+    const group = document.getElementById(groupId);
+    const tabs = group.querySelectorAll('.tab');
+    tabs.forEach(tab => tab.classList.remove('active'));
+    event.target.classList.add('active');
+    const prefix = showId.split('-')[0] + '-';
+    const parent = group.parentElement;
+    parent.querySelectorAll('[id^="' + prefix + '"]').forEach(s => s.style.display = 'none');
+    const target = document.getElementById(showId);
+    if(target) target.style.display = '';
+  }
+
+  function openModal(name) {
+    document.getElementById('modal-'+name).classList.add('open');
+  }
+  function closeModal(name) {
+    document.getElementById('modal-'+name).classList.remove('open');
+  }
+  document.querySelectorAll('.modal').forEach(m => {
+    m.addEventListener('click', e => { if(e.target === m) m.classList.remove('open'); });
+  });
+
+  // ── Agent Workflow Detail ──
+  const wfMeta = {
+    review: { title:'🔍 代码 Review Agent · 流程图', count:'87 次', rate:'96.6%', time:'18s', token:'3,200' },
+    bugfix: { title:'🐛 Bug 诊断修复 Agent · 流程图', count:'12 次', rate:'91.7%', time:'68s', token:'7,800' },
+    prd:    { title:'📋 需求拆分 Agent · 流程图', count:'5 次', rate:'100%', time:'45s', token:'9,100' }
+  };
+  function showWorkflowDetail(key) {
+    const meta = wfMeta[key];
+    if (!meta) return;
+    document.getElementById('wf-detail-title').textContent = meta.title;
+    ['review','bugfix','prd'].forEach(k => {
+      const el = document.getElementById('wf-canvas-' + k);
+      if (el) el.style.display = (k === key) ? '' : 'none';
+    });
+    document.getElementById('wf-stat-count').textContent = meta.count;
+    document.getElementById('wf-stat-rate').textContent = meta.rate;
+    document.getElementById('wf-stat-time').textContent = meta.time;
+    document.getElementById('wf-stat-token').textContent = meta.token;
+  }
+
+  // ── Tool Card Select ──
+  function selectTool(el) {
+    document.querySelectorAll('.tool-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  // ── Init extra charts ──
+  const toolChartEl = document.getElementById('toolMetricsChart');
+  if (toolChartEl) {
+    [30,45,60,55,80,70,90,85,75,60,50,40,55,70,88,76,65,80,95,88,72,60,45,55].forEach(h => {
+      const b = document.createElement('div');
+      b.className = 'chart-bar';
+      b.style.height = h + '%';
+      b.style.background = '#12B76A';
+      toolChartEl.appendChild(b);
+    });
+  }
+  const evalsChartEl = document.getElementById('evalsChart');
+  if (evalsChartEl) {
+    [70,75,80,88,89,91].forEach(h => {
+      const b = document.createElement('div');
+      b.className = 'chart-bar';
+      b.style.height = h + '%';
+      evalsChartEl.appendChild(b);
+    });
+  }
+</script>
+</body>
+</html>
