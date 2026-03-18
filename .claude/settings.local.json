@@ -30,7 +30,9 @@
       "Bash(findstr :8000)",
       "Bash(tasklist)",
       "Bash(findstr python:*)",
-      "Bash(ls -la *.html)"
+      "Bash(ls -la *.html)",
+      "Bash(python3:*)",
+      "Bash(grep -E \"\\\\.\\(patch|diff\\)$\")"
     ]
   }
 }

@@ -1,932 +1,291 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI 中台 - 企业 AI 管理平台</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --sidebar-w: 220px;
-    --primary: #4F6EF7;
-    --primary-light: #EEF1FF;
-    --danger: #F04438;
-    --success: #12B76A;
-    --warning: #F79009;
-    --bg: #F7F8FA;
-    --card: #ffffff;
-    --border: #E4E7EC;
-    --text: #101828;
-    --sub: #667085;
-    --sidebar-bg: #0F1629;
-    --sidebar-text: #98A2B3;
-    --sidebar-active: #ffffff;
-  }
-  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; font-size: 14px; }
-
-  /* Sidebar */
-  .sidebar { width: var(--sidebar-w); background: var(--sidebar-bg); display: flex; flex-direction: column; flex-shrink: 0; }
-  .sidebar-logo { padding: 20px 16px; border-bottom: 1px solid #1D2D50; display: flex; align-items: center; gap: 10px; }
-  .sidebar-logo .logo-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px; }
-  .sidebar-logo .logo-text { color: white; font-weight: 600; font-size: 15px; }
-  .sidebar-logo .logo-sub { color: var(--sidebar-text); font-size: 11px; }
-  .nav-section { padding: 16px 8px 8px; }
-  .nav-label { color: #3D5078; font-size: 11px; font-weight: 600; padding: 0 8px; margin-bottom: 4px; letter-spacing: 0.5px; text-transform: uppercase; }
-  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; cursor: pointer; color: var(--sidebar-text); transition: all 0.15s; margin-bottom: 2px; }
-  .nav-item:hover { background: #1D2D50; color: white; }
-  .nav-item.active { background: var(--primary); color: white; }
-  .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
-  .nav-item .label { font-size: 13px; font-weight: 500; }
-  .nav-item .badge { margin-left: auto; background: var(--danger); color: white; border-radius: 10px; padding: 1px 6px; font-size: 11px; }
-  .sidebar-footer { margin-top: auto; padding: 12px; border-top: 1px solid #1D2D50; display: flex; align-items: center; gap: 10px; }
-  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; }
-  .user-info .name { color: white; font-size: 13px; font-weight: 500; }
-  .user-info .role { color: var(--sidebar-text); font-size: 11px; }
-
-  /* Main */
-  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  .topbar { background: white; border-bottom: 1px solid var(--border); padding: 0 24px; height: 56px; display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
-  .topbar-title { font-size: 16px; font-weight: 600; flex: 1; }
-  .topbar-actions { display: flex; gap: 8px; align-items: center; }
-  .btn { padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border); background: white; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text); display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s; }
-  .btn:hover { background: var(--bg); }
-  .btn-primary { background: var(--primary); color: white; border-color: var(--primary); }
-  .btn-primary:hover { background: #3B55E0; }
-  .btn-danger { background: var(--danger); color: white; border-color: var(--danger); }
-  .content { flex: 1; overflow-y: auto; padding: 24px; }
-
-  /* Cards */
-  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; }
-  .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .card-title { font-size: 14px; font-weight: 600; }
-  .card-body { padding: 20px; }
-
-  /* Stats */
-  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
-  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; }
-  .stat-label { color: var(--sub); font-size: 12px; font-weight: 500; margin-bottom: 6px; }
-  .stat-value { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
-  .stat-delta { font-size: 12px; color: var(--success); }
-  .stat-delta.down { color: var(--danger); }
-  .stat-icon { float: right; font-size: 24px; margin-top: -4px; }
-
-  /* Grid layouts */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-
-  /* Table */
-  table { width: 100%; border-collapse: collapse; }
-  th { text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 600; color: var(--sub); border-bottom: 1px solid var(--border); }
-  td { padding: 12px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: var(--bg); }
-
-  /* Badge */
-  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; gap: 4px; }
-  .badge-green { background: #ECFDF3; color: #027A48; }
-  .badge-red { background: #FEF3F2; color: #B42318; }
-  .badge-yellow { background: #FFFAEB; color: #B54708; }
-  .badge-blue { background: var(--primary-light); color: var(--primary); }
-  .badge-gray { background: #F2F4F7; color: var(--sub); }
-
-  /* Progress bar */
-  .progress-wrap { background: #F2F4F7; border-radius: 4px; height: 6px; overflow: hidden; }
-  .progress-bar { height: 100%; border-radius: 4px; background: var(--primary); }
-  .progress-bar.danger { background: var(--danger); }
-  .progress-bar.warning { background: var(--warning); }
-
-  /* Page visibility */
-  .page { display: none; }
-  .page.active { display: block; }
-
-  /* Chart placeholder */
-  .chart-area { height: 160px; background: linear-gradient(to bottom, var(--primary-light), transparent); border-radius: 8px; display: flex; align-items: flex-end; justify-content: space-around; padding: 16px 8px 0; gap: 6px; }
-  .chart-bar { flex: 1; border-radius: 4px 4px 0 0; background: var(--primary); opacity: 0.7; transition: opacity 0.2s; cursor: pointer; }
-  .chart-bar:hover { opacity: 1; }
-
-  /* Token meter */
-  .token-ring { width: 120px; height: 120px; position: relative; margin: 0 auto 16px; }
-  .token-ring svg { transform: rotate(-90deg); }
-  .token-ring .center-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .token-ring .center-value { font-size: 22px; font-weight: 700; color: var(--primary); }
-  .token-ring .center-label { font-size: 11px; color: var(--sub); }
-
-  /* Project card */
-  .project-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.15s; }
-  .project-card:hover { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
-  .project-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
-  .project-desc { color: var(--sub); font-size: 12px; margin-bottom: 12px; }
-  .project-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  .project-tag { background: var(--primary-light); color: var(--primary); padding: 2px 8px; border-radius: 4px; font-size: 11px; }
-  .project-members { display: flex; margin-left: auto; }
-  .project-members .avatar { width: 24px; height: 24px; font-size: 10px; border: 2px solid white; margin-left: -6px; }
-  .project-members .avatar:first-child { margin-left: 0; }
-
-  /* Incident */
-  .incident-item { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); }
-  .incident-item:last-child { border-bottom: none; }
-  .incident-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
-  .incident-dot.critical { background: var(--danger); box-shadow: 0 0 0 3px #FEE4E2; }
-  .incident-dot.warning { background: var(--warning); }
-  .incident-dot.info { background: var(--primary); }
-  .incident-title { font-weight: 500; font-size: 13px; margin-bottom: 3px; }
-  .incident-meta { font-size: 12px; color: var(--sub); }
-  .incident-actions { margin-left: auto; display: flex; gap: 6px; align-items: flex-start; }
-
-  /* MCP connect */
-  .mcp-card { border: 2px dashed var(--border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.15s; }
-  .mcp-card:hover { border-color: var(--primary); background: var(--primary-light); }
-  .mcp-icon { font-size: 32px; margin-bottom: 8px; }
-  .mcp-title { font-weight: 600; margin-bottom: 4px; }
-  .mcp-sub { color: var(--sub); font-size: 12px; }
-
-  /* Code block */
-  .code-block { background: #0F1629; color: #A9B8D4; border-radius: 8px; padding: 14px 16px; font-family: 'Fira Code', monospace; font-size: 12px; line-height: 1.6; }
-  .code-block .kw { color: #79B8FF; }
-  .code-block .str { color: #9ECBFF; }
-  .code-block .cm { color: #6A737D; }
-
-  /* Skill item */
-  .skill-item { display: flex; gap: 12px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--border); }
-  .skill-item:last-child { border-bottom: none; }
-  .skill-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-  .skill-name { font-weight: 500; font-size: 13px; margin-bottom: 3px; }
-  .skill-desc { color: var(--sub); font-size: 12px; }
-
-  /* Input */
-  input, select, textarea { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; width: 100%; outline: none; font-family: inherit; }
-  input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
-  .form-group { margin-bottom: 16px; }
-  .form-label { font-size: 13px; font-weight: 500; margin-bottom: 6px; display: block; }
-
-  /* Modal overlay */
-  .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; }
-  .modal.open { display: flex; }
-  .modal-box { background: white; border-radius: 16px; padding: 24px; width: 480px; max-height: 80vh; overflow-y: auto; }
-  .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
-
-  /* Tab */
-  .tabs { display: flex; gap: 4px; background: var(--bg); border-radius: 8px; padding: 4px; margin-bottom: 20px; }
-  .tab { flex: 1; text-align: center; padding: 7px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--sub); transition: all 0.15s; }
-  .tab.active { background: white; color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-
-  /* Timeline */
-  .timeline { position: relative; padding-left: 20px; }
-  .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 0; width: 1px; background: var(--border); }
-  .timeline-item { position: relative; margin-bottom: 16px; }
-  .timeline-dot { position: absolute; left: -17px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); border: 2px solid white; box-shadow: 0 0 0 2px var(--primary); }
-  .timeline-time { font-size: 11px; color: var(--sub); margin-bottom: 3px; }
-  .timeline-content { font-size: 13px; }
-
-  /* AI chat bubble */
-  .ai-bubble { background: var(--primary-light); border-radius: 0 12px 12px 12px; padding: 12px 14px; font-size: 13px; line-height: 1.6; border: 1px solid #D1D9FE; }
-  .ai-label { font-size: 11px; color: var(--sub); margin-bottom: 6px; font-weight: 500; }
-
-  /* Kanban Board */
-  .kanban-board { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
-  .kanban-col { min-width: 190px; flex: 1; background: var(--bg); border-radius: 10px; padding: 12px; }
-  .kanban-col-header { font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
-  .kanban-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.15s; }
-  .kanban-card:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(79,110,247,0.12); }
-  .kanban-card-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; line-height: 1.4; }
-  .kanban-card-meta { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--sub); }
-  .sp-badge { background: var(--primary-light); color: var(--primary); border-radius: 4px; padding: 1px 6px; font-size: 11px; font-weight: 600; flex-shrink: 0; }
-
-  /* Atomic capability */
-  .atomic-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; transition: all 0.15s; }
-  .atomic-card:hover { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
-  .atomic-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 10px; }
-  .atomic-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
-  .atomic-desc { color: var(--sub); font-size: 12px; margin-bottom: 10px; line-height: 1.5; }
-  .atomic-git { font-size: 11px; color: var(--sub); background: var(--bg); border-radius: 6px; padding: 6px 10px; margin-bottom: 10px; font-family: 'Fira Code', monospace; line-height: 1.8; }
-
-  /* Pipeline stages */
-  .pipeline-stages { display: flex; align-items: center; gap: 0; }
-  .pipeline-stage { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; padding: 4px 8px; border-radius: 4px; white-space: nowrap; }
-  .pipeline-stage.success { background: #ECFDF3; color: #027A48; }
-  .pipeline-stage.running { background: var(--primary-light); color: var(--primary); }
-  .pipeline-stage.failed { background: #FEF3F2; color: #B42318; }
-  .pipeline-stage.pending { background: var(--bg); color: var(--sub); }
-  .pipeline-arrow { color: var(--border); margin: 0 2px; font-size: 12px; }
-
-  /* Env card */
-  .env-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-  .env-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-  .env-url { font-size: 12px; color: var(--primary); font-family: 'Fira Code', monospace; margin-bottom: 10px; }
-  .env-status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
-  .env-status-dot.healthy { background: var(--success); }
-  .env-status-dot.warn { background: var(--warning); }
-
-  /* Efficiency metrics */
-  .metric-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
-  .metric-value { font-size: 32px; font-weight: 800; margin-bottom: 4px; line-height: 1.1; }
-  .metric-label { font-size: 12px; color: var(--sub); margin-bottom: 6px; }
-  .metric-trend { font-size: 12px; }
-
-  /* Section separator in modal */
-  .modal-section-label { font-size: 11px; font-weight: 700; color: var(--sub); text-transform: uppercase; letter-spacing: 0.6px; border-top: 1px solid var(--border); padding-top: 14px; margin-top: 8px; margin-bottom: 12px; }
-
-  /* Project type badges */
-  .proj-type { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
-  .proj-type-product  { background: #EEF1FF; color: var(--primary); }
-  .proj-type-internal { background: #ECFDF3; color: #027A48; }
-  .proj-type-platform { background: #FFFAEB; color: #B54708; }
-  .proj-type-data     { background: #F9F5FF; color: #6941C6; }
-
-  /* Service cards */
-  .service-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.15s; }
-  .service-card:hover { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
-  .service-name { font-weight: 600; font-size: 14px; margin-bottom: 3px; }
-  .service-tech { color: var(--sub); font-size: 12px; margin-bottom: 10px; }
-  .service-health { display: flex; align-items: center; gap: 4px; font-size: 12px; }
-
-  /* ── Agent Workflow Nodes ── */
-  .workflow-canvas { background: var(--bg); border-radius: 12px; padding: 20px; overflow-x: auto; }
-  .wf-flow { display: flex; flex-direction: column; align-items: center; }
-  .wf-node { background: white; border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 14px; min-width: 150px; text-align: center; cursor: pointer; transition: all 0.15s; display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }
-  .wf-node:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.12); transform: translateY(-1px); }
-  .wf-node.type-trigger   { border-color: var(--primary); background: var(--primary-light); }
-  .wf-node.type-llm       { border-color: #7B61FF; background: #F9F5FF; }
-  .wf-node.type-tool      { border-color: var(--success); background: #ECFDF3; }
-  .wf-node.type-condition { border-color: var(--warning); background: #FFFAEB; }
-  .wf-node.type-human     { border-color: var(--danger); background: #FEF3F2; }
-  .wf-node-type  { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; opacity: 0.55; }
-  .wf-node-icon  { font-size: 16px; }
-  .wf-node-label { font-size: 11px; font-weight: 600; line-height: 1.3; }
-  .wf-arrow { text-align: center; color: #C8D0DA; font-size: 18px; margin: 2px 0; line-height: 1; }
-  .wf-branch { display: flex; gap: 12px; justify-content: center; align-items: flex-start; }
-  .wf-branch-col { display: flex; flex-direction: column; align-items: center; }
-  .wf-branch-label { font-size: 10px; border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; margin-bottom: 4px; color: var(--sub); background: white; white-space: nowrap; }
-
-  /* ── Tool / Function 管理 ── */
-  .tool-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: all 0.15s; }
-  .tool-card:hover, .tool-card.selected { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
-  .param-row { display: flex; gap: 8px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--bg); font-size: 12px; }
-  .param-row:last-child { border-bottom: none; }
-  .param-name { font-family: 'Fira Code', monospace; font-weight: 600; width: 140px; flex-shrink: 0; }
-  .param-type { background: var(--bg); color: var(--sub); border-radius: 4px; padding: 1px 6px; font-family: monospace; font-size: 11px; flex-shrink: 0; }
-
-  /* ── AI Evals ── */
-  .eval-score { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-  .eval-grade { display: inline-block; padding: 1px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }
-  .eval-grade.A { background: #ECFDF3; color: #027A48; }
-  .eval-grade.B { background: var(--primary-light); color: var(--primary); }
-  .eval-grade.C { background: #FFFAEB; color: #B54708; }
-
-  /* ── Pulse animation ── */
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
-
-  /* ── Toast animations ── */
-  @keyframes slideInRight {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-  }
-
-  @keyframes slideOutRight {
-    from { transform: translateX(0); opacity: 1; }
-    to { transform: translateX(100%); opacity: 0; }
-  }
-
-  /* Project sidebar info block */
-  .proj-info-block { padding: 12px 16px; border-bottom: 1px solid #1D2D50; }
-  .proj-info-name { color: white; font-weight: 600; font-size: 14px; }
-  .proj-info-sprint { color: var(--sidebar-text); font-size: 11px; margin-top: 3px; display: flex; align-items: center; gap: 5px; }
-  .proj-status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); display: inline-block; }
-
-  /* Back button in project sidebar */
-  .sidebar-back { padding: 12px 16px; border-bottom: 1px solid #1D2D50; display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--sidebar-text); font-size: 13px; transition: all 0.15s; }
-  .sidebar-back:hover { color: white; }
-
-  /* ========== Key Management Specific Styles ========== */
-
-  /* Key management cards with enhanced visual hierarchy */
-  .key-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    transition: all 0.2s ease;
-    position: relative;
-    overflow: hidden;
-  }
-  .key-card:hover {
-    border-color: var(--primary);
-    box-shadow: 0 4px 16px rgba(79, 110, 247, 0.1);
-    transform: translateY(-1px);
-  }
-  .key-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--primary), var(--success));
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-  .key-card:hover::before { opacity: 1; }
-
-  /* Enhanced stat cards for Key overview */
-  .key-stat-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    position: relative;
-    transition: all 0.3s ease;
-  }
-  .key-stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  }
-  .key-stat-card .stat-icon {
-    font-size: 28px;
-    float: right;
-    margin-top: -4px;
-    opacity: 0.8;
-    transition: transform 0.3s ease;
-  }
-  .key-stat-card:hover .stat-icon { transform: scale(1.1); }
-
-  /* Improved quota indicators with better visual feedback */
-  .quota-indicator {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 6px;
-  }
-  .quota-bar-container {
-    flex: 1;
-    background: var(--bg);
-    height: 6px;
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-  }
-  .quota-bar {
-    height: 100%;
-    border-radius: 8px;
-    transition: width 0.5s ease;
-    position: relative;
-    background: linear-gradient(90deg, var(--success), var(--primary));
-  }
-  .quota-bar.warning {
-    background: linear-gradient(90deg, var(--warning), #FFB020);
-  }
-  .quota-bar.danger {
-    background: linear-gradient(90deg, var(--danger), #FF6B6B);
-  }
-  .quota-bar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    animation: shimmer 2s infinite;
-  }
-  @keyframes shimmer {
-    0% { left: -100%; }
-    100% { left: 100%; }
-  }
-
-  /* Enhanced member assignment badges */
-  .assignment-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-  }
-  .assignment-badge.assigned {
-    background: #ECFDF3;
-    color: #027A48;
-    border: 1px solid #A6F4C5;
-  }
-  .assignment-badge.overquota {
-    background: #FEF3F2;
-    color: #B42318;
-    border: 1px solid #FECDCA;
-    animation: pulse-warning 2s infinite;
-  }
-  .assignment-badge.unassigned {
-    background: #F9FAFB;
-    color: var(--sub);
-    border: 1px dashed var(--border);
-  }
-  @keyframes pulse-warning {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.3); }
-    50% { box-shadow: 0 0 0 4px rgba(244, 67, 54, 0.1); }
-  }
-
-  /* Enhanced table styling for member management */
-  .key-management-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .key-management-table th {
-    background: var(--bg);
-    text-align: left;
-    padding: 12px 16px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--sub);
-    border-bottom: 2px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-  .key-management-table td {
-    padding: 16px;
-    border-bottom: 1px solid var(--border);
-    font-size: 13px;
-    transition: background-color 0.2s ease;
-  }
-  .key-management-table tr:hover td {
-    background: rgba(79, 110, 247, 0.04);
-  }
-  .key-management-table tr:last-child td {
-    border-bottom: none;
-  }
-
-  /* Member profile inline display */
-  .member-profile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .member-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: var(--primary);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 13px;
-    transition: transform 0.2s ease;
-  }
-  .member-profile:hover .member-avatar {
-    transform: scale(1.1);
-  }
-  .member-info .member-name {
-    font-weight: 500;
-    color: var(--text);
-  }
-  .member-info .member-email {
-    font-size: 11px;
-    color: var(--sub);
-  }
-
-  /* Enhanced modal styles with smooth animations */
-  .modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-  .modal.open {
-    display: flex;
-    opacity: 1;
-  }
-  .modal-box {
-    background: white;
-    border-radius: 16px;
-    padding: 28px;
-    width: 520px;
-    max-height: 85vh;
-    overflow-y: auto;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-    transform: scale(0.9) translateY(20px);
-    transition: transform 0.3s ease;
-  }
-  .modal.open .modal-box {
-    transform: scale(1) translateY(0);
-  }
-  .modal-title {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    color: var(--text);
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  /* Enhanced form controls */
-  .form-group {
-    margin-bottom: 20px;
-  }
-  .form-label {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    display: block;
-    color: var(--text);
-  }
-  .form-select, .form-input {
-    border: 2px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 16px;
-    font-size: 14px;
-    width: 100%;
-    outline: none;
-    font-family: inherit;
-    transition: all 0.2s ease;
-    background: white;
-  }
-  .form-select:focus, .form-input:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(79, 110, 247, 0.1);
-  }
-  .form-select:hover, .form-input:hover {
-    border-color: #C1C9D2;
-  }
-
-  /* Key provider badges */
-  .provider-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-  }
-  .provider-badge.openai {
-    background: #10A37F;
-    color: white;
-  }
-  .provider-badge.anthropic {
-    background: #D97706;
-    color: white;
-  }
-  .provider-badge.google {
-    background: #4285F4;
-    color: white;
-  }
-  .provider-badge.local {
-    background: var(--bg);
-    color: var(--sub);
-    border: 1px solid var(--border);
-  }
-
-  /* Monitoring section styles */
-  .monitor-section {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 16px;
-  }
-  .monitor-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-  .monitor-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-  }
-  .monitor-controls {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  /* Real-time activity feed */
-  .activity-feed {
-    max-height: 200px;
-    overflow-y: auto;
-  }
-  .activity-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--bg);
-    transition: background-color 0.2s ease;
-  }
-  .activity-item:last-child { border-bottom: none; }
-  .activity-item:hover {
-    background: rgba(79, 110, 247, 0.04);
-    border-radius: 6px;
-    margin: 0 -8px;
-    padding: 10px 8px;
-  }
-  .activity-time {
-    font-size: 11px;
-    color: var(--sub);
-    font-weight: 500;
-    min-width: 40px;
-  }
-  .activity-content {
-    flex: 1;
-    font-size: 12px;
-    line-height: 1.4;
-  }
-  .activity-model {
-    font-weight: 600;
-    color: var(--primary);
-  }
-  .activity-tokens {
-    color: var(--success);
-    font-weight: 500;
-  }
-
-  /* Alert boxes with enhanced styling */
-  .alert-box {
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 12px;
-    border-left: 4px solid;
-    position: relative;
-    overflow: hidden;
-  }
-  .alert-box.warning {
-    background: #FFFAEB;
-    border-left-color: var(--warning);
-    color: #92400E;
-  }
-  .alert-box.danger {
-    background: #FEF3F2;
-    border-left-color: var(--danger);
-    color: #B42318;
-  }
-  .alert-box.info {
-    background: var(--primary-light);
-    border-left-color: var(--primary);
-    color: #1E40AF;
-  }
-  .alert-title {
-    font-weight: 600;
-    font-size: 13px;
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .alert-content {
-    font-size: 12px;
-    line-height: 1.5;
-  }
-
-  /* Toast notification system */
-  .toast-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 10000;
-    pointer-events: none;
-  }
-  .toast {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 20px;
-    margin-bottom: 8px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    pointer-events: auto;
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    min-width: 300px;
-  }
-  .toast.show {
-    transform: translateX(0);
-  }
-  .toast.success {
-    border-left: 4px solid var(--success);
-  }
-  .toast.error {
-    border-left: 4px solid var(--danger);
-  }
-  .toast.warning {
-    border-left: 4px solid var(--warning);
-  }
-  .toast-icon {
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-  .toast-content {
-    flex: 1;
-  }
-  .toast-title {
-    font-weight: 600;
-    font-size: 13px;
-    margin-bottom: 2px;
-  }
-  .toast-message {
-    font-size: 12px;
-    color: var(--sub);
-  }
-
-  /* ========== Responsive Design ========== */
-
-  /* Tablet styles (768px - 1024px) */
-  @media (max-width: 1024px) {
-    .stats-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 中台 - 企业 AI 管理平台</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --sidebar-w: 220px;
+      --primary: #4F6EF7;
+      --primary-light: #EEF1FF;
+      --danger: #F04438;
+      --success: #12B76A;
+      --warning: #F79009;
+      --bg: #F7F8FA;
+      --card: #ffffff;
+      --border: #E4E7EC;
+      --text: #101828;
+      --sub: #667085;
+      --sidebar-bg: #0F1629;
+      --sidebar-text: #98A2B3;
+      --sidebar-active: #ffffff;
     }
+    body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; font-size: 14px; }
 
-    .grid-2 {
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
+    /* Sidebar */
+    .sidebar { width: var(--sidebar-w); background: var(--sidebar-bg); display: flex; flex-direction: column; flex-shrink: 0; }
+    .sidebar-logo { padding: 20px 16px; border-bottom: 1px solid #1D2D50; display: flex; align-items: center; gap: 10px; }
+    .sidebar-logo .logo-icon { width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px; }
+    .sidebar-logo .logo-text { color: white; font-weight: 600; font-size: 15px; }
+    .sidebar-logo .logo-sub { color: var(--sidebar-text); font-size: 11px; }
+    .nav-section { padding: 16px 8px 8px; }
+    .nav-label { color: #3D5078; font-size: 11px; font-weight: 600; padding: 0 8px; margin-bottom: 4px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; cursor: pointer; color: var(--sidebar-text); transition: all 0.15s; margin-bottom: 2px; }
+    .nav-item:hover { background: #1D2D50; color: white; }
+    .nav-item.active { background: var(--primary); color: white; }
+    .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+    .nav-item .label { font-size: 13px; font-weight: 500; }
+    .nav-item .badge { margin-left: auto; background: var(--danger); color: white; border-radius: 10px; padding: 1px 6px; font-size: 11px; }
+    .sidebar-footer { margin-top: auto; padding: 12px; border-top: 1px solid #1D2D50; display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; }
+    .user-info .name { color: white; font-size: 13px; font-weight: 500; }
+    .user-info .role { color: var(--sidebar-text); font-size: 11px; }
 
-    .key-management-table th,
-    .key-management-table td {
-      padding: 12px 8px;
-      font-size: 12px;
-    }
+    /* Main */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .topbar { background: white; border-bottom: 1px solid var(--border); padding: 0 24px; height: 56px; display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .topbar-title { font-size: 16px; font-weight: 600; flex: 1; }
+    .topbar-actions { display: flex; gap: 8px; align-items: center; }
+    .btn { padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border); background: white; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text); display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s; }
+    .btn:hover { background: var(--bg); }
+    .btn-primary { background: var(--primary); color: white; border-color: var(--primary); }
+    .btn-primary:hover { background: #3B55E0; }
+    .btn-danger { background: var(--danger); color: white; border-color: var(--danger); }
+    .content { flex: 1; overflow-y: auto; padding: 24px; }
 
-    .member-avatar {
-      width: 28px;
-      height: 28px;
-      font-size: 11px;
-    }
+    /* Cards */
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; }
+    .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .card-title { font-size: 14px; font-weight: 600; }
+    .card-body { padding: 20px; }
 
-    .modal-box {
-      width: 90%;
-      max-width: 480px;
-      margin: 20px;
-    }
-  }
+    /* Stats */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; }
+    .stat-label { color: var(--sub); font-size: 12px; font-weight: 500; margin-bottom: 6px; }
+    .stat-value { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+    .stat-delta { font-size: 12px; color: var(--success); }
+    .stat-delta.down { color: var(--danger); }
+    .stat-icon { float: right; font-size: 24px; margin-top: -4px; }
 
-  /* Mobile styles (up to 768px) */
-  @media (max-width: 768px) {
-    .stats-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
+    /* Grid layouts */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 
-    .key-stat-card {
-      padding: 16px;
-    }
+    /* Table */
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; padding: 10px 12px; font-size: 12px; font-weight: 600; color: var(--sub); border-bottom: 1px solid var(--border); }
+    td { padding: 12px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg); }
 
-    .stat-value {
-      font-size: 20px;
-    }
+    /* Badge */
+    .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; gap: 4px; }
+    .badge-green { background: #ECFDF3; color: #027A48; }
+    .badge-red { background: #FEF3F2; color: #B42318; }
+    .badge-yellow { background: #FFFAEB; color: #B54708; }
+    .badge-blue { background: var(--primary-light); color: var(--primary); }
+    .badge-gray { background: #F2F4F7; color: var(--sub); }
 
-    .stat-icon {
-      font-size: 20px !important;
-    }
+    /* Progress bar */
+    .progress-wrap { background: #F2F4F7; border-radius: 4px; height: 6px; overflow: hidden; }
+    .progress-bar { height: 100%; border-radius: 4px; background: var(--primary); }
+    .progress-bar.danger { background: var(--danger); }
+    .progress-bar.warning { background: var(--warning); }
 
-    .key-management-table {
-      display: block;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
+    /* Page visibility */
+    .page { display: none; }
+    .page.active { display: block; }
 
-    .key-management-table thead {
-      display: none;
-    }
+    /* Chart placeholder */
+    .chart-area { height: 160px; background: linear-gradient(to bottom, var(--primary-light), transparent); border-radius: 8px; display: flex; align-items: flex-end; justify-content: space-around; padding: 16px 8px 0; gap: 6px; }
+    .chart-bar { flex: 1; border-radius: 4px 4px 0 0; background: var(--primary); opacity: 0.7; transition: opacity 0.2s; cursor: pointer; }
+    .chart-bar:hover { opacity: 1; }
 
-    .key-management-table tbody,
-    .key-management-table tr,
-    .key-management-table td {
-      display: block;
-    }
+    /* Token meter */
+    .token-ring { width: 120px; height: 120px; position: relative; margin: 0 auto 16px; }
+    .token-ring svg { transform: rotate(-90deg); }
+    .token-ring .center-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .token-ring .center-value { font-size: 22px; font-weight: 700; color: var(--primary); }
+    .token-ring .center-label { font-size: 11px; color: var(--sub); }
 
-    .key-management-table tr {
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 12px;
-      padding: 16px;
-      background: white;
-    }
+    /* Project card */
+    .project-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.15s; }
+    .project-card:hover { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+    .project-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+    .project-desc { color: var(--sub); font-size: 12px; margin-bottom: 12px; }
+    .project-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .project-tag { background: var(--primary-light); color: var(--primary); padding: 2px 8px; border-radius: 4px; font-size: 11px; }
+    .project-members { display: flex; margin-left: auto; }
+    .project-members .avatar { width: 24px; height: 24px; font-size: 10px; border: 2px solid white; margin-left: -6px; }
+    .project-members .avatar:first-child { margin-left: 0; }
 
-    .key-management-table td {
-      border: none;
-      padding: 8px 0;
-      position: relative;
-      padding-left: 100px;
-    }
+    /* Incident */
+    .incident-item { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .incident-item:last-child { border-bottom: none; }
+    .incident-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+    .incident-dot.critical { background: var(--danger); box-shadow: 0 0 0 3px #FEE4E2; }
+    .incident-dot.warning { background: var(--warning); }
+    .incident-dot.info { background: var(--primary); }
+    .incident-title { font-weight: 500; font-size: 13px; margin-bottom: 3px; }
+    .incident-meta { font-size: 12px; color: var(--sub); }
+    .incident-actions { margin-left: auto; display: flex; gap: 6px; align-items: flex-start; }
 
-    .key-management-table td::before {
-      content: attr(data-label) ':';
-      position: absolute;
-      left: 0;
-      font-weight: 600;
-      font-size: 12px;
-      color: var(--sub);
-      width: 90px;
-    }
+    /* MCP connect */
+    .mcp-card { border: 2px dashed var(--border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.15s; }
+    .mcp-card:hover { border-color: var(--primary); background: var(--primary-light); }
+    .mcp-icon { font-size: 32px; margin-bottom: 8px; }
+    .mcp-title { font-weight: 600; margin-bottom: 4px; }
+    .mcp-sub { color: var(--sub); font-size: 12px; }
 
-    .member-profile {
-      padding-left: 0 !important;
-    }
+    /* Code block */
+    .code-block { background: #0F1629; color: #A9B8D4; border-radius: 8px; padding: 14px 16px; font-family: 'Fira Code', monospace; font-size: 12px; line-height: 1.6; }
+    .code-block .kw { color: #79B8FF; }
+    .code-block .str { color: #9ECBFF; }
+    .code-block .cm { color: #6A737D; }
 
-    .activity-item {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 6px;
-    }
+    /* Skill item */
+    .skill-item { display: flex; gap: 12px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .skill-item:last-child { border-bottom: none; }
+    .skill-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .skill-name { font-weight: 500; font-size: 13px; margin-bottom: 3px; }
+    .skill-desc { color: var(--sub); font-size: 12px; }
 
-    .activity-time {
-      min-width: auto;
-    }
+    /* Input */
+    input, select, textarea { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 13px; width: 100%; outline: none; font-family: inherit; }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 13px; font-weight: 500; margin-bottom: 6px; display: block; }
 
-    .toast {
-      min-width: 280px;
-      margin-right: 10px;
-    }
+    /* Modal overlay */
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; }
+    .modal.open { display: flex; }
+    .modal-box { background: white; border-radius: 16px; padding: 24px; width: 480px; max-height: 80vh; overflow-y: auto; }
+    .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
 
-    .modal-box {
-      width: 95%;
-      margin: 10px;
-      padding: 20px;
-    }
-  }
+    /* Tab */
+    .tabs { display: flex; gap: 4px; background: var(--bg); border-radius: 8px; padding: 4px; margin-bottom: 20px; }
+    .tab { flex: 1; text-align: center; padding: 7px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--sub); transition: all 0.15s; }
+    .tab.active { background: white; color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-  /* Small mobile styles (up to 480px) */
-  @media (max-width: 480px) {
-    .stats-grid {
-      grid-template-columns: 1fr;
-    }
+    /* Timeline */
+    .timeline { position: relative; padding-left: 20px; }
+    .timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 0; width: 1px; background: var(--border); }
+    .timeline-item { position: relative; margin-bottom: 16px; }
+    .timeline-dot { position: absolute; left: -17px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); border: 2px solid white; box-shadow: 0 0 0 2px var(--primary); }
+    .timeline-time { font-size: 11px; color: var(--sub); margin-bottom: 3px; }
+    .timeline-content { font-size: 13px; }
 
-    .card-header {
-      flex-direction: column;
-      gap: 12px;
-      align-items: stretch;
-    }
+    /* AI chat bubble */
+    .ai-bubble { background: var(--primary-light); border-radius: 0 12px 12px 12px; padding: 12px 14px; font-size: 13px; line-height: 1.6; border: 1px solid #D1D9FE; }
+    .ai-label { font-size: 11px; color: var(--sub); margin-bottom: 6px; font-weight: 500; }
 
-    .topbar-actions {
-      overflow-x: auto;
-    }
+    /* Kanban Board */
+    .kanban-board { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
+    .kanban-col { min-width: 190px; flex: 1; background: var(--bg); border-radius: 10px; padding: 12px; }
+    .kanban-col-header { font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+    .kanban-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.15s; }
+    .kanban-card:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(79,110,247,0.12); }
+    .kanban-card-title { font-size: 13px; font-weight: 500; margin-bottom: 6px; line-height: 1.4; }
+    .kanban-card-meta { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--sub); }
+    .sp-badge { background: var(--primary-light); color: var(--primary); border-radius: 4px; padding: 1px 6px; font-size: 11px; font-weight: 600; flex-shrink: 0; }
 
-    .btn {
-      font-size: 12px;
-      padding: 6px 12px;
-    }
-  }
+    /* Atomic capability */
+    .atomic-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; transition: all 0.15s; }
+    .atomic-card:hover { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+    .atomic-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 10px; }
+    .atomic-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+    .atomic-desc { color: var(--sub); font-size: 12px; margin-bottom: 10px; line-height: 1.5; }
+    .atomic-git { font-size: 11px; color: var(--sub); background: var(--bg); border-radius: 6px; padding: 6px 10px; margin-bottom: 10px; font-family: 'Fira Code', monospace; line-height: 1.8; }
 
-  /* Loading states */
-  .loading-shimmer {
-    background: linear-gradient(90deg, var(--bg), #E2E5EA, var(--bg));
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-  }
+    /* Pipeline stages */
+    .pipeline-stages { display: flex; align-items: center; gap: 0; }
+    .pipeline-stage { display: flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; padding: 4px 8px; border-radius: 4px; white-space: nowrap; }
+    .pipeline-stage.success { background: #ECFDF3; color: #027A48; }
+    .pipeline-stage.running { background: var(--primary-light); color: var(--primary); }
+    .pipeline-stage.failed { background: #FEF3F2; color: #B42318; }
+    .pipeline-stage.pending { background: var(--bg); color: var(--sub); }
+    .pipeline-arrow { color: var(--border); margin: 0 2px; font-size: 12px; }
 
-  .skeleton-text {
-    height: 14px;
-    border-radius: 4px;
-    margin-bottom: 8px;
-  }
+    /* Env card */
+    .env-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .env-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .env-url { font-size: 12px; color: var(--primary); font-family: 'Fira Code', monospace; margin-bottom: 10px; }
+    .env-status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+    .env-status-dot.healthy { background: var(--success); }
+    .env-status-dot.warn { background: var(--warning); }
 
-  .skeleton-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-  }
+    /* Efficiency metrics */
+    .metric-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; }
+    .metric-value { font-size: 32px; font-weight: 800; margin-bottom: 4px; line-height: 1.1; }
+    .metric-label { font-size: 12px; color: var(--sub); margin-bottom: 6px; }
+    .metric-trend { font-size: 12px; }
 
-  /* Enhanced button interactions */
-  .btn {
-    position: relative;
-    overflow: hidden;
-  }
-  .btn::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
-    transform: translate(-50%, -50%);
-  }
-  .btn:active::before {
-    width: 100px;
-    height: 100px;
-  }
+    /* Section separator in modal */
+    .modal-section-label { font-size: 11px; font-weight: 700; color: var(--sub); text-transform: uppercase; letter-spacing: 0.6px; border-top: 1px solid var(--border); padding-top: 14px; margin-top: 8px; margin-bottom: 12px; }
 
-  /* Improved focus styles for accessibility */
-  .btn:focus, .form-select:focus, .form-input:focus, .nav-item:focus {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
-  }
-</style>
+    /* Project type badges */
+    .proj-type { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .proj-type-product  { background: #EEF1FF; color: var(--primary); }
+    .proj-type-internal { background: #ECFDF3; color: #027A48; }
+    .proj-type-platform { background: #FFFAEB; color: #B54708; }
+    .proj-type-data     { background: #F9F5FF; color: #6941C6; }
+
+    /* Service cards */
+    .service-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.15s; }
+    .service-card:hover { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+    .service-name { font-weight: 600; font-size: 14px; margin-bottom: 3px; }
+    .service-tech { color: var(--sub); font-size: 12px; margin-bottom: 10px; }
+    .service-health { display: flex; align-items: center; gap: 4px; font-size: 12px; }
+
+    /* ── Agent Workflow Nodes ── */
+    .workflow-canvas { background: var(--bg); border-radius: 12px; padding: 20px; overflow-x: auto; }
+    .wf-flow { display: flex; flex-direction: column; align-items: center; }
+    .wf-node { background: white; border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 14px; min-width: 150px; text-align: center; cursor: pointer; transition: all 0.15s; display: inline-flex; flex-direction: column; align-items: center; gap: 3px; }
+    .wf-node:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.12); transform: translateY(-1px); }
+    .wf-node.type-trigger   { border-color: var(--primary); background: var(--primary-light); }
+    .wf-node.type-llm       { border-color: #7B61FF; background: #F9F5FF; }
+    .wf-node.type-tool      { border-color: var(--success); background: #ECFDF3; }
+    .wf-node.type-condition { border-color: var(--warning); background: #FFFAEB; }
+    .wf-node.type-human     { border-color: var(--danger); background: #FEF3F2; }
+    .wf-node-type  { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; opacity: 0.55; }
+    .wf-node-icon  { font-size: 16px; }
+    .wf-node-label { font-size: 11px; font-weight: 600; line-height: 1.3; }
+    .wf-arrow { text-align: center; color: #C8D0DA; font-size: 18px; margin: 2px 0; line-height: 1; }
+    .wf-branch { display: flex; gap: 12px; justify-content: center; align-items: flex-start; }
+    .wf-branch-col { display: flex; flex-direction: column; align-items: center; }
+    .wf-branch-label { font-size: 10px; border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; margin-bottom: 4px; color: var(--sub); background: white; white-space: nowrap; }
+
+    /* ── Tool / Function 管理 ── */
+    .tool-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: all 0.15s; }
+    .tool-card:hover, .tool-card.selected { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+    .param-row { display: flex; gap: 8px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--bg); font-size: 12px; }
+    .param-row:last-child { border-bottom: none; }
+    .param-name { font-family: 'Fira Code', monospace; font-weight: 600; width: 140px; flex-shrink: 0; }
+    .param-type { background: var(--bg); color: var(--sub); border-radius: 4px; padding: 1px 6px; font-family: monospace; font-size: 11px; flex-shrink: 0; }
+
+    /* ── AI Evals ── */
+    .eval-score { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+    .eval-grade { display: inline-block; padding: 1px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+    .eval-grade.A { background: #ECFDF3; color: #027A48; }
+    .eval-grade.B { background: var(--primary-light); color: var(--primary); }
+    .eval-grade.C { background: #FFFAEB; color: #B54708; }
+
+    /* ── Pulse animation ── */
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+    /* Project sidebar info block */
+    .proj-info-block { padding: 12px 16px; border-bottom: 1px solid #1D2D50; }
+    .proj-info-name { color: white; font-weight: 600; font-size: 14px; }
+    .proj-info-sprint { color: var(--sidebar-text); font-size: 11px; margin-top: 3px; display: flex; align-items: center; gap: 5px; }
+    .proj-status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); display: inline-block; }
+
+    /* Back button in project sidebar */
+    .sidebar-back { padding: 12px 16px; border-bottom: 1px solid #1D2D50; display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--sidebar-text); font-size: 13px; transition: all 0.15s; }
+    .sidebar-back:hover { color: white; }
+  </style>
 </head>
 <body>
 
@@ -934,7 +293,7 @@
 <div class="sidebar" id="sidebar-global">
   <div class="sidebar-logo">
     <div class="logo-icon">AI</div>
-    </div>
+    <div>
       <div class="logo-text">AI 中台</div>
       <div class="logo-sub">Enterprise AI Platform</div>
     </div>
@@ -1169,7 +528,7 @@
               <div class="progress-wrap"><div class="progress-bar warning" style="width:105%;max-width:100%"></div></div>
               <div style="font-size:11px;color:var(--warning);margin-top:4px">⚠ 已超出配额</div>
             </div>
-            </div>
+            <div>
               <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px">
                 <span>测试团队</span><span style="font-weight:600">180K</span>
               </div>
@@ -1347,13 +706,13 @@
         </div>
         <table>
           <thead>
-            <tr><th>项目名称</th><th>类型</th><th>代码服务</th><th>成员</th><th>当前Sprint</th><th>本月Token</th><th>状态</th></tr>
+          <tr><th>项目名称</th><th>类型</th><th>代码服务</th><th>成员</th><th>当前Sprint</th><th>本月Token</th><th>状态</th></tr>
           </thead>
           <tbody>
-            <tr onclick="enterProject('🛒','商城系统','Sprint 8 · 进行中')" style="cursor:pointer"><td><strong>🛒 商城系统</strong></td><td><span class="proj-type proj-type-product">对外产品</span></td><td>3个服务</td><td>6人</td><td>Sprint 8 · 58%</td><td>320K</td><td><span class="badge badge-green">进行中</span></td></tr>
-            <tr onclick="enterProject('👤','用户中心','Sprint 6 · 进行中')" style="cursor:pointer"><td><strong>👤 用户中心</strong></td><td><span class="proj-type proj-type-platform">技术中台</span></td><td>2个服务</td><td>3人</td><td>Sprint 6 · 75%</td><td>180K</td><td><span class="badge badge-green">进行中</span></td></tr>
-            <tr onclick="enterProject('📊','数据看板','Sprint 3 · 待上线')" style="cursor:pointer"><td><strong>📊 数据看板</strong></td><td><span class="proj-type proj-type-data">数据产品</span></td><td>2个服务</td><td>2人</td><td>Sprint 3 · 100%</td><td>95K</td><td><span class="badge badge-yellow">待上线</span></td></tr>
-            <tr onclick="enterProject('💳','支付网关','Sprint 5 · 进行中')" style="cursor:pointer"><td><strong>💳 支付网关</strong></td><td><span class="proj-type proj-type-platform">技术中台</span></td><td>2个服务</td><td>4人</td><td>Sprint 5 · 40%</td><td>410K</td><td><span class="badge badge-green">进行中</span></td></tr>
+          <tr onclick="enterProject('🛒','商城系统','Sprint 8 · 进行中')" style="cursor:pointer"><td><strong>🛒 商城系统</strong></td><td><span class="proj-type proj-type-product">对外产品</span></td><td>3个服务</td><td>6人</td><td>Sprint 8 · 58%</td><td>320K</td><td><span class="badge badge-green">进行中</span></td></tr>
+          <tr onclick="enterProject('👤','用户中心','Sprint 6 · 进行中')" style="cursor:pointer"><td><strong>👤 用户中心</strong></td><td><span class="proj-type proj-type-platform">技术中台</span></td><td>2个服务</td><td>3人</td><td>Sprint 6 · 75%</td><td>180K</td><td><span class="badge badge-green">进行中</span></td></tr>
+          <tr onclick="enterProject('📊','数据看板','Sprint 3 · 待上线')" style="cursor:pointer"><td><strong>📊 数据看板</strong></td><td><span class="proj-type proj-type-data">数据产品</span></td><td>2个服务</td><td>2人</td><td>Sprint 3 · 100%</td><td>95K</td><td><span class="badge badge-yellow">待上线</span></td></tr>
+          <tr onclick="enterProject('💳','支付网关','Sprint 5 · 进行中')" style="cursor:pointer"><td><strong>💳 支付网关</strong></td><td><span class="proj-type proj-type-platform">技术中台</span></td><td>2个服务</td><td>4人</td><td>Sprint 5 · 40%</td><td>410K</td><td><span class="badge badge-green">进行中</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -1554,8 +913,8 @@
           <table>
             <thead><tr><th>分支</th><th>触发</th><th>阶段</th><th>时长</th><th>状态</th><th>时间</th></tr></thead>
             <tbody>
-              <tr><td>feature/search</td><td>李四 Push</td><td><div class="pipeline-stages"><span class="pipeline-stage success">✓ 构建</span><span class="pipeline-arrow">›</span><span class="pipeline-stage running">⟳ 单测</span><span class="pipeline-arrow">›</span><span class="pipeline-stage pending">— 部署</span></div></td><td>2m 10s</td><td><span class="badge badge-blue">运行中</span></td><td>5分钟前</td></tr>
-              <tr><td>main</td><td>Merge PR#45</td><td><div class="pipeline-stages"><span class="pipeline-stage success">✓ 构建</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 单测</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 部署</span></div></td><td>5m 44s</td><td><span class="badge badge-green">成功</span></td><td>30分钟前</td></tr>
+            <tr><td>feature/search</td><td>李四 Push</td><td><div class="pipeline-stages"><span class="pipeline-stage success">✓ 构建</span><span class="pipeline-arrow">›</span><span class="pipeline-stage running">⟳ 单测</span><span class="pipeline-arrow">›</span><span class="pipeline-stage pending">— 部署</span></div></td><td>2m 10s</td><td><span class="badge badge-blue">运行中</span></td><td>5分钟前</td></tr>
+            <tr><td>main</td><td>Merge PR#45</td><td><div class="pipeline-stages"><span class="pipeline-stage success">✓ 构建</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 单测</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 部署</span></div></td><td>5m 44s</td><td><span class="badge badge-green">成功</span></td><td>30分钟前</td></tr>
             </tbody>
           </table>
         </div>
@@ -1619,10 +978,10 @@
           <div class="card">
             <div class="card-header"><span class="card-title">MCP 暴露的工具</span></div>
             <div class="card-body" style="padding:0 20px">
-              <div class="skill-item"><div class="skill-icon" style="background:#EEF1FF;font-size:14px">🔍</div></div><div class="skill-name">search_knowledge</div><div class="skill-desc">语义搜索项目知识库和需求文档</div></div></div>
-              <div class="skill-item"><div class="skill-icon" style="background:#ECFDF3;font-size:14px">⚛️</div></div><div class="skill-name">get_atomic_capability</div><div class="skill-desc">获取原子能力接入文档和示例代码</div></div></div>
-              <div class="skill-item"><div class="skill-icon" style="background:#FEF3F2;font-size:14px">🚨</div></div><div class="skill-name">report_bug</div><div class="skill-desc">在 IDE 中直接创建事故任务</div></div></div>
-              <div class="skill-item"><div class="skill-icon" style="background:#F9F5FF;font-size:14px">🚀</div></div><div class="skill-name">trigger_deploy</div><div class="skill-desc">触发指定环境的服务部署</div></div></div>
+              <div class="skill-item"><div class="skill-icon" style="background:#EEF1FF;font-size:14px">🔍</div><div><div class="skill-name">search_knowledge</div><div class="skill-desc">语义搜索项目知识库和需求文档</div></div></div>
+              <div class="skill-item"><div class="skill-icon" style="background:#ECFDF3;font-size:14px">⚛️</div><div><div class="skill-name">get_atomic_capability</div><div class="skill-desc">获取原子能力接入文档和示例代码</div></div></div>
+              <div class="skill-item"><div class="skill-icon" style="background:#FEF3F2;font-size:14px">🚨</div><div><div class="skill-name">report_bug</div><div class="skill-desc">在 IDE 中直接创建事故任务</div></div></div>
+              <div class="skill-item"><div class="skill-icon" style="background:#F9F5FF;font-size:14px">🚀</div><div><div class="skill-name">trigger_deploy</div><div class="skill-desc">触发指定环境的服务部署</div></div></div>
             </div>
           </div>
         </div>
@@ -1640,11 +999,11 @@
         <table>
           <thead><tr><th>文件名</th><th>类型</th><th>大小</th><th>上传者</th><th>更新时间</th><th>操作</th></tr></thead>
           <tbody>
-            <tr><td>📄 商城需求文档 v2.3</td><td><span class="badge badge-blue">需求</span></td><td>245KB</td><td>张三</td><td>2026-03-06</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
-            <tr><td>📐 商城原型图 v1.5</td><td><span class="badge badge-yellow">原型</span></td><td>3.2MB</td><td>产品部</td><td>2026-03-05</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
-            <tr><td>📋 接口文档 - 商品模块</td><td><span class="badge badge-green">技术</span></td><td>88KB</td><td>AI生成</td><td>2026-03-04</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
-            <tr><td>📋 接口文档 - 订单模块</td><td><span class="badge badge-green">技术</span></td><td>102KB</td><td>AI生成</td><td>2026-03-03</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
-            <tr><td>🔒 安全规范手册</td><td><span class="badge badge-gray">全局</span></td><td>56KB</td><td>全局启用</td><td>2026-02-20</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+          <tr><td>📄 商城需求文档 v2.3</td><td><span class="badge badge-blue">需求</span></td><td>245KB</td><td>张三</td><td>2026-03-06</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+          <tr><td>📐 商城原型图 v1.5</td><td><span class="badge badge-yellow">原型</span></td><td>3.2MB</td><td>产品部</td><td>2026-03-05</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+          <tr><td>📋 接口文档 - 商品模块</td><td><span class="badge badge-green">技术</span></td><td>88KB</td><td>AI生成</td><td>2026-03-04</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+          <tr><td>📋 接口文档 - 订单模块</td><td><span class="badge badge-green">技术</span></td><td>102KB</td><td>AI生成</td><td>2026-03-03</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+          <tr><td>🔒 安全规范手册</td><td><span class="badge badge-gray">全局</span></td><td>56KB</td><td>全局启用</td><td>2026-02-20</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
           </tbody>
         </table>
       </div>
@@ -1659,11 +1018,11 @@
         </div>
         <div class="card-body">
           <div class="grid-2">
-            </div>
+            <div>
               <div style="font-weight:600;font-size:13px;margin-bottom:8px">错误堆栈</div>
               <div class="code-block" style="font-size:11px;height:100px;overflow:auto">java.lang.NullPointerException<br>&nbsp;&nbsp;at PaymentService.processOrder(:142)<br><span class="cm">Caused by: order.paymentMethod is null</span></div>
             </div>
-            </div>
+            <div>
               <div class="ai-label">🤖 AI 诊断</div>
               <div class="ai-bubble"><strong>根因：</strong>checkout 接口未对 paymentMethod 做非空校验。<br><strong>修复：</strong>在 OrderController:89 加参数校验。<br><button class="btn btn-primary" style="font-size:12px;padding:4px 10px;margin-top:8px">🤖 在 IDE 中修复</button></div>
             </div>
@@ -1679,25 +1038,11 @@
         <table>
           <thead><tr><th>成员</th><th>角色</th><th>Token 限额/月</th><th>知识库</th><th>Skill</th><th>MCP访问</th></tr></thead>
           <tbody>
-            <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#4F6EF7">张</div>张三</div></td><td><span class="badge badge-blue">项目负责人</span></td><td>无限制</td><td>读写</td><td>全部</td><td><span class="badge badge-green">✓</span></td></tr>
-            <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#F04438">李</div>李四</div></td><td><span class="badge badge-gray">开发</span></td><td>500K</td><td>只读</td><td>代码相关</td><td><span class="badge badge-green">✓</span></td></tr>
-            <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#12B76A">王</div>王五</div></td><td><span class="badge badge-gray">开发</span></td><td>500K</td><td>只读</td><td>代码相关</td><td><span class="badge badge-green">✓</span></td></tr>
+          <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#4F6EF7">张</div>张三</div></td><td><span class="badge badge-blue">项目负责人</span></td><td>无限制</td><td>读写</td><td>全部</td><td><span class="badge badge-green">✓</span></td></tr>
+          <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#F04438">李</div>李四</div></td><td><span class="badge badge-gray">开发</span></td><td>500K</td><td>只读</td><td>代码相关</td><td><span class="badge badge-green">✓</span></td></tr>
+          <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#12B76A">王</div>王五</div></td><td><span class="badge badge-gray">开发</span></td><td>500K</td><td>只读</td><td>代码相关</td><td><span class="badge badge-green">✓</span></td></tr>
           </tbody>
         </table>
-      </div>
-
-      <!-- 我的Key配置区域 -->
-      <div class="card" style="margin-top: 20px;">
-        <div class="card-header">
-          <span class="card-title">我的Key配置</span>
-          <div style="display: flex; gap: 10px;">
-            <button class="btn btn-secondary" style="font-size:12px;padding:5px 12px" onclick="refreshMyKeys()">🔄 刷新</button>
-            <button class="btn btn-primary" style="font-size:12px;padding:5px 12px" onclick="showKeyUsageModal()">查看使用统计</button>
-          </div>
-        </div>
-        <div id="my-keys-content">
-          <!-- 动态内容将在这里渲染 -->
-        </div>
       </div>
     </div>
 
@@ -1833,7 +1178,7 @@
         </div>
         <div class="card-body">
           <div class="grid-2">
-            </div>
+            <div>
               <div style="font-weight:600;font-size:13px;margin-bottom:8px">📋 错误堆栈</div>
               <div class="code-block" style="font-size:11px;height:120px;overflow:auto">
                 java.lang.NullPointerException<br>
@@ -1844,7 +1189,7 @@
                 <span class="cm">Request: POST /api/orders/checkout</span>
               </div>
             </div>
-            </div>
+            <div>
               <div class="ai-label">🤖 AI 诊断结果</div>
               <div class="ai-bubble">
                 <strong>根因：</strong>checkout 接口未对 <code>paymentMethod</code> 字段做非空校验。当用户未选择支付方式直接提交时触发 NPE。<br><br>
@@ -1907,10 +1252,10 @@
           <table>
             <thead><tr><th>文档名称</th><th>分类</th><th>被引用项目</th><th>更新时间</th><th>操作</th></tr></thead>
             <tbody>
-              <tr><td>📄 公司代码规范 v3.0</td><td><span class="badge badge-blue">规范</span></td><td>18个项目</td><td>2026-02-01</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
-              <tr><td>🔒 安全开发手册</td><td><span class="badge badge-red">安全</span></td><td>18个项目</td><td>2026-01-15</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
-              <tr><td>📐 UI 设计规范</td><td><span class="badge badge-yellow">设计</span></td><td>9个项目</td><td>2026-01-10</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
-              <tr><td>🏗️ 微服务架构指南</td><td><span class="badge badge-green">架构</span></td><td>12个项目</td><td>2025-12-20</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+            <tr><td>📄 公司代码规范 v3.0</td><td><span class="badge badge-blue">规范</span></td><td>18个项目</td><td>2026-02-01</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+            <tr><td>🔒 安全开发手册</td><td><span class="badge badge-red">安全</span></td><td>18个项目</td><td>2026-01-15</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+            <tr><td>📐 UI 设计规范</td><td><span class="badge badge-yellow">设计</span></td><td>9个项目</td><td>2026-01-10</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+            <tr><td>🏗️ 微服务架构指南</td><td><span class="badge badge-green">架构</span></td><td>12个项目</td><td>2025-12-20</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
             </tbody>
           </table>
         </div>
@@ -1926,8 +1271,8 @@
           <table>
             <thead><tr><th>文档名称</th><th>类型</th><th>上传者</th><th>更新时间</th></tr></thead>
             <tbody>
-              <tr><td>📄 商城需求文档 v2.3</td><td><span class="badge badge-blue">需求</span></td><td>张三</td><td>2026-03-06</td></tr>
-              <tr><td>📐 原型图 v1.5</td><td><span class="badge badge-yellow">原型</span></td><td>产品部</td><td>2026-03-05</td></tr>
+            <tr><td>📄 商城需求文档 v2.3</td><td><span class="badge badge-blue">需求</span></td><td>张三</td><td>2026-03-06</td></tr>
+            <tr><td>📐 原型图 v1.5</td><td><span class="badge badge-yellow">原型</span></td><td>产品部</td><td>2026-03-05</td></tr>
             </tbody>
           </table>
         </div>
@@ -2078,27 +1423,27 @@
         <table>
           <thead><tr><th>员工</th><th>部门</th><th>月配额</th><th>本月已用</th><th>使用率</th><th>状态</th><th>操作</th></tr></thead>
           <tbody>
-            <tr>
-              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#4F6EF7">张</div>张三</div></td>
-              <td>技术部</td><td>无限制</td><td>320K</td>
-              <td><div class="progress-wrap" style="width:80px"><div class="progress-bar" style="width:32%"></div></div></td>
-              <td><span class="badge badge-green">正常</span></td>
-              <td><button class="btn" style="padding:3px 8px;font-size:12px">调整</button></td>
-            </tr>
-            <tr>
-              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#F04438">李</div>李四</div></td>
-              <td>技术部</td><td>500K</td><td>480K</td>
-              <td><div class="progress-wrap" style="width:80px"><div class="progress-bar warning" style="width:96%"></div></div></td>
-              <td><span class="badge badge-yellow">接近上限</span></td>
-              <td><button class="btn" style="padding:3px 8px;font-size:12px">调整</button></td>
-            </tr>
-            <tr>
-              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#F79009">陈</div>陈六</div></td>
-              <td>产品部</td><td>400K</td><td><span style="color:var(--danger);font-weight:600">430K</span></td>
-              <td><div class="progress-wrap" style="width:80px"><div class="progress-bar danger" style="width:100%"></div></div></td>
-              <td><span class="badge badge-red">已超额</span></td>
-              <td><button class="btn btn-primary" style="padding:3px 8px;font-size:12px">扩容</button></td>
-            </tr>
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#4F6EF7">张</div>张三</div></td>
+            <td>技术部</td><td>无限制</td><td>320K</td>
+            <td><div class="progress-wrap" style="width:80px"><div class="progress-bar" style="width:32%"></div></div></td>
+            <td><span class="badge badge-green">正常</span></td>
+            <td><button class="btn" style="padding:3px 8px;font-size:12px">调整</button></td>
+          </tr>
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#F04438">李</div>李四</div></td>
+            <td>技术部</td><td>500K</td><td>480K</td>
+            <td><div class="progress-wrap" style="width:80px"><div class="progress-bar warning" style="width:96%"></div></div></td>
+            <td><span class="badge badge-yellow">接近上限</span></td>
+            <td><button class="btn" style="padding:3px 8px;font-size:12px">调整</button></td>
+          </tr>
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#F79009">陈</div>陈六</div></td>
+            <td>产品部</td><td>400K</td><td><span style="color:var(--danger);font-weight:600">430K</span></td>
+            <td><div class="progress-wrap" style="width:80px"><div class="progress-bar danger" style="width:100%"></div></div></td>
+            <td><span class="badge badge-red">已超额</span></td>
+            <td><button class="btn btn-primary" style="padding:3px 8px;font-size:12px">扩容</button></td>
+          </tr>
           </tbody>
         </table>
       </div>
@@ -2153,21 +1498,21 @@
           <div class="card-body" style="padding:0 20px">
             <div class="incident-item">
               <div class="incident-dot warning"></div>
-              </div>
+              <div>
                 <div class="incident-title">检测到 API Key 泄露风险</div>
                 <div class="incident-meta">李四 · 2分钟前 · 已自动屏蔽</div>
               </div>
             </div>
             <div class="incident-item">
               <div class="incident-dot info"></div>
-              </div>
+              <div>
                 <div class="incident-title">非常用地点登录</div>
                 <div class="incident-meta">王五 · 1天前 · 已验证通过</div>
               </div>
             </div>
             <div class="incident-item">
               <div class="incident-dot warning"></div>
-              </div>
+              <div>
                 <div class="incident-title">Token 异常突增 (5x均值)</div>
                 <div class="incident-meta">陈六 · 2天前 · 已人工核查</div>
               </div>
@@ -2181,10 +1526,10 @@
         <table>
           <thead><tr><th>时间</th><th>用户</th><th>操作</th><th>项目</th><th>结果</th></tr></thead>
           <tbody>
-            <tr><td>03-07 14:23</td><td>李四</td><td>AI 对话含敏感词</td><td>商城系统</td><td><span class="badge badge-yellow">已过滤</span></td></tr>
-            <tr><td>03-07 13:10</td><td>张三</td><td>新增成员权限</td><td>支付网关</td><td><span class="badge badge-green">成功</span></td></tr>
-            <tr><td>03-07 11:45</td><td>王五</td><td>MCP 接入</td><td>用户中心</td><td><span class="badge badge-green">成功</span></td></tr>
-            <tr><td>03-06 16:30</td><td>陈六</td><td>上传文档</td><td>数据看板</td><td><span class="badge badge-green">成功</span></td></tr>
+          <tr><td>03-07 14:23</td><td>李四</td><td>AI 对话含敏感词</td><td>商城系统</td><td><span class="badge badge-yellow">已过滤</span></td></tr>
+          <tr><td>03-07 13:10</td><td>张三</td><td>新增成员权限</td><td>支付网关</td><td><span class="badge badge-green">成功</span></td></tr>
+          <tr><td>03-07 11:45</td><td>王五</td><td>MCP 接入</td><td>用户中心</td><td><span class="badge badge-green">成功</span></td></tr>
+          <tr><td>03-06 16:30</td><td>陈六</td><td>上传文档</td><td>数据看板</td><td><span class="badge badge-green">成功</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -2192,43 +1537,43 @@
 
     <!-- ========== SETTINGS ========== -->
     <div class="page" id="page-settings">      <div class="grid-2">
-        <div class="card">
-          <div class="card-header"><span class="card-title">大模型接入配置</span></div>
-          <div class="card-body">
-            <div class="form-group">
-              <label class="form-label">主模型</label>
-              <select><option>Claude claude-sonnet-4-6 (推荐)</option><option>GPT-4o</option><option>文心一言</option></select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Anthropic API Key</label>
-              <input type="password" value="sk-ant-xxxxxxxxxxxxxxxxxxxx">
-            </div>
-            <div class="form-group">
-              <label class="form-label">备用模型（Token超限时自动切换）</label>
-              <select><option>Claude Haiku (低成本)</option><option>GPT-3.5</option></select>
-            </div>
-            <button class="btn btn-primary">保存配置</button>
+      <div class="card">
+        <div class="card-header"><span class="card-title">大模型接入配置</span></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">主模型</label>
+            <select><option>Claude claude-sonnet-4-6 (推荐)</option><option>GPT-4o</option><option>文心一言</option></select>
           </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><span class="card-title">全局 Token 策略</span></div>
-          <div class="card-body">
-            <div class="form-group">
-              <label class="form-label">公司月总配额</label>
-              <input value="10,000,000 tokens">
-            </div>
-            <div class="form-group">
-              <label class="form-label">默认员工月配额</label>
-              <input value="500,000 tokens">
-            </div>
-            <div class="form-group">
-              <label class="form-label">超配额策略</label>
-              <select><option>降速（切换低价模型）</option><option>暂停使用</option><option>通知管理员</option></select>
-            </div>
-            <button class="btn btn-primary">保存策略</button>
+          <div class="form-group">
+            <label class="form-label">Anthropic API Key</label>
+            <input type="password" value="sk-ant-xxxxxxxxxxxxxxxxxxxx">
           </div>
+          <div class="form-group">
+            <label class="form-label">备用模型（Token超限时自动切换）</label>
+            <select><option>Claude Haiku (低成本)</option><option>GPT-3.5</option></select>
+          </div>
+          <button class="btn btn-primary">保存配置</button>
         </div>
       </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">全局 Token 策略</span></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">公司月总配额</label>
+            <input value="10,000,000 tokens">
+          </div>
+          <div class="form-group">
+            <label class="form-label">默认员工月配额</label>
+            <input value="500,000 tokens">
+          </div>
+          <div class="form-group">
+            <label class="form-label">超配额策略</label>
+            <select><option>降速（切换低价模型）</option><option>暂停使用</option><option>通知管理员</option></select>
+          </div>
+          <button class="btn btn-primary">保存策略</button>
+        </div>
+      </div>
+    </div>
     </div>
 
     <!-- ========== ATOMIC CAPABILITIES ========== -->
@@ -2305,7 +1650,7 @@
         <div class="card-header"><span class="card-title">🤖 AI 接入工作流示例</span><span style="font-size:12px;color:var(--sub)">选择能力后 AI 自动读取 Git 文档生成接入代码</span></div>
         <div class="card-body">
           <div class="grid-2">
-            </div>
+            <div>
               <div class="ai-label">在 IDE 中输入：</div>
               <div class="code-block" style="margin-bottom:12px"><span class="cm"># 告诉AI要接入短信能力</span><br>帮我在这个 Spring Boot 项目中<br>接入公司的统一短信服务</div>
               <div class="ai-label">🤖 AI 自动处理步骤：</div>
@@ -2316,7 +1661,7 @@
                 <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">Step 4</div><div class="timeline-content">生成完整接入代码 + 配置项 + 单元测试用例</div></div>
               </div>
             </div>
-            </div>
+            <div>
               <div class="ai-label">生成的接入代码：</div>
               <div class="code-block" style="font-size:11px;line-height:1.8">
                 <span class="cm">// pom.xml 自动补充依赖</span><br>
@@ -2420,11 +1765,11 @@
           <table>
             <thead><tr><th>优先级</th><th>User Story</th><th>Epic</th><th>Story Points</th><th>状态</th><th>负责人</th></tr></thead>
             <tbody>
-              <tr><td><span class="badge badge-red">P0</span></td><td>作为用户，我希望能快速搜索到商品</td><td>搜索优化</td><td><span class="sp-badge">5 SP</span></td><td><span class="badge badge-yellow">本Sprint</span></td><td>张三</td></tr>
-              <tr><td><span class="badge badge-red">P0</span></td><td>购物车操作应保证高并发下数据一致性</td><td>购物车</td><td><span class="sp-badge">3 SP</span></td><td><span class="badge badge-yellow">本Sprint</span></td><td>李四</td></tr>
-              <tr><td><span class="badge badge-yellow">P1</span></td><td>作为运营，我希望能配置限时活动价格</td><td>促销系统</td><td><span class="sp-badge">8 SP</span></td><td><span class="badge badge-gray">Backlog</span></td><td>未分配</td></tr>
-              <tr><td><span class="badge badge-yellow">P1</span></td><td>作为用户，收藏商品后可在个人中心查看</td><td>个人中心</td><td><span class="sp-badge">3 SP</span></td><td><span class="badge badge-gray">Backlog</span></td><td>未分配</td></tr>
-              <tr><td><span class="badge badge-blue">P2</span></td><td>支持商品评论图片上传功能</td><td>评论系统</td><td><span class="sp-badge">5 SP</span></td><td><span class="badge badge-gray">Backlog</span></td><td>未分配</td></tr>
+            <tr><td><span class="badge badge-red">P0</span></td><td>作为用户，我希望能快速搜索到商品</td><td>搜索优化</td><td><span class="sp-badge">5 SP</span></td><td><span class="badge badge-yellow">本Sprint</span></td><td>张三</td></tr>
+            <tr><td><span class="badge badge-red">P0</span></td><td>购物车操作应保证高并发下数据一致性</td><td>购物车</td><td><span class="sp-badge">3 SP</span></td><td><span class="badge badge-yellow">本Sprint</span></td><td>李四</td></tr>
+            <tr><td><span class="badge badge-yellow">P1</span></td><td>作为运营，我希望能配置限时活动价格</td><td>促销系统</td><td><span class="sp-badge">8 SP</span></td><td><span class="badge badge-gray">Backlog</span></td><td>未分配</td></tr>
+            <tr><td><span class="badge badge-yellow">P1</span></td><td>作为用户，收藏商品后可在个人中心查看</td><td>个人中心</td><td><span class="sp-badge">3 SP</span></td><td><span class="badge badge-gray">Backlog</span></td><td>未分配</td></tr>
+            <tr><td><span class="badge badge-blue">P2</span></td><td>支持商品评论图片上传功能</td><td>评论系统</td><td><span class="sp-badge">5 SP</span></td><td><span class="badge badge-gray">Backlog</span></td><td>未分配</td></tr>
             </tbody>
           </table>
         </div>
@@ -2450,10 +1795,10 @@
                 <div style="position:absolute;bottom:20px;left:10px;font-size:10px;color:var(--sub)">0</div>
               </div>
               <div style="display:flex;gap:16px;margin-top:10px;font-size:12px">
-                </div><span style="color:var(--sub)">已完成</span> <strong>23 SP</strong></div>
-                </div><span style="color:var(--sub)">剩余</span> <strong>17 SP</strong></div>
-                </div><span style="color:var(--sub)">剩余天数</span> <strong>6天</strong></div>
-                </div><span style="color:var(--warning)">⚠ 轻微滞后</span></div>
+                <div><span style="color:var(--sub)">已完成</span> <strong>23 SP</strong></div>
+                <div><span style="color:var(--sub)">剩余</span> <strong>17 SP</strong></div>
+                <div><span style="color:var(--sub)">剩余天数</span> <strong>6天</strong></div>
+                <div><span style="color:var(--warning)">⚠ 轻微滞后</span></div>
               </div>
             </div>
           </div>
@@ -2499,263 +1844,6 @@
       </div>
     </div>
 
-    <!-- ========== PROJECT: KEY MANAGEMENT ========== -->
-    <div class="page" id="page-proj-keymanagement">
-      <!-- A. Key池总览区 -->
-      <div class="stats-grid" style="margin-bottom:20px">
-        <div class="key-stat-card">
-          <div class="stat-icon">🔑</div>
-          <div class="stat-label">项目总配额/月</div>
-          <div class="stat-value">6.5M</div>
-          <div class="stat-delta">3个 active key</div>
-        </div>
-        <div class="key-stat-card">
-          <div class="stat-icon">📊</div>
-          <div class="stat-label">已分配配额</div>
-          <div class="stat-value">4.5M</div>
-          <div class="stat-delta">69% 已分配</div>
-        </div>
-        <div class="key-stat-card">
-          <div class="stat-icon">📈</div>
-          <div class="stat-label">本月消耗</div>
-          <div class="stat-value">2.73M</div>
-          <div class="stat-delta">↑ 15% 较上月</div>
-        </div>
-        <div class="key-stat-card">
-          <div class="stat-icon">💰</div>
-          <div class="stat-label">预估费用</div>
-          <div class="stat-value">¥546</div>
-          <div class="stat-delta">预算内</div>
-        </div>
-      </div>
-
-      <!-- 主要区域：成员分配区 + Key使用监控区 -->
-      <div class="grid-2">
-        <!-- B. 成员分配区 (左侧) -->
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">成员Key分配</span>
-            <div style="display:flex;gap:8px">
-              <button class="btn" onclick="showBatchAssignModal()">批量分配</button>
-              <button class="btn btn-primary" onclick="showAssignKeyModal()">+ 分配Key</button>
-            </div>
-          </div>
-          <div style="padding:20px">
-            <table id="member-key-table" class="key-management-table">
-              <thead>
-                <tr>
-                  <th>成员</th>
-                  <th>角色</th>
-                  <th>分配状态</th>
-                  <th>配额/月</th>
-                  <th>本月使用</th>
-                  <th>操作</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td data-label="成员">
-                    <div class="member-profile">
-                      <div class="member-avatar">张</div>
-                      <div class="member-info">
-                        <div class="member-name">张三</div>
-                        <div class="member-email">zhang@company.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td data-label="角色">项目负责人</td>
-                  <td data-label="分配状态"><span class="assignment-badge assigned">✓ 已分配</span></td>
-                  <td data-label="配额/月">1.5M tokens</td>
-                  <td data-label="本月使用">
-                    <div class="quota-indicator">
-                      <span style="font-size:13px;font-weight:500">892K</span>
-                      <span style="color:var(--sub);font-size:11px">(59%)</span>
-                    </div>
-                    <div class="quota-bar-container">
-                      <div class="quota-bar" style="width:59%"></div>
-                    </div>
-                  </td>
-                  <td data-label="操作">
-                    <button class="btn" style="font-size:12px;padding:4px 8px" onclick="editMemberQuota('zhang')">编辑</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td data-label="成员">
-                    <div class="member-profile">
-                      <div class="member-avatar">李</div>
-                      <div class="member-info">
-                        <div class="member-name">李四</div>
-                        <div class="member-email">li@company.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td data-label="角色">高级开发</td>
-                  <td data-label="分配状态"><span class="assignment-badge assigned">✓ 已分配</span></td>
-                  <td data-label="配额/月">1.0M tokens</td>
-                  <td data-label="本月使用">
-                    <div class="quota-indicator">
-                      <span style="font-size:13px;font-weight:500">654K</span>
-                      <span style="color:var(--sub);font-size:11px">(65%)</span>
-                    </div>
-                    <div class="quota-bar-container">
-                      <div class="quota-bar" style="width:65%"></div>
-                    </div>
-                  </td>
-                  <td data-label="操作">
-                    <button class="btn" style="font-size:12px;padding:4px 8px" onclick="editMemberQuota('li')">编辑</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td data-label="成员">
-                    <div class="member-profile">
-                      <div class="member-avatar">王</div>
-                      <div class="member-info">
-                        <div class="member-name">王五</div>
-                        <div class="member-email">wang@company.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td data-label="角色">开发工程师</td>
-                  <td data-label="分配状态"><span class="assignment-badge overquota">⚠️ 超额</span></td>
-                  <td data-label="配额/月">800K tokens</td>
-                  <td data-label="本月使用">
-                    <div class="quota-indicator">
-                      <span style="font-size:13px;font-weight:500;color:var(--danger)">856K</span>
-                      <span style="color:var(--danger);font-size:11px">(107%)</span>
-                    </div>
-                    <div class="quota-bar-container">
-                      <div class="quota-bar danger" style="width:100%"></div>
-                    </div>
-                  </td>
-                  <td data-label="操作">
-                    <button class="btn btn-danger" style="font-size:12px;padding:4px 8px" onclick="editMemberQuota('wang')">调整</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td data-label="成员">
-                    <div class="member-profile">
-                      <div class="member-avatar">赵</div>
-                      <div class="member-info">
-                        <div class="member-name">赵六</div>
-                        <div class="member-email">zhao@company.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td data-label="角色">初级开发</td>
-                  <td data-label="分配状态"><span class="assignment-badge unassigned">○ 未分配</span></td>
-                  <td data-label="配额/月">-</td>
-                  <td data-label="本月使用">-</td>
-                  <td data-label="操作">
-                    <button class="btn btn-primary" style="font-size:12px;padding:4px 8px" onclick="assignKeyToMember('zhao')">分配</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- C. Key使用监控区 (右侧) -->
-        <div class="key-card">
-          <div class="monitor-header">
-            <span class="monitor-title">使用监控</span>
-            <div class="monitor-controls">
-              <select class="form-select" style="width:auto;padding:4px 8px;border-radius:6px;font-size:12px" onchange="changeMonitorPeriod(this.value)">
-                <option value="month">本月</option>
-                <option value="week">本周</option>
-                <option value="day">今日</option>
-              </select>
-              <button class="btn" onclick="refreshUsageMonitoring();updateTopMembers();updateAlerts()" style="font-size:11px;padding:4px 8px">🔄 刷新</button>
-              <button id="monitor-control-btn" class="btn" onclick="toggleMonitoring()" style="font-size:11px;padding:4px 8px">⏸️ 停止</button>
-            </div>
-          </div>
-
-          <!-- 实时使用情况 -->
-          <div class="monitor-section">
-            <h4 class="monitor-title" style="margin-bottom:12px">实时使用情况</h4>
-            <div data-monitor-section="realtime" class="activity-feed">
-              <div class="activity-item">
-                <span class="activity-time">14:23</span>
-                <div class="activity-content">李四使用 <span class="activity-model">GPT-4</span> 消耗 <span class="activity-tokens">2.3K</span> tokens</div>
-              </div>
-              <div class="activity-item">
-                <span class="activity-time">14:18</span>
-                <div class="activity-content">张三使用 <span class="activity-model" style="color:var(--success)">Claude-3</span> 消耗 <span class="activity-tokens">1.8K</span> tokens</div>
-              </div>
-              <div class="activity-item">
-                <span class="activity-time">14:15</span>
-                <div class="activity-content">王五使用 <span class="activity-model">GPT-4</span> 消耗 <span class="activity-tokens">4.2K</span> tokens</div>
-              </div>
-              <div class="activity-item">
-                <span class="activity-time">14:12</span>
-                <div class="activity-content">李四使用 <span class="activity-model" style="color:var(--success)">Claude-3</span> 消耗 <span class="activity-tokens">1.5K</span> tokens</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Top活跃成员 -->
-          <div class="monitor-section">
-            <h4 class="monitor-title" style="margin-bottom:12px">Top活跃成员</h4>
-            <div data-monitor-section="top-members" style="font-size:12px">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                <span>1. 张三</span>
-                <span style="color:var(--sub)">892K tokens</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                <span>2. 王五</span>
-                <span style="color:var(--sub)">856K tokens</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                <span>3. 李四</span>
-                <span style="color:var(--sub)">654K tokens</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- 异常告警 -->
-          </div>
-            <h4 class="monitor-title" style="margin-bottom:12px">异常告警</h4>
-            <div data-monitor-section="alerts">
-              <div class="alert-box danger">
-                <div class="alert-title">⚠️ 配额预警</div>
-                <div class="alert-content">王五本月使用量已超额7%，建议调整配额或优化使用</div>
-              </div>
-              <div class="alert-box info">
-                <div class="alert-title">💡 优化建议</div>
-                <div class="alert-content">项目整体使用率69%，可考虑为新成员分配剩余配额</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- D. 快捷操作区 (底部) -->
-      <div class="card" style="margin-top:20px">
-        <div class="card-header">
-          <span class="card-title">快捷操作</span>
-        </div>
-        <div style="padding:20px">
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
-            <button class="btn" onclick="generateMemberGuide()" style="height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
-              <span style="font-size:18px">📖</span>
-              <span style="font-size:12px">生成成员使用指南</span>
-            </button>
-            <button class="btn" onclick="exportUsageReport()" style="height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
-              <span style="font-size:18px">📊</span>
-              <span style="font-size:12px">导出使用报告</span>
-            </button>
-            <button class="btn" onclick="showKeyRotationManager()" style="height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
-              <span style="font-size:18px">🔄</span>
-              <span style="font-size:12px">Key轮换管理</span>
-            </button>
-            <button class="btn" onclick="showQuotaPolicySettings()" style="height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
-              <span style="font-size:18px">⚙️</span>
-              <span style="font-size:12px">配额策略设置</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- ========== CI/CD ========== -->
     <div class="page" id="page-cicd">
       <div class="stats-grid" style="margin-bottom:20px">
@@ -2773,33 +1861,33 @@
         <table>
           <thead><tr><th>项目/分支</th><th>触发方式</th><th>流水线阶段</th><th>时长</th><th>状态</th><th>时间</th><th>操作</th></tr></thead>
           <tbody>
-            <tr>
-              <td><strong>商城系统</strong> / feature/search</td>
-              <td>李四 · Push</td>
-              <td><div class="pipeline-stages"><span class="pipeline-stage success">✓ 构建</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 单测</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 扫描</span><span class="pipeline-arrow">›</span><span class="pipeline-stage running">⟳ 部署</span></div></td>
-              <td>3m 12s</td>
-              <td><span class="badge badge-blue">运行中</span></td>
-              <td>2分钟前</td>
-              <td><button class="btn" style="padding:3px 8px;font-size:12px">日志</button></td>
-            </tr>
-            <tr>
-              <td><strong>用户中心</strong> / main</td>
-              <td>Merge PR#45</td>
-              <td><div class="pipeline-stages"><span class="pipeline-stage success">✓ 构建</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 单测</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 扫描</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 部署</span></div></td>
-              <td>5m 44s</td>
-              <td><span class="badge badge-green">成功</span></td>
-              <td>30分钟前</td>
-              <td><button class="btn" style="padding:3px 8px;font-size:12px">日志</button></td>
-            </tr>
-            <tr>
-              <td><strong>支付网关</strong> / feature/refund</td>
-              <td>张三 · Push</td>
-              <td><div class="pipeline-stages"><span class="pipeline-stage success">✓ 构建</span><span class="pipeline-arrow">›</span><span class="pipeline-stage failed">✗ 单测</span><span class="pipeline-arrow">›</span><span class="pipeline-stage pending">— 扫描</span><span class="pipeline-arrow">›</span><span class="pipeline-stage pending">— 部署</span></div></td>
-              <td>2m 03s</td>
-              <td><span class="badge badge-red">失败</span></td>
-              <td>1小时前</td>
-              <td><button class="btn" style="padding:3px 8px;font-size:12px">日志</button></td>
-            </tr>
+          <tr>
+            <td><strong>商城系统</strong> / feature/search</td>
+            <td>李四 · Push</td>
+            <td><div class="pipeline-stages"><span class="pipeline-stage success">✓ 构建</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 单测</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 扫描</span><span class="pipeline-arrow">›</span><span class="pipeline-stage running">⟳ 部署</span></div></td>
+            <td>3m 12s</td>
+            <td><span class="badge badge-blue">运行中</span></td>
+            <td>2分钟前</td>
+            <td><button class="btn" style="padding:3px 8px;font-size:12px">日志</button></td>
+          </tr>
+          <tr>
+            <td><strong>用户中心</strong> / main</td>
+            <td>Merge PR#45</td>
+            <td><div class="pipeline-stages"><span class="pipeline-stage success">✓ 构建</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 单测</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 扫描</span><span class="pipeline-arrow">›</span><span class="pipeline-stage success">✓ 部署</span></div></td>
+            <td>5m 44s</td>
+            <td><span class="badge badge-green">成功</span></td>
+            <td>30分钟前</td>
+            <td><button class="btn" style="padding:3px 8px;font-size:12px">日志</button></td>
+          </tr>
+          <tr>
+            <td><strong>支付网关</strong> / feature/refund</td>
+            <td>张三 · Push</td>
+            <td><div class="pipeline-stages"><span class="pipeline-stage success">✓ 构建</span><span class="pipeline-arrow">›</span><span class="pipeline-stage failed">✗ 单测</span><span class="pipeline-arrow">›</span><span class="pipeline-stage pending">— 扫描</span><span class="pipeline-arrow">›</span><span class="pipeline-stage pending">— 部署</span></div></td>
+            <td>2m 03s</td>
+            <td><span class="badge badge-red">失败</span></td>
+            <td>1小时前</td>
+            <td><button class="btn" style="padding:3px 8px;font-size:12px">日志</button></td>
+          </tr>
           </tbody>
         </table>
       </div>
@@ -2811,7 +1899,7 @@
         </div>
         <div class="card-body">
           <div class="grid-2">
-            </div>
+            <div>
               <div style="font-weight:600;font-size:13px;margin-bottom:8px">失败日志</div>
               <div class="code-block" style="font-size:11px;height:110px;overflow:auto">
                 FAIL RefundServiceTest<br>
@@ -2822,7 +1910,7 @@
                 <span class="cm">Tests run: 42, Failures: 1</span>
               </div>
             </div>
-            </div>
+            <div>
               <div class="ai-label">🤖 AI 根因诊断</div>
               <div class="ai-bubble">
                 <strong>原因：</strong><code>RefundService:203</code> 未处理 amount 为负数的边界情况，应抛 RefundException 而非空指针。<br><br>
@@ -2896,10 +1984,10 @@
         <table>
           <thead><tr><th>时间</th><th>环境</th><th>版本/分支</th><th>部署人</th><th>变更内容</th><th>耗时</th><th>状态</th></tr></thead>
           <tbody>
-            <tr><td>03-08 14:02</td><td><span class="badge badge-gray">DEV</span></td><td>feature/search</td><td>李四</td><td>商品搜索ES接入（AI自动触发）</td><td>1m 23s</td><td><span class="badge badge-green">成功</span></td></tr>
-            <tr><td>03-08 11:30</td><td><span class="badge badge-yellow">STG</span></td><td>main #7b9c4d</td><td>张三</td><td>合并4个feature，预发联调</td><td>3m 11s</td><td><span class="badge badge-green">成功</span></td></tr>
-            <tr><td>03-07 18:30</td><td><span class="badge badge-green">PROD</span></td><td>v2.3.1</td><td>张三</td><td>用户中心、购物车优化，灰度10%→100%</td><td>8m 40s</td><td><span class="badge badge-green">成功</span></td></tr>
-            <tr><td>03-07 10:15</td><td><span class="badge badge-gray">DEV</span></td><td>feature/refund</td><td>张三</td><td>退款流程重构（构建失败已回滚）</td><td>2m 03s</td><td><span class="badge badge-red">回滚</span></td></tr>
+          <tr><td>03-08 14:02</td><td><span class="badge badge-gray">DEV</span></td><td>feature/search</td><td>李四</td><td>商品搜索ES接入（AI自动触发）</td><td>1m 23s</td><td><span class="badge badge-green">成功</span></td></tr>
+          <tr><td>03-08 11:30</td><td><span class="badge badge-yellow">STG</span></td><td>main #7b9c4d</td><td>张三</td><td>合并4个feature，预发联调</td><td>3m 11s</td><td><span class="badge badge-green">成功</span></td></tr>
+          <tr><td>03-07 18:30</td><td><span class="badge badge-green">PROD</span></td><td>v2.3.1</td><td>张三</td><td>用户中心、购物车优化，灰度10%→100%</td><td>8m 40s</td><td><span class="badge badge-green">成功</span></td></tr>
+          <tr><td>03-07 10:15</td><td><span class="badge badge-gray">DEV</span></td><td>feature/refund</td><td>张三</td><td>退款流程重构（构建失败已回滚）</td><td>2m 03s</td><td><span class="badge badge-red">回滚</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -3082,11 +2170,11 @@
               </div>
             </div>
             <div style="display:flex;gap:16px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:12px" id="wf-stats-bar">
-              </div><span style="color:var(--sub)">今日执行</span> <strong id="wf-stat-count">87 次</strong></div>
-              </div><span style="color:var(--sub)">成功率</span> <strong id="wf-stat-rate" style="color:var(--success)">96.6%</strong></div>
-              </div><span style="color:var(--sub)">平均耗时</span> <strong id="wf-stat-time">18s</strong></div>
-              </div><span style="color:var(--sub)">平均 Token</span> <strong id="wf-stat-token">3,200</strong></div>
-              </div><span style="color:var(--sub)">模型</span> <strong>claude-sonnet-4-6</strong></div>
+              <div><span style="color:var(--sub)">今日执行</span> <strong id="wf-stat-count">87 次</strong></div>
+              <div><span style="color:var(--sub)">成功率</span> <strong id="wf-stat-rate" style="color:var(--success)">96.6%</strong></div>
+              <div><span style="color:var(--sub)">平均耗时</span> <strong id="wf-stat-time">18s</strong></div>
+              <div><span style="color:var(--sub)">平均 Token</span> <strong id="wf-stat-token">3,200</strong></div>
+              <div><span style="color:var(--sub)">模型</span> <strong>claude-sonnet-4-6</strong></div>
             </div>
           </div>
         </div>
@@ -3097,27 +2185,27 @@
         <table>
           <thead><tr><th>工作流</th><th>触发来源</th><th>当前节点</th><th>等待内容</th><th>等待时长</th><th>操作</th></tr></thead>
           <tbody>
-            <tr>
-              <td><strong>Bug 诊断修复 Agent</strong></td><td>支付服务 NPE 报警</td>
-              <td><span class="badge badge-red">👤 Human-in-the-loop</span></td>
-              <td style="font-size:12px;color:var(--sub)">AI 已生成修复代码，等待确认后自动提交 PR</td>
-              <td><span style="color:var(--warning)">23 分钟</span></td>
-              <td><div style="display:flex;gap:6px"><button class="btn btn-primary" style="padding:3px 10px;font-size:12px">查看并批准</button><button class="btn" style="padding:3px 10px;font-size:12px">拒绝</button></div></td>
-            </tr>
-            <tr>
-              <td><strong>AI 接入原子能力 Agent</strong></td><td>商城系统 · 短信接入</td>
-              <td><span class="badge badge-red">👤 Human-in-the-loop</span></td>
-              <td style="font-size:12px;color:var(--sub)">AI 已生成短信接入代码，等待确认后写入代码仓库</td>
-              <td><span style="color:var(--success)">5 分钟</span></td>
-              <td><div style="display:flex;gap:6px"><button class="btn btn-primary" style="padding:3px 10px;font-size:12px">查看并批准</button><button class="btn" style="padding:3px 10px;font-size:12px">拒绝</button></div></td>
-            </tr>
-            <tr>
-              <td><strong>代码 Review Agent</strong></td><td>mall-backend · PR #51</td>
-              <td><span class="badge badge-yellow">👤 等待开发者处理</span></td>
-              <td style="font-size:12px;color:var(--sub)">AI 发现 3 个问题，等待李四处理评论后工作流继续</td>
-              <td><span style="color:var(--warning)">1 小时 12 分</span></td>
-              <td><div style="display:flex;gap:6px"><button class="btn" style="padding:3px 10px;font-size:12px">查看 PR</button><button class="btn" style="padding:3px 10px;font-size:12px">催一催</button></div></td>
-            </tr>
+          <tr>
+            <td><strong>Bug 诊断修复 Agent</strong></td><td>支付服务 NPE 报警</td>
+            <td><span class="badge badge-red">👤 Human-in-the-loop</span></td>
+            <td style="font-size:12px;color:var(--sub)">AI 已生成修复代码，等待确认后自动提交 PR</td>
+            <td><span style="color:var(--warning)">23 分钟</span></td>
+            <td><div style="display:flex;gap:6px"><button class="btn btn-primary" style="padding:3px 10px;font-size:12px">查看并批准</button><button class="btn" style="padding:3px 10px;font-size:12px">拒绝</button></div></td>
+          </tr>
+          <tr>
+            <td><strong>AI 接入原子能力 Agent</strong></td><td>商城系统 · 短信接入</td>
+            <td><span class="badge badge-red">👤 Human-in-the-loop</span></td>
+            <td style="font-size:12px;color:var(--sub)">AI 已生成短信接入代码，等待确认后写入代码仓库</td>
+            <td><span style="color:var(--success)">5 分钟</span></td>
+            <td><div style="display:flex;gap:6px"><button class="btn btn-primary" style="padding:3px 10px;font-size:12px">查看并批准</button><button class="btn" style="padding:3px 10px;font-size:12px">拒绝</button></div></td>
+          </tr>
+          <tr>
+            <td><strong>代码 Review Agent</strong></td><td>mall-backend · PR #51</td>
+            <td><span class="badge badge-yellow">👤 等待开发者处理</span></td>
+            <td style="font-size:12px;color:var(--sub)">AI 发现 3 个问题，等待李四处理评论后工作流继续</td>
+            <td><span style="color:var(--warning)">1 小时 12 分</span></td>
+            <td><div style="display:flex;gap:6px"><button class="btn" style="padding:3px 10px;font-size:12px">查看 PR</button><button class="btn" style="padding:3px 10px;font-size:12px">催一催</button></div></td>
+          </tr>
           </tbody>
         </table>
       </div>
@@ -3248,11 +2336,11 @@
               <table>
                 <thead><tr><th>时间</th><th>调用来源</th><th>入参</th><th>耗时</th><th>状态</th></tr></thead>
                 <tbody>
-                  <tr><td>14:23:01</td><td>代码Review Agent</td><td><code style="font-size:11px">query="事务处理规范"</code></td><td>187ms</td><td><span class="badge badge-green">成功</span></td></tr>
-                  <tr><td>14:21:44</td><td>Bug诊断 Agent</td><td><code style="font-size:11px">query="NPE最佳实践"</code></td><td>234ms</td><td><span class="badge badge-green">成功</span></td></tr>
-                  <tr><td>14:19:12</td><td>需求拆分 Agent</td><td><code style="font-size:11px">query="User Story格式"</code></td><td>156ms</td><td><span class="badge badge-green">成功</span></td></tr>
-                  <tr><td>14:10:33</td><td>代码Review Agent</td><td><code style="font-size:11px">query="SQL注入防护"</code></td><td>2340ms</td><td><span class="badge badge-red">超时</span></td></tr>
-                  <tr><td>14:08:11</td><td>AI接入原子能力</td><td><code style="font-size:11px">query="短信SDK接入"</code></td><td>201ms</td><td><span class="badge badge-green">成功</span></td></tr>
+                <tr><td>14:23:01</td><td>代码Review Agent</td><td><code style="font-size:11px">query="事务处理规范"</code></td><td>187ms</td><td><span class="badge badge-green">成功</span></td></tr>
+                <tr><td>14:21:44</td><td>Bug诊断 Agent</td><td><code style="font-size:11px">query="NPE最佳实践"</code></td><td>234ms</td><td><span class="badge badge-green">成功</span></td></tr>
+                <tr><td>14:19:12</td><td>需求拆分 Agent</td><td><code style="font-size:11px">query="User Story格式"</code></td><td>156ms</td><td><span class="badge badge-green">成功</span></td></tr>
+                <tr><td>14:10:33</td><td>代码Review Agent</td><td><code style="font-size:11px">query="SQL注入防护"</code></td><td>2340ms</td><td><span class="badge badge-red">超时</span></td></tr>
+                <tr><td>14:08:11</td><td>AI接入原子能力</td><td><code style="font-size:11px">query="短信SDK接入"</code></td><td>201ms</td><td><span class="badge badge-green">成功</span></td></tr>
                 </tbody>
               </table>
             </div>
@@ -3374,10 +2462,10 @@
             <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
               <div style="font-size:12px;font-weight:600;margin-bottom:8px">Token 消耗明细</div>
               <div style="display:flex;gap:16px;font-size:12px">
-                </div><span style="color:var(--sub)">LLM 推理</span> <strong>5,020</strong></div>
-                </div><span style="color:var(--sub)">Tool 调用</span> <strong>180</strong></div>
-                </div><span style="color:var(--sub)">合计</span> <strong style="color:var(--primary)">5,200 tokens</strong></div>
-                </div><span style="color:var(--sub)">费用</span> <strong>≈ ¥ 0.26</strong></div>
+                <div><span style="color:var(--sub)">LLM 推理</span> <strong>5,020</strong></div>
+                <div><span style="color:var(--sub)">Tool 调用</span> <strong>180</strong></div>
+                <div><span style="color:var(--sub)">合计</span> <strong style="color:var(--primary)">5,200 tokens</strong></div>
+                <div><span style="color:var(--sub)">费用</span> <strong>≈ ¥ 0.26</strong></div>
               </div>
             </div>
           </div>
@@ -3389,11 +2477,11 @@
         <table>
           <thead><tr><th>执行 ID</th><th>工作流</th><th>触发来源</th><th>步骤</th><th>Token</th><th>耗时</th><th>状态</th><th>时间</th></tr></thead>
           <tbody>
-            <tr><td><span style="font-family:monospace;font-size:12px">#EX-1038</span></td><td>代码 Review Agent</td><td>用户中心 PR#44</td><td>6/6</td><td>4,120</td><td>21s</td><td><span class="badge badge-green">成功</span></td><td>14:18</td></tr>
-            <tr><td><span style="font-family:monospace;font-size:12px">#EX-1037</span></td><td>需求拆分 Agent</td><td>数据看板 PRD v2.0</td><td>7/7</td><td>8,900</td><td>45s</td><td><span class="badge badge-green">成功</span></td><td>14:10</td></tr>
-            <tr><td><span style="font-family:monospace;font-size:12px">#EX-1036</span></td><td>AI接入原子能力</td><td>支付网关 · OSS接入</td><td>3/6</td><td>2,340</td><td>—</td><td><span class="badge badge-red">失败：超时</span></td><td>13:55</td></tr>
-            <tr><td><span style="font-family:monospace;font-size:12px">#EX-1035</span></td><td>Sprint 日报 Agent</td><td>定时触发 · 08:00</td><td>4/4</td><td>3,200</td><td>28s</td><td><span class="badge badge-green">成功</span></td><td>08:00</td></tr>
-            <tr><td><span style="font-family:monospace;font-size:12px">#EX-1034</span></td><td>Bug 诊断修复 Agent</td><td>用户中心延迟报警</td><td>5/7</td><td>6,100</td><td>120s+</td><td><span class="badge badge-yellow">等待审批</span></td><td>昨天</td></tr>
+          <tr><td><span style="font-family:monospace;font-size:12px">#EX-1038</span></td><td>代码 Review Agent</td><td>用户中心 PR#44</td><td>6/6</td><td>4,120</td><td>21s</td><td><span class="badge badge-green">成功</span></td><td>14:18</td></tr>
+          <tr><td><span style="font-family:monospace;font-size:12px">#EX-1037</span></td><td>需求拆分 Agent</td><td>数据看板 PRD v2.0</td><td>7/7</td><td>8,900</td><td>45s</td><td><span class="badge badge-green">成功</span></td><td>14:10</td></tr>
+          <tr><td><span style="font-family:monospace;font-size:12px">#EX-1036</span></td><td>AI接入原子能力</td><td>支付网关 · OSS接入</td><td>3/6</td><td>2,340</td><td>—</td><td><span class="badge badge-red">失败：超时</span></td><td>13:55</td></tr>
+          <tr><td><span style="font-family:monospace;font-size:12px">#EX-1035</span></td><td>Sprint 日报 Agent</td><td>定时触发 · 08:00</td><td>4/4</td><td>3,200</td><td>28s</td><td><span class="badge badge-green">成功</span></td><td>08:00</td></tr>
+          <tr><td><span style="font-family:monospace;font-size:12px">#EX-1034</span></td><td>Bug 诊断修复 Agent</td><td>用户中心延迟报警</td><td>5/7</td><td>6,100</td><td>120s+</td><td><span class="badge badge-yellow">等待审批</span></td><td>昨天</td></tr>
           </tbody>
         </table>
       </div>
@@ -3408,10 +2496,10 @@
       </div>
 
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px">
-        <div class="metric-card"><div class="eval-score" style="color:var(--success)">91</div><div class="metric-label">代码 Review 准确率</div></div><span class="eval-grade A">A 级</span></div><div class="metric-trend" style="color:var(--success);margin-top:6px">↑ +3% 较上月</div></div>
-        <div class="metric-card"><div class="eval-score" style="color:var(--success)">87</div><div class="metric-label">Bug 诊断准确率</div></div><span class="eval-grade A">A 级</span></div><div class="metric-trend" style="color:var(--success);margin-top:6px">↑ +5% 较上月</div></div>
-        <div class="metric-card"><div class="eval-score" style="color:var(--primary)">76</div><div class="metric-label">需求拆分质量</div></div><span class="eval-grade B">B 级</span></div><div class="metric-trend" style="color:var(--sub);margin-top:6px">— 基本持平</div></div>
-        <div class="metric-card"><div class="eval-score" style="color:var(--warning)">68</div><div class="metric-label">Sprint 预测准确率</div></div><span class="eval-grade C">C 级</span></div><div class="metric-trend" style="color:var(--danger);margin-top:6px">↓ -4% 较上月</div></div>
+        <div class="metric-card"><div class="eval-score" style="color:var(--success)">91</div><div class="metric-label">代码 Review 准确率</div><div><span class="eval-grade A">A 级</span></div><div class="metric-trend" style="color:var(--success);margin-top:6px">↑ +3% 较上月</div></div>
+        <div class="metric-card"><div class="eval-score" style="color:var(--success)">87</div><div class="metric-label">Bug 诊断准确率</div><div><span class="eval-grade A">A 级</span></div><div class="metric-trend" style="color:var(--success);margin-top:6px">↑ +5% 较上月</div></div>
+        <div class="metric-card"><div class="eval-score" style="color:var(--primary)">76</div><div class="metric-label">需求拆分质量</div><div><span class="eval-grade B">B 级</span></div><div class="metric-trend" style="color:var(--sub);margin-top:6px">— 基本持平</div></div>
+        <div class="metric-card"><div class="eval-score" style="color:var(--warning)">68</div><div class="metric-label">Sprint 预测准确率</div><div><span class="eval-grade C">C 级</span></div><div class="metric-trend" style="color:var(--danger);margin-top:6px">↓ -4% 较上月</div></div>
       </div>
 
       <div class="grid-2" style="margin-bottom:20px">
@@ -3444,10 +2532,10 @@
             <table>
               <thead><tr><th>模型</th><th>Code Review</th><th>Bug 诊断</th><th>平均 Token</th><th>推荐场景</th></tr></thead>
               <tbody>
-                <tr><td><strong>claude-sonnet-4-6</strong></td><td><span style="color:var(--success)">91%</span></td><td><span style="color:var(--success)">87%</span></td><td>4,200</td><td><span class="badge badge-green">当前主力</span></td></tr>
-                <tr><td>claude-opus-4-6</td><td><span style="color:var(--success)">96%</span></td><td><span style="color:var(--success)">93%</span></td><td>6,800</td><td><span class="badge badge-yellow">高风险任务</span></td></tr>
-                <tr><td>claude-haiku-4-5</td><td><span style="color:var(--warning)">74%</span></td><td><span style="color:var(--warning)">71%</span></td><td>1,100</td><td><span class="badge badge-gray">低成本场景</span></td></tr>
-                <tr><td>GPT-4o</td><td><span style="color:var(--primary)">88%</span></td><td><span style="color:var(--primary)">82%</span></td><td>3,900</td><td><span class="badge badge-gray">备用模型</span></td></tr>
+              <tr><td><strong>claude-sonnet-4-6</strong></td><td><span style="color:var(--success)">91%</span></td><td><span style="color:var(--success)">87%</span></td><td>4,200</td><td><span class="badge badge-green">当前主力</span></td></tr>
+              <tr><td>claude-opus-4-6</td><td><span style="color:var(--success)">96%</span></td><td><span style="color:var(--success)">93%</span></td><td>6,800</td><td><span class="badge badge-yellow">高风险任务</span></td></tr>
+              <tr><td>claude-haiku-4-5</td><td><span style="color:var(--warning)">74%</span></td><td><span style="color:var(--warning)">71%</span></td><td>1,100</td><td><span class="badge badge-gray">低成本场景</span></td></tr>
+              <tr><td>GPT-4o</td><td><span style="color:var(--primary)">88%</span></td><td><span style="color:var(--primary)">82%</span></td><td>3,900</td><td><span class="badge badge-gray">备用模型</span></td></tr>
               </tbody>
             </table>
             <div style="margin-top:12px;padding:10px;background:var(--primary-light);border-radius:8px;font-size:12px;color:var(--primary)">
@@ -3575,178 +2663,27 @@
   </div>
 </div>
 
-<!-- Modal: 分配Key -->
-<div class="modal" id="modal-assignKey">
-  <div class="modal-box">
-    <div class="modal-title">分配API Key</div>
-
-    <div class="modal-section-label">基础信息</div>
-    <div class="form-group">
-      <label class="form-label">选择成员</label>
-      <select id="assign-member-select" class="form-select">
-        <option value="">请选择成员...</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">选择Key</label>
-      <select id="assign-key-select" class="form-select">
-        <option value="">请选择API Key...</option>
-      </select>
-    </div>
-
-    <div class="modal-section-label">配额设置</div>
-    <div class="form-group">
-      <label class="form-label">月度配额 (Tokens)</label>
-      <input type="number" id="assign-quota-input" class="form-input" placeholder="例：25000" min="1000" max="100000">
-      <div style="font-size:11px;color:var(--sub);margin-top:4px" id="quota-suggestion">
-        💡 建议配额将根据成员角色和Key类型自动显示
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">配额说明</label>
-      <textarea id="assign-description" class="form-input" rows="2" placeholder="可选：配额用途说明，如'用于开发环境调试'"></textarea>
-    </div>
-
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">
-      <button class="btn" onclick="closeModal('assignKey')">取消</button>
-      <button class="btn btn-primary" onclick="confirmAssignKey()">确认分配</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal: 批量分配Key -->
-<div class="modal" id="modal-batchAssign">
-  <div class="modal-box">
-    <div class="modal-title">批量分配API Key</div>
-
-    <div class="modal-section-label">分配策略</div>
-    <div class="form-group">
-      <label class="form-label">选择分配策略</label>
-      <select id="batch-strategy-select" class="form-select" onchange="updateBatchStrategy()">
-        <option value="role">按角色分配</option>
-        <option value="department">按部门分配</option>
-        <option value="custom">自定义分配</option>
-      </select>
-    </div>
-
-    <!-- 按角色分配配置 -->
-    <div id="role-strategy-config" class="modal-section">
-      <div class="modal-section-label">角色配额策略</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
-        <div class="form-group">
-          <label class="form-label">Owner配额</label>
-          <input type="number" id="owner-quota" class="form-input" value="50000" min="10000">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Member配额</label>
-          <input type="number" id="member-quota" class="form-input" value="25000" min="5000">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Viewer配额</label>
-          <input type="number" id="viewer-quota" class="form-input" value="10000" min="1000">
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">默认分配Key</label>
-        <select id="role-default-key" class="form-select">
-          <option value="key-dev">开发密钥</option>
-          <option value="key-shared">团队共享密钥</option>
-          <option value="key-prod">生产主密钥</option>
-        </select>
-      </div>
-    </div>
-        </select>
-      </div>
-    </div>
-
-    <!-- 按部门分配配置 -->
-    <div id="department-strategy-config" class="modal-section" style="display:none">
-      <div class="modal-section-label">部门配额策略</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="form-group">
-          <label class="form-label">技术部门配额</label>
-          <input type="number" value="40000" min="10000">
-        </div>
-        <div class="form-group">
-          <label class="form-label">产品部门配额</label>
-          <input type="number" value="20000" min="5000">
-        </div>
-      </div>
-    </div>
-
-    <!-- 自定义分配配置 -->
-    <div id="custom-strategy-config" class="modal-section" style="display:none">
-      <div class="modal-section-label">自定义配置</div>
-      <div id="custom-member-list">
-        <!-- 动态生成成员列表 -->
-      </div>
-    </div>
-
-    <div class="modal-section-label">影响范围</div>
-    <div style="background:var(--bg);padding:12px;border-radius:8px;margin-bottom:16px">
-      <div style="font-size:12px;margin-bottom:8px" id="batch-affected-members">
-        将影响 <strong>0</strong> 个成员
-      </div>
-      <div style="font-size:11px;color:var(--sub)" id="batch-preview">
-        请选择分配策略以查看影响详情
-      </div>
-    </div>
-
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">
-      <button class="btn" onclick="closeModal('batchAssign')">取消</button>
-      <button class="btn btn-primary" onclick="confirmBatchAssign()">执行批量分配</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal: 调整配额 -->
-<div class="modal" id="modal-adjustQuota">
-  <div class="modal-box" style="width:480px">
-    <div class="modal-title">调整配额</div>
-
-    <div class="modal-section-label">成员信息</div>
-    <div style="background:var(--bg);padding:12px;border-radius:8px;margin-bottom:16px">
-      <div style="font-weight:500;margin-bottom:4px" id="adjust-member-name">成员姓名</div>
-      <div style="font-size:12px;color:var(--sub)" id="adjust-member-role">成员角色</div>
-    </div>
-
-    <div class="modal-section-label">配额调整</div>
-    <div id="adjust-quota-list">
-      <!-- 动态生成配额调整列表 -->
-    </div>
-
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px">
-      <button class="btn" onclick="closeModal('adjustQuota')">取消</button>
-      <button class="btn btn-primary" onclick="confirmAdjustQuota()">保存调整</button>
-    </div>
-  </div>
-</div>
-
 <script>
   // Generate dashboard chart bars
   const heights = [40,55,35,70,85,60,90,75,65,80,95,70,55,85,100,75,60,80,70,65,90,85,75,60,50,70,80,90];
   const chart = document.getElementById('chartArea');
-  if (chart) {
-    heights.forEach(h => {
-      const bar = document.createElement('div');
-      bar.className = 'chart-bar';
-      bar.style.height = h + '%';
-      chart.appendChild(bar);
-    });
-  }
+  heights.forEach(h => {
+    const bar = document.createElement('div');
+    bar.className = 'chart-bar';
+    bar.style.height = h + '%';
+    chart.appendChild(bar);
+  });
 
   // Generate sprint completion chart bars
   const sprintHeights = [72, 78, 85, 80, 92, 88];
   const sprintChart = document.getElementById('sprintChart');
-  if (sprintChart) {
-    sprintHeights.forEach(h => {
-      const bar = document.createElement('div');
-      bar.className = 'chart-bar';
-      bar.style.height = h + '%';
-      bar.style.background = '#12B76A';
-      sprintChart.appendChild(bar);
-    });
-  }
+  sprintHeights.forEach(h => {
+    const bar = document.createElement('div');
+    bar.className = 'chart-bar';
+    bar.style.height = h + '%';
+    bar.style.background = '#12B76A';
+    sprintChart.appendChild(bar);
+  });
 
   // ── 全局页面导航 ──
   function showPage(name) {
@@ -3806,19 +2743,9 @@
     const el = document.getElementById(pageId);
     if(el) el.classList.add('active');
     document.getElementById('topbar-title').textContent =
-      document.getElementById('proj-name').textContent + ' · ' + (projPageTitles[name] || name);
+            document.getElementById('proj-name').textContent + ' · ' + (projPageTitles[name] || name);
     const nav = document.getElementById('pnav-' + name);
     if(nav) nav.classList.add('active');
-
-    // 如果是Key管理页面，自动初始化
-    if (name === 'keymanagement') {
-      initKeyManagementPage();
-    }
-
-    // 如果是成员权限页面，自动初始化个人Key视图
-    if (name === 'members') {
-      renderMyKeys(2); // 模拟当前用户为李四(member-2)
-    }
   }
 
   // ── 服务详情页 ──
@@ -3844,7 +2771,7 @@
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-svc-detail').classList.add('active');
     document.getElementById('topbar-title').textContent =
-      document.getElementById('proj-name').textContent + ' · ' + svc.name;
+            document.getElementById('proj-name').textContent + ' · ' + svc.name;
     document.querySelectorAll('#sidebar-project .nav-item').forEach(n => n.classList.remove('active'));
     const pnav = document.getElementById('pnav-services');
     if(pnav) pnav.classList.add('active');
@@ -3954,7 +2881,6 @@
           type: 'production',
           provider: 'Claude',
           model: 'claude-3.5-sonnet',
-          actualKey: 'sk-ant-api03_abcdefghijklmnopqrstuvwxyz1234567890abcdefghijklmnopqrstuvwxyz',
           totalQuota: 100000,
           usedTokens: 32150,
           rateLimit: '1000/min',
@@ -3968,7 +2894,6 @@
           type: 'development',
           provider: 'Claude',
           model: 'claude-3.5-sonnet',
-          actualKey: 'sk-ant-api03_defghijklmnopqrstuvwxyzabcd1234567890efghijklmnopqrstuvwxyzab',
           totalQuota: 150000,
           usedTokens: 52600,
           rateLimit: '500/min',
@@ -3982,7 +2907,6 @@
           type: 'shared',
           provider: 'Claude',
           model: 'claude-3.5-haiku',
-          actualKey: 'sk-ant-api03_ijklmnopqrstuvwxyzabcdefgh1234567890ijklmnopqrstuvwxyzabcdef',
           totalQuota: 80000,
           usedTokens: 21940,
           rateLimit: '300/min',
@@ -4169,1915 +3093,6 @@
       evalsChartEl.appendChild(b);
     });
   }
-
-  // ========== Key分配Modal系统 ==========
-
-  // 显示批量分配Modal
-  function showBatchAssignModal() {
-    updateBatchMemberOptions();
-    updateBatchStrategy();
-    openModal('batchAssign');
-  }
-
-  // 显示分配Key Modal（支持预选成员）
-  function showAssignKeyModal(memberId = null) {
-    populateAssignKeyModal(memberId);
-    openModal('assignKey');
-  }
-
-  // 填充单个分配Modal数据
-  function populateAssignKeyModal(preselectedMemberId = null) {
-    const projectData = memberKeyAssignments['proj-1'];
-    const memberSelect = document.getElementById('assign-member-select');
-    const keySelect = document.getElementById('assign-key-select');
-    const quotaInput = document.getElementById('assign-quota-input');
-
-    // 清空现有选项
-    memberSelect.innerHTML = '<option value="">请选择成员...</option>';
-    keySelect.innerHTML = '<option value="">请选择API Key...</option>';
-
-    // 填充成员选项（只显示可以分配Key的成员）
-    Object.values(projectData.members).forEach(member => {
-      const option = document.createElement('option');
-      option.value = member.id;
-      option.textContent = `${member.name} (${member.role})`;
-      if (preselectedMemberId === member.id) {
-        option.selected = true;
-      }
-      memberSelect.appendChild(option);
-    });
-
-    // 填充Key选项
-    Object.values(projectData.keys).forEach(key => {
-      const option = document.createElement('option');
-      option.value = key.id;
-      option.textContent = `${key.name} (${key.provider} ${key.model})`;
-      keySelect.appendChild(option);
-    });
-
-    // 设置事件监听器更新配额建议
-    memberSelect.addEventListener('change', updateQuotaSuggestion);
-    keySelect.addEventListener('change', updateQuotaSuggestion);
-
-    // 如果预选了成员，更新配额建议
-    if (preselectedMemberId) {
-      updateQuotaSuggestion();
-    }
-  }
-
-  // 更新配额建议
-  function updateQuotaSuggestion() {
-    const memberSelect = document.getElementById('assign-member-select');
-    const keySelect = document.getElementById('assign-key-select');
-    const quotaInput = document.getElementById('assign-quota-input');
-    const suggestionDiv = document.getElementById('quota-suggestion');
-
-    const selectedMemberId = memberSelect.value;
-    const selectedKeyId = keySelect.value;
-
-    if (selectedMemberId && selectedKeyId) {
-      const projectData = memberKeyAssignments['proj-1'];
-      const member = projectData.members[selectedMemberId];
-      const key = projectData.keys[selectedKeyId];
-
-      // 根据成员角色和Key类型生成建议配额
-      let suggestedQuota = 10000; // 默认
-
-      if (member.role === 'Owner') {
-        suggestedQuota = key.type === 'production' ? 50000 : 40000;
-      } else if (member.role === 'Member') {
-        suggestedQuota = key.type === 'production' ? 30000 : 25000;
-      } else if (member.role === 'Viewer') {
-        suggestedQuota = key.type === 'shared' ? 10000 : 5000;
-      }
-
-      quotaInput.value = suggestedQuota;
-      suggestionDiv.innerHTML = `💡 建议${member.role}角色分配 ${key.name} 配额：${suggestedQuota.toLocaleString()} tokens`;
-    } else {
-      quotaInput.value = '';
-      suggestionDiv.innerHTML = '💡 建议配额将根据成员角色和Key类型自动显示';
-    }
-  }
-
-  // 确认分配Key
-  function confirmAssignKey() {
-    const memberSelect = document.getElementById('assign-member-select');
-    const keySelect = document.getElementById('assign-key-select');
-    const quotaInput = document.getElementById('assign-quota-input');
-    const descriptionTextarea = document.getElementById('assign-description');
-
-    const memberId = memberSelect.value;
-    const keyId = keySelect.value;
-    const quota = parseInt(quotaInput.value);
-    const description = descriptionTextarea.value;
-
-    // 表单验证
-    if (!memberId) {
-      showToast('请选择要分配的成员', 'error');
-      return;
-    }
-    if (!keyId) {
-      showToast('请选择要分配的API Key', 'error');
-      return;
-    }
-    if (!quota || quota < 1000) {
-      showToast('配额必须大于1000 tokens', 'error');
-      return;
-    }
-
-    const projectData = memberKeyAssignments['proj-1'];
-    const member = projectData.members[memberId];
-    const key = projectData.keys[keyId];
-
-    // 检查是否已经分配了该Key
-    if (member.assignedKeys.includes(keyId)) {
-      showToast(`成员 ${member.name} 已经拥有 ${key.name}`, 'error');
-      return;
-    }
-
-    // 检查Key总配额是否足够
-    const currentAllocated = Object.values(projectData.members)
-      .filter(m => m.assignedKeys.includes(keyId))
-      .reduce((sum, m) => sum + (m.keyQuotas[keyId]?.allocated || 0), 0);
-
-    if (currentAllocated + quota > key.totalQuota) {
-      showToast(`配额超出限制，${key.name} 剩余可分配：${(key.totalQuota - currentAllocated).toLocaleString()} tokens`, 'error');
-      return;
-    }
-
-    // 执行分配
-    member.assignedKeys.push(keyId);
-    member.keyQuotas[keyId] = {
-      allocated: quota,
-      used: 0,
-      status: 'active',
-      description: description || undefined
-    };
-
-    // 更新Key的使用量（虽然实际使用为0，但已分配量会增加）
-
-    // 关闭Modal并刷新表格
-    closeModal('assignKey');
-    renderMemberKeyTable();
-    showToast(`成功为 ${member.name} 分配 ${key.name}，配额：${quota.toLocaleString()} tokens`);
-
-    // 清空表单
-    document.getElementById('assign-member-select').value = '';
-    document.getElementById('assign-key-select').value = '';
-    document.getElementById('assign-quota-input').value = '';
-    document.getElementById('assign-description').value = '';
-  }
-
-  // 更新批量分配策略显示
-  function updateBatchStrategy() {
-    const strategy = document.getElementById('batch-strategy-select').value;
-
-    // 隐藏所有配置区域
-    document.getElementById('role-strategy-config').style.display = 'none';
-    document.getElementById('department-strategy-config').style.display = 'none';
-    document.getElementById('custom-strategy-config').style.display = 'none';
-
-    // 显示对应的配置区域
-    if (strategy === 'role') {
-      document.getElementById('role-strategy-config').style.display = 'block';
-      updateBatchPreview('role');
-    } else if (strategy === 'department') {
-      document.getElementById('department-strategy-config').style.display = 'block';
-      updateBatchPreview('department');
-    } else if (strategy === 'custom') {
-      document.getElementById('custom-strategy-config').style.display = 'block';
-      generateCustomMemberList();
-      updateBatchPreview('custom');
-    }
-  }
-
-  // 更新批量分配成员选项
-  function updateBatchMemberOptions() {
-    const projectData = memberKeyAssignments['proj-1'];
-    const defaultKey = document.getElementById('role-default-key');
-
-    // 填充默认Key选项
-    defaultKey.innerHTML = '';
-    Object.values(projectData.keys).forEach(key => {
-      const option = document.createElement('option');
-      option.value = key.id;
-      option.textContent = key.name;
-      defaultKey.appendChild(option);
-    });
-  }
-
-  // 生成自定义成员列表
-  function generateCustomMemberList() {
-    const projectData = memberKeyAssignments['proj-1'];
-    const container = document.getElementById('custom-member-list');
-
-    container.innerHTML = '';
-
-    Object.values(projectData.members).forEach(member => {
-      const memberDiv = document.createElement('div');
-      memberDiv.style.cssText = 'display:flex;align-items:center;gap:12px;padding:8px;background:white;border:1px solid var(--border);border-radius:6px;margin-bottom:8px;';
-
-      memberDiv.innerHTML = `
-        <input type="checkbox" id="custom-${member.id}" value="${member.id}">
-        <div style="flex:1">
-          <div style="font-weight:500">${member.name}</div>
-          <div style="font-size:11px;color:var(--sub)">${member.role}</div>
-        </div>
-        <select style="width:120px" id="custom-key-${member.id}">
-          <option value="">选择Key</option>
-          ${Object.values(projectData.keys).map(key =>
-            `<option value="${key.id}">${key.name}</option>`
-          ).join('')}
-        </select>
-        <input type="number" placeholder="配额" style="width:80px" id="custom-quota-${member.id}" min="1000">
-      `;
-
-      container.appendChild(memberDiv);
-    });
-  }
-
-  // 更新批量分配预览
-  function updateBatchPreview(strategy) {
-    const projectData = memberKeyAssignments['proj-1'];
-    const affectedEl = document.getElementById('batch-affected-members');
-    const previewEl = document.getElementById('batch-preview');
-
-    let affectedCount = 0;
-    let previewText = '';
-
-    if (strategy === 'role') {
-      const ownerQuota = parseInt(document.getElementById('owner-quota').value) || 0;
-      const memberQuota = parseInt(document.getElementById('member-quota').value) || 0;
-      const viewerQuota = parseInt(document.getElementById('viewer-quota').value) || 0;
-      const defaultKey = document.getElementById('role-default-key').value;
-
-      if (defaultKey) {
-        const key = projectData.keys[defaultKey];
-        const owners = Object.values(projectData.members).filter(m => m.role === 'Owner').length;
-        const members = Object.values(projectData.members).filter(m => m.role === 'Member').length;
-        const viewers = Object.values(projectData.members).filter(m => m.role === 'Viewer').length;
-
-        affectedCount = owners + members + viewers;
-        previewText = `${key.name}: Owner(${owners}人×${ownerQuota.toLocaleString()}) + Member(${members}人×${memberQuota.toLocaleString()}) + Viewer(${viewers}人×${viewerQuota.toLocaleString()})`;
-      }
-    } else if (strategy === 'custom') {
-      // 计算自定义策略影响的成员数
-      const checkboxes = document.querySelectorAll('#custom-member-list input[type="checkbox"]:checked');
-      affectedCount = checkboxes.length;
-      previewText = '自定义分配：根据您的选择为每个成员分配不同的Key和配额';
-    }
-
-    affectedEl.innerHTML = `将影响 <strong>${affectedCount}</strong> 个成员`;
-    previewEl.textContent = previewText || '请完成配置以查看影响详情';
-  }
-
-  // 确认批量分配
-  function confirmBatchAssign() {
-    const strategy = document.getElementById('batch-strategy-select').value;
-
-    if (strategy === 'role') {
-      executeBatchAssignByRole();
-    } else if (strategy === 'custom') {
-      executeBatchAssignCustom();
-    } else {
-      showToast('该策略暂未实现', 'warning');
-    }
-  }
-
-  // 执行按角色批量分配
-  function executeBatchAssignByRole() {
-    const ownerQuota = parseInt(document.getElementById('owner-quota').value);
-    const memberQuota = parseInt(document.getElementById('member-quota').value);
-    const viewerQuota = parseInt(document.getElementById('viewer-quota').value);
-    const defaultKeyId = document.getElementById('role-default-key').value;
-
-    if (!defaultKeyId) {
-      showToast('请选择默认分配的Key', 'error');
-      return;
-    }
-
-    const projectData = memberKeyAssignments['proj-1'];
-    const key = projectData.keys[defaultKeyId];
-    let assignedCount = 0;
-
-    // 分配给所有成员
-    Object.values(projectData.members).forEach(member => {
-      let quota = 0;
-
-      // 根据角色确定配额
-      if (member.role === 'Owner') quota = ownerQuota;
-      else if (member.role === 'Member') quota = memberQuota;
-      else if (member.role === 'Viewer') quota = viewerQuota;
-
-      // 检查是否已经分配了该Key
-      if (!member.assignedKeys.includes(defaultKeyId) && quota > 0) {
-        member.assignedKeys.push(defaultKeyId);
-        member.keyQuotas[defaultKeyId] = {
-          allocated: quota,
-          used: 0,
-          status: 'active'
-        };
-        assignedCount++;
-      }
-    });
-
-    closeModal('batchAssign');
-    renderMemberKeyTable();
-    showToast(`批量分配完成：为 ${assignedCount} 个成员分配了 ${key.name}`);
-  }
-
-  // 执行自定义批量分配
-  function executeBatchAssignCustom() {
-    const projectData = memberKeyAssignments['proj-1'];
-    const checkboxes = document.querySelectorAll('#custom-member-list input[type="checkbox"]:checked');
-    let assignedCount = 0;
-
-    checkboxes.forEach(checkbox => {
-      const memberId = checkbox.value;
-      const keyId = document.getElementById(`custom-key-${memberId}`).value;
-      const quota = parseInt(document.getElementById(`custom-quota-${memberId}`).value);
-
-      if (keyId && quota > 0) {
-        const member = projectData.members[memberId];
-        if (!member.assignedKeys.includes(keyId)) {
-          member.assignedKeys.push(keyId);
-          member.keyQuotas[keyId] = {
-            allocated: quota,
-            used: 0,
-            status: 'active'
-          };
-          assignedCount++;
-        }
-      }
-    });
-
-    closeModal('batchAssign');
-    renderMemberKeyTable();
-    showToast(`自定义批量分配完成：为 ${assignedCount} 个成员分配了Key`);
-  }
-
-
-  // ======== 使用监控功能模块 ========
-
-  // 监控时间段切换
-  function changeMonitorPeriod(period) {
-    console.log('监控时间段切换为:', period);
-    currentMonitorPeriod = period;
-    updateUsageMonitoring();
-    showToast(`监控时间段已切换为：${period === 'month' ? '本月' : period === 'week' ? '本周' : '今日'}`);
-  }
-
-  // 监控相关全局变量
-  let currentMonitorPeriod = 'month';
-  let monitoringInterval = null;
-  let isMonitoringActive = false;
-
-  // 更新实时使用记录
-  function updateUsageMonitoring() {
-    const container = document.querySelector('[data-monitor-section="realtime"]');
-    if (!container) {
-      // 如果找不到容器，就查找实时使用情况区域
-      const realtimeSection = Array.from(document.querySelectorAll('h4')).find(h => h.textContent.includes('实时使用情况'));
-      if (realtimeSection && realtimeSection.nextElementSibling) {
-        updateRealtimeUsage(realtimeSection.nextElementSibling);
-      }
-    } else {
-      updateRealtimeUsage(container);
-    }
-  }
-
-  // 更新实时使用记录内容
-  function updateRealtimeUsage(container) {
-    const now = new Date();
-    const recentLogs = generateRecentUsageLogs(currentMonitorPeriod, now);
-
-    let html = '';
-    recentLogs.forEach(log => {
-      const timeStr = formatTime(log.timestamp);
-      const modelColor = getModelColor(log.model);
-      html += `
-        <div style="margin-bottom:8px">
-          <span style="color:var(--text)">${timeStr}</span> ${log.memberName}使用
-          <span style="color:${modelColor}">${log.model}</span> 消耗 ${formatTokens(log.tokens)}
-          <span style="color:var(--sub);font-size:11px;margin-left:8px">${log.purpose}</span>
-        </div>
-      `;
-    });
-
-    container.innerHTML = html;
-  }
-
-  // 更新Top活跃成员排行
-  function updateTopMembers() {
-    const container = document.querySelector('[data-monitor-section="top-members"]');
-    let targetContainer = container;
-
-    if (!targetContainer) {
-      const topSection = Array.from(document.querySelectorAll('h4')).find(h => h.textContent.includes('Top活跃成员'));
-      if (topSection && topSection.nextElementSibling) {
-        targetContainer = topSection.nextElementSibling;
-      }
-    }
-
-    if (targetContainer) {
-      const topMembers = calculateTopMembers(currentMonitorPeriod);
-      let html = '';
-      topMembers.forEach((member, index) => {
-        const rank = index + 1;
-        const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `${rank}.`;
-        html += `
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <span>${medal} ${member.name}</span>
-            <div style="display:flex;align-items:center;gap:8px">
-              <span style="color:var(--sub)">${formatTokens(member.tokens)}</span>
-              <span style="color:var(--sub);font-size:11px">¥${member.cost.toFixed(2)}</span>
-            </div>
-          </div>
-        `;
-      });
-      targetContainer.innerHTML = html;
-    }
-  }
-
-  // 更新异常告警
-  function updateAlerts() {
-    const container = document.querySelector('[data-monitor-section="alerts"]');
-    let targetContainer = container;
-
-    if (!targetContainer) {
-      const alertSection = Array.from(document.querySelectorAll('h4')).find(h => h.textContent.includes('异常告警'));
-      if (alertSection && alertSection.nextElementSibling) {
-        targetContainer = alertSection.nextElementSibling;
-      }
-    }
-
-    if (targetContainer) {
-      const alerts = generateCurrentAlerts();
-      let html = '';
-
-      alerts.forEach(alert => {
-        const bgColor = alert.type === 'warning' ? '#FEF3F2' : alert.type === 'info' ? '#F0F9FF' : '#FEF3F2';
-        const borderColor = alert.type === 'warning' ? '#FECDCA' : alert.type === 'info' ? '#B9E6FE' : '#FECDCA';
-        const textColor = alert.type === 'warning' ? '#B42318' : alert.type === 'info' ? '#1570EF' : '#B42318';
-        const titleColor = alert.type === 'warning' ? 'var(--danger)' : alert.type === 'info' ? 'var(--primary)' : 'var(--danger)';
-
-        html += `
-          <div style="background:${bgColor};border:1px solid ${borderColor};border-radius:8px;padding:12px;margin-bottom:8px">
-            <div style="color:${titleColor};font-size:12px;font-weight:500;margin-bottom:4px">${alert.icon} ${alert.title}</div>
-            <div style="font-size:11px;color:${textColor}">${alert.message}</div>
-          </div>
-        `;
-      });
-
-      if (html === '') {
-        html = `
-          <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:12px">
-            <div style="color:var(--success);font-size:12px;font-weight:500;margin-bottom:4px">✅ 系统正常</div>
-            <div style="font-size:11px;color:#166534">所有成员使用情况正常，无异常告警</div>
-          </div>
-        `;
-      }
-
-      targetContainer.innerHTML = html;
-    }
-  }
-
-  // 开始监控（定时刷新）
-  function startMonitoring() {
-    if (isMonitoringActive) return;
-
-    isMonitoringActive = true;
-    console.log('开始实时监控...');
-
-    // 立即更新一次
-    updateUsageMonitoring();
-    updateTopMembers();
-    updateAlerts();
-
-    // 每30秒刷新一次
-    monitoringInterval = setInterval(() => {
-      updateUsageMonitoring();
-      updateTopMembers();
-      updateAlerts();
-    }, 30000);
-
-    showToast('已开启实时监控，每30秒自动刷新');
-  }
-
-  // 停止监控
-  function stopMonitoring() {
-    if (!isMonitoringActive) return;
-
-    isMonitoringActive = false;
-    if (monitoringInterval) {
-      clearInterval(monitoringInterval);
-      monitoringInterval = null;
-    }
-
-    console.log('监控已停止');
-    showToast('实时监控已停止');
-  }
-
-  // 辅助函数：生成最近使用日志
-  function generateRecentUsageLogs(period, baseTime) {
-    const logs = [];
-    const now = baseTime || new Date();
-
-    // 模拟不同时间段的使用记录
-    const models = ['GPT-4', 'Claude-3.5', 'Gemini Pro', 'Claude-3'];
-    const members = ['张三', '李四', '王五', '赵六', '陈七'];
-    const purposes = ['代码审查', '文档生成', '需求分析', '代码优化', '测试用例', '技术调研'];
-    const modelColors = {
-      'GPT-4': 'var(--primary)',
-      'Claude-3.5': 'var(--success)',
-      'Claude-3': 'var(--success)',
-      'Gemini Pro': '#FF6B35'
-    };
-
-    // 根据时间段生成不同数量的日志
-    const logCount = period === 'day' ? 8 : period === 'week' ? 15 : 20;
-
-    for (let i = 0; i < logCount; i++) {
-      const minutesAgo = period === 'day' ? i * 15 : period === 'week' ? i * 60 : i * 180;
-      const timestamp = new Date(now.getTime() - minutesAgo * 60000);
-      const model = models[Math.floor(Math.random() * models.length)];
-
-      logs.push({
-        timestamp,
-        memberName: members[Math.floor(Math.random() * members.length)],
-        model,
-        tokens: Math.floor(Math.random() * 4000) + 1000,
-        purpose: purposes[Math.floor(Math.random() * purposes.length)]
-      });
-    }
-
-    return logs.sort((a, b) => b.timestamp - a.timestamp);
-  }
-
-  // 计算Top活跃成员
-  function calculateTopMembers(period) {
-    // 基于现有的memberKeyAssignments数据计算
-    const projectData = memberKeyAssignments['proj-1'];
-    if (!projectData) return [];
-
-    const memberStats = [];
-    Object.values(projectData.members).forEach(member => {
-      const stats = calculateMemberStats(member);
-      const cost = stats.totalUsed * 0.0002; // 假设每1K token = $0.0002
-
-      memberStats.push({
-        name: member.name,
-        tokens: stats.totalUsed,
-        cost: cost
-      });
-    });
-
-    // 按使用量排序
-    return memberStats.sort((a, b) => b.tokens - a.tokens).slice(0, 5);
-  }
-
-  // 生成当前告警信息
-  function generateCurrentAlerts() {
-    const alerts = [];
-    const projectData = memberKeyAssignments['proj-1'];
-    if (!projectData) return alerts;
-
-    // 检查成员配额使用情况
-    Object.values(projectData.members).forEach(member => {
-      const stats = calculateMemberStats(member);
-      if (stats.totalQuota !== 'unlimited') {
-        const usagePercent = (stats.totalUsed / stats.totalQuota) * 100;
-
-        if (usagePercent > 100) {
-          alerts.push({
-            type: 'warning',
-            icon: '🚨',
-            title: '配额超限',
-            message: `${member.name}本${currentMonitorPeriod === 'month' ? '月' : currentMonitorPeriod === 'week' ? '周' : '日'}使用量已超额${(usagePercent - 100).toFixed(1)}%，需要立即处理`
-          });
-        } else if (usagePercent > 90) {
-          alerts.push({
-            type: 'warning',
-            icon: '⚠️',
-            title: '配额预警',
-            message: `${member.name}本${currentMonitorPeriod === 'month' ? '月' : currentMonitorPeriod === 'week' ? '周' : '日'}使用量已达${usagePercent.toFixed(1)}%，建议调整配额或优化使用`
-          });
-        }
-      }
-    });
-
-    // 添加优化建议
-    if (alerts.length === 0) {
-      const totalUsage = Object.values(projectData.members).reduce((sum, member) => {
-        return sum + calculateMemberStats(member).totalUsed;
-      }, 0);
-
-      const totalQuota = Object.values(projectData.members).reduce((sum, member) => {
-        const stats = calculateMemberStats(member);
-        return stats.totalQuota === 'unlimited' ? sum : sum + stats.totalQuota;
-      }, 0);
-
-      if (totalQuota > 0) {
-        const usageRate = (totalUsage / totalQuota) * 100;
-        alerts.push({
-          type: 'info',
-          icon: '💡',
-          title: '优化建议',
-          message: `项目整体使用率${usageRate.toFixed(0)}%，${usageRate < 70 ? '可考虑为新成员分配剩余配额' : '使用情况良好，建议持续监控'}`
-        });
-      }
-    }
-
-    return alerts;
-  }
-
-  // 获取模型颜色
-  function getModelColor(model) {
-    const colors = {
-      'GPT-4': 'var(--primary)',
-      'Claude-3.5': 'var(--success)',
-      'Claude-3': 'var(--success)',
-      'Gemini Pro': '#FF6B35'
-    };
-    return colors[model] || 'var(--text)';
-  }
-
-  // 格式化时间显示
-  function formatTime(date) {
-    const now = new Date();
-    const diffMinutes = Math.floor((now - date) / (1000 * 60));
-
-    if (diffMinutes < 1) return '刚刚';
-    if (diffMinutes < 60) return `${diffMinutes}分钟前`;
-    if (diffMinutes < 1440) return `${Math.floor(diffMinutes / 60)}小时前`;
-
-    return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-  }
-
-  // 导出使用报告
-  function exportUsageReport() {
-    try {
-      const projectData = memberKeyAssignments['proj-1'];
-      if (!projectData) {
-        showToast('无法获取项目数据', 'error');
-        return;
-      }
-
-      const reportData = generateUsageReport(projectData);
-      const jsonStr = JSON.stringify(reportData, null, 2);
-
-      // 创建并下载文件
-      const blob = new Blob([jsonStr], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `usage-report-${getCurrentTimeString()}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      showToast('使用报告已导出');
-    } catch (error) {
-      console.error('导出报告失败:', error);
-      showToast('导出报告失败', 'error');
-    }
-  }
-
-  // 生成使用指南（更新函数名和实现）
-  function generateMemberGuide() {
-    try {
-      const projectData = memberKeyAssignments['proj-1'];
-      if (!projectData) {
-        showToast('无法获取项目数据', 'error');
-        return;
-      }
-
-      const guideContent = generateMarkdownGuide(projectData);
-
-      // 创建并下载Markdown文件
-      const blob = new Blob([guideContent], { type: 'text/markdown;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `member-guide-${getCurrentTimeString()}.md`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      showToast('成员使用指南已生成');
-    } catch (error) {
-      console.error('生成指南失败:', error);
-      showToast('生成指南失败', 'error');
-    }
-  }
-
-  // 辅助函数：生成使用报告数据
-  function generateUsageReport(projectData) {
-    const report = {
-      exportTime: new Date().toISOString(),
-      period: currentMonitorPeriod,
-      project: {
-        id: 'proj-1',
-        name: '电商平台项目',
-        totalMembers: Object.keys(projectData.members).length,
-        totalKeys: Object.keys(projectData.keys).length
-      },
-      summary: {
-        totalTokensUsed: 0,
-        totalCost: 0,
-        averageUsagePerMember: 0
-      },
-      members: [],
-      keys: [],
-      alerts: generateCurrentAlerts()
-    };
-
-    // 统计成员数据
-    Object.values(projectData.members).forEach(member => {
-      const stats = calculateMemberStats(member);
-      const cost = stats.totalUsed * 0.0002;
-
-      report.summary.totalTokensUsed += stats.totalUsed;
-      report.summary.totalCost += cost;
-
-      report.members.push({
-        id: member.id,
-        name: member.name,
-        role: member.role,
-        assignedKeysCount: member.assignedKeys.length,
-        totalQuota: stats.totalQuota,
-        totalUsed: stats.totalUsed,
-        usagePercent: stats.totalQuota === 'unlimited' ? 0 : Math.round((stats.totalUsed / stats.totalQuota) * 100),
-        estimatedCost: cost,
-        assignedKeys: member.assignedKeys.map(keyId => ({
-          keyId,
-          keyName: projectData.keys[keyId]?.name || 'Unknown',
-          quota: member.keyQuotas[keyId] || 'unlimited',
-          used: member.keyUsage[keyId] || 0
-        }))
-      });
-    });
-
-    // 统计Key数据
-    Object.values(projectData.keys).forEach(key => {
-      let totalAssigned = 0;
-      let totalUsed = 0;
-
-      Object.values(projectData.members).forEach(member => {
-        if (member.assignedKeys.includes(key.id)) {
-          totalAssigned++;
-          totalUsed += member.keyUsage[key.id] || 0;
-        }
-      });
-
-      report.keys.push({
-        id: key.id,
-        name: key.name,
-        provider: key.provider,
-        model: key.model,
-        assignedToMembers: totalAssigned,
-        totalUsed: totalUsed,
-        estimatedCost: totalUsed * 0.0002
-      });
-    });
-
-    report.summary.averageUsagePerMember = Math.round(report.summary.totalTokensUsed / Object.keys(projectData.members).length);
-
-    return report;
-  }
-
-  // 生成Markdown使用指南
-  function generateMarkdownGuide(projectData) {
-    const currentTime = new Date().toLocaleString('zh-CN');
-
-    let guide = `# AI Key 使用指南
-
-> 生成时间: ${currentTime}
-> 项目: 电商平台项目
-
-## 概述
-
-本指南为团队成员提供AI Key的使用方法和最佳实践。
-
-## Key分配情况
-
-`;
-
-    // 添加每个成员的Key信息
-    Object.values(projectData.members).forEach(member => {
-      const stats = calculateMemberStats(member);
-      guide += `### ${member.name} (${member.role})
-
-**分配状态**: ${member.assignedKeys.length > 0 ? '✅ 已分配' : '❌ 未分配'}
-**总配额**: ${stats.totalQuota === 'unlimited' ? '无限制' : formatTokens(stats.totalQuota)}
-**已使用**: ${formatTokens(stats.totalUsed)}
-
-`;
-
-      if (member.assignedKeys.length > 0) {
-        guide += `**分配的Key**:\n`;
-        member.assignedKeys.forEach(keyId => {
-          const keyInfo = projectData.keys[keyId];
-          const quota = member.keyQuotas[keyId];
-          const used = member.keyUsage[keyId] || 0;
-
-          guide += `- **${keyInfo.name}** (${keyInfo.provider} ${keyInfo.model})
-  - 配额: ${quota === 'unlimited' ? '无限制' : formatTokens(quota)}
-  - 已用: ${formatTokens(used)}
-
-`;
-        });
-      }
-
-      guide += `\n---\n\n`;
-    });
-
-    guide += `## 使用规范
-
-### 基本原则
-1. **合理使用**: 根据工作需要合理使用AI服务，避免无意义的消耗
-2. **配额管理**: 密切关注个人配额使用情况，接近限制时及时申请调整
-3. **安全保护**: 不要在AI对话中泄露敏感信息和商业机密
-
-### 最佳实践
-- ✅ 使用前明确需求，提高对话效率
-- ✅ 及时结束不必要的长对话
-- ✅ 定期检查使用情况报告
-- ❌ 避免重复相同问题
-- ❌ 不要分享个人API Key
-
-### 告警处理
-- **配额预警(>90%)**: 优化使用方式，考虑申请增加配额
-- **配额超限**: 立即停止非必要使用，联系管理员处理
-
-## 技术支持
-
-如有问题或需要调整配额，请联系项目管理员。
-
----
-*此指南由AI中台自动生成，请根据实际情况调整*
-`;
-
-    return guide;
-  }
-
-  // 切换监控状态
-  function toggleMonitoring() {
-    const btn = document.getElementById('monitor-control-btn');
-    if (isMonitoringActive) {
-      stopMonitoring();
-      btn.innerHTML = '▶️ 开始';
-    } else {
-      startMonitoring();
-      btn.innerHTML = '⏸️ 停止';
-    }
-  }
-
-  // 获取当前时间字符串（用于文件名）
-  function getCurrentTimeString() {
-    const now = new Date();
-    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}-${String(now.getHours()).padStart(2, '0')}-${String(now.getMinutes()).padStart(2, '0')}`;
-  }
-
-  // Key轮换管理
-  function showKeyRotationManager() {
-    alert('Key轮换管理：将打开API Key轮换和安全管理界面');
-  }
-
-  // 配额策略设置
-  function showQuotaPolicySettings() {
-    alert('配额策略设置：将打开项目配额分配策略配置界面');
-  }
-
-  // ── 成员Key分配表格动态渲染 ──
-
-  // 主渲染函数：动态生成成员key分配表格
-  function renderMemberKeyTable(projectId = 'proj-1') {
-    const projectData = memberKeyAssignments[projectId];
-    if (!projectData || !projectData.members) {
-      console.error('项目数据不存在:', projectId);
-      return;
-    }
-
-    const tableBody = document.querySelector('#member-key-table tbody');
-    if (!tableBody) {
-      console.error('找不到表格tbody元素');
-      return;
-    }
-
-    // 清空现有内容
-    tableBody.innerHTML = '';
-
-    // 遍历成员数据生成表格行
-    Object.values(projectData.members).forEach(member => {
-      const row = generateMemberRow(member, projectData.keys);
-      tableBody.appendChild(row);
-    });
-  }
-
-  // 生成单个成员的表格行
-  function generateMemberRow(member, projectKeys) {
-    const tr = document.createElement('tr');
-
-    // 计算成员总配额和使用量
-    const memberStats = calculateMemberStats(member);
-
-    // 分配状态
-    const isAssigned = member.assignedKeys.length > 0;
-    const statusBadge = isAssigned ?
-      '<span style="color:var(--success);font-size:12px">✓ 已分配</span>' :
-      '<span style="color:var(--sub);font-size:12px">○ 未分配</span>';
-
-    // 角色显示
-    const roleBadge = member.role === 'Owner' ?
-      '<span class="badge" style="background:var(--primary);color:white;font-size:11px">Owner</span>' :
-      '<span class="badge" style="background:var(--border);color:var(--text);font-size:11px">' + member.role + '</span>';
-
-    // 配额显示
-    const quotaDisplay = memberStats.totalQuota === 'unlimited' ?
-      '无限制' :
-      formatTokens(memberStats.totalQuota);
-
-    // 使用量和进度条
-    const usagePercent = memberStats.totalQuota === 'unlimited' ? 0 :
-      Math.round((memberStats.totalUsed / memberStats.totalQuota) * 100);
-
-    const progressColor = usagePercent > 90 ? 'var(--danger)' :
-                         usagePercent > 80 ? 'var(--warning)' : 'var(--success)';
-
-    // 操作按钮
-    const actionButtons = generateActionButtons(member, isAssigned);
-
-    tr.innerHTML = `
-      <td>
-        <div style="display:flex;align-items:center;gap:8px">
-          <div class="avatar" style="width:28px;height:28px;font-size:12px">${member.avatar}</div>
-          <span>${member.name}</span>
-        </div>
-      </td>
-      <td>${roleBadge}</td>
-      <td>${statusBadge}</td>
-      <td>${quotaDisplay}</td>
-      <td>
-        </div>${formatTokens(memberStats.totalUsed)} <span style="color:var(--sub);font-size:11px">(${usagePercent}%)</span></div>
-        <div style="background:var(--border);height:3px;border-radius:2px;margin-top:2px;overflow:hidden">
-          <div style="background:${progressColor};height:100%;width:${usagePercent}%"></div>
-        </div>
-      </td>
-      <td>${actionButtons}</td>
-    `;
-
-    return tr;
-  }
-
-  // 计算成员统计数据
-  function calculateMemberStats(member) {
-    let totalQuota = 0;
-    let totalUsed = 0;
-    let hasUnlimited = false;
-
-    Object.entries(member.keyQuotas).forEach(([keyId, quota]) => {
-      if (quota.allocated === 'unlimited') {
-        hasUnlimited = true;
-      } else {
-        totalQuota += quota.allocated;
-      }
-      totalUsed += quota.used || 0;
-    });
-
-    return {
-      totalQuota: hasUnlimited ? 'unlimited' : totalQuota,
-      totalUsed: totalUsed
-    };
-  }
-
-  // 格式化Token数量为K单位
-  function formatTokens(amount) {
-    if (amount >= 1000000) {
-      return Math.floor(amount / 1000000 * 10) / 10 + 'M';
-    } else if (amount >= 1000) {
-      return Math.floor(amount / 1000) + 'K';
-    }
-    return amount.toString();
-  }
-
-  // 生成操作按钮
-  function generateActionButtons(member, isAssigned) {
-    if (!isAssigned) {
-      return `<button class="btn btn-primary" style="font-size:12px;padding:4px 8px" onclick="assignKeyToMember('${member.id}')">分配</button>`;
-    }
-
-    const buttons = [];
-
-    // 调整配额按钮
-    buttons.push(`<button class="btn" style="font-size:12px;padding:4px 8px" onclick="adjustMemberQuota('${member.id}')">调整</button>`);
-
-    // 如果不是Owner，可以暂停
-    if (member.role !== 'Owner') {
-      buttons.push(`<button class="btn" style="font-size:12px;padding:4px 8px;color:var(--danger)" onclick="suspendMember('${member.id}')">暂停</button>`);
-    }
-
-    return buttons.join(' ');
-  }
-
-  // 页面初始化函数
-  function initKeyManagementPage() {
-    // 渲染成员Key分配表格
-    renderMemberKeyTable();
-
-    // 初始化监控功能
-    setTimeout(() => {
-      updateUsageMonitoring();
-      updateTopMembers();
-      updateAlerts();
-    }, 100);
-
-    // 自动开始监控
-    startMonitoring();
-  }
-
-  // ======== 个人Key视图相关函数 ========
-
-  // 渲染个人Key配置信息
-  function renderMyKeys(currentUserId = 2) {
-    const projectData = memberKeyAssignments['proj-1'];
-    const currentMember = projectData?.members[`member-${currentUserId}`];
-
-    if (!currentMember) {
-      document.getElementById('my-keys-content').innerHTML = '<div class="card-body">无法获取当前用户信息</div>';
-      return;
-    }
-
-    // 获取分配给当前用户的Keys
-    const assignedKeys = currentMember.assignedKeys.map(keyId => {
-      const keyInfo = projectData.keys[keyId];
-      const quota = currentMember.keyQuotas[keyId];
-      return { ...keyInfo, ...quota };
-    });
-
-    // 计算统计数据
-    const totalAllocated = Object.values(currentMember.keyQuotas).reduce((sum, quota) => sum + quota.allocated, 0);
-    const totalUsed = Object.values(currentMember.keyQuotas).reduce((sum, quota) => sum + quota.used, 0);
-    const estimatedCost = (totalUsed * 0.000020).toFixed(2); // 假设每token 0.00002美元
-    const usageRate = ((totalUsed / totalAllocated) * 100).toFixed(1);
-
-    // 生成分配给我的Key区域HTML
-    let keysHtml = assignedKeys.map(key => {
-      const maskedKey = maskApiKey(key.actualKey);
-      const usagePercent = ((key.used / key.allocated) * 100).toFixed(1);
-
-      return `
-        <div style="border:1px solid #E0E0E0;border-radius:8px;padding:15px;margin-bottom:10px;background:#FAFAFA">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-            </div>
-              <div style="font-weight:600;font-size:14px">${key.name}</div>
-              <div style="font-size:12px;color:#666">${key.model} • ${key.type}</div>
-            </div>
-            <div style="text-align:right">
-              <div style="font-size:12px;color:#666">使用率: ${usagePercent}%</div>
-              <div style="font-size:11px;color:#999">${key.used.toLocaleString()} / ${key.allocated.toLocaleString()}</div>
-            </div>
-          </div>
-
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-            <code style="font-size:12px;background:#FFF;border:1px solid #DDD;border-radius:4px;padding:6px;flex:1">${maskedKey}</code>
-            <button class="btn btn-secondary" style="font-size:11px;padding:4px 8px" onclick="copyToClipboard('${key.actualKey}')">复制</button>
-          </div>
-
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-primary" style="font-size:11px;padding:4px 10px" onclick="copyKeyConfig('${key.id}', 'claude')">Claude配置</button>
-            <button class="btn btn-primary" style="font-size:11px;padding:4px 10px" onclick="copyKeyConfig('${key.id}', 'cursor')">Cursor配置</button>
-            <button class="btn btn-primary" style="font-size:11px;padding:4px 10px" onclick="copyKeyConfig('${key.id}', 'copilot')">Copilot配置</button>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    // 生成使用建议
-    const suggestion = generateUsageSuggestion(usageRate, totalUsed);
-
-    const html = `
-      <div class="card-body">
-        <div class="grid-2" style="gap:20px">
-          <!-- 分配给我的Key -->
-          </div>
-            <h4 style="margin:0 0 15px 0;font-size:14px;color:#333">分配给我的Key</h4>
-            ${keysHtml}
-          </div>
-
-          <!-- 个人使用统计 -->
-          </div>
-            <h4 style="margin:0 0 15px 0;font-size:14px;color:#333">个人使用统计</h4>
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:15px">
-              <div class="stat-card" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;text-align:center">
-                <div style="font-size:18px;font-weight:600;color:#1E293B">${totalUsed.toLocaleString()}</div>
-                <div style="font-size:12px;color:#64748B">本月消耗 Token</div>
-              </div>
-              <div class="stat-card" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;text-align:center">
-                <div style="font-size:18px;font-weight:600;color:#059669">$${estimatedCost}</div>
-                <div style="font-size:12px;color:#64748B">预估费用</div>
-              </div>
-            </div>
-
-            <div class="stat-card" style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:12px;margin-bottom:15px">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-                <span style="font-size:12px;color:#64748B">配额使用率</span>
-                <span style="font-size:12px;font-weight:600;color:#1E293B">${usageRate}%</span>
-              </div>
-              <div style="background:#E2E8F0;border-radius:4px;height:8px;overflow:hidden">
-                <div style="background:${usageRate > 80 ? '#EF4444' : usageRate > 60 ? '#F59E0B' : '#10B981'};height:100%;width:${usageRate}%;transition:width 0.3s ease"></div>
-              </div>
-            </div>
-
-            <!-- 使用建议 -->
-            <div style="background:#FFFBEB;border:1px solid #FEF3C7;border-radius:8px;padding:12px">
-              <div style="font-size:12px;font-weight:600;color:#D97706;margin-bottom:6px">🤖 AI智能建议</div>
-              <div style="font-size:11px;color:#92400E;line-height:1.4">${suggestion}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.getElementById('my-keys-content').innerHTML = html;
-  }
-
-  // 脱敏处理API Key
-  function maskApiKey(apiKey) {
-    if (!apiKey) return '';
-    if (apiKey.length <= 12) return apiKey;
-    return apiKey.substring(0, 8) + '****' + apiKey.substring(apiKey.length - 4);
-  }
-
-  // 生成使用建议
-  function generateUsageSuggestion(usageRate, totalUsed) {
-    if (usageRate > 80) {
-      return '您的Token使用率较高，建议优化AI调用频次或申请更多配额。可考虑使用更经济的模型如Haiku处理简单任务。';
-    } else if (usageRate > 60) {
-      return '使用情况良好，建议关注峰值使用时段，合理分配不同模型的使用场景以优化成本。';
-    } else if (usageRate < 20) {
-      return '配额使用率较低，您可以更充分地利用AI能力来提升开发效率，或考虑将部分配额分享给团队。';
-    } else {
-      return '使用情况正常，继续保持良好的AI使用习惯，建议定期查看使用统计以优化开发流程。';
-    }
-  }
-
-  // 复制Key配置代码到剪贴板
-  function copyKeyConfig(keyId, toolType) {
-    const projectData = memberKeyAssignments['proj-1'];
-    const key = projectData.keys[keyId];
-
-    if (!key || !key.actualKey) {
-      showToast('无法获取Key信息', 'error');
-      return;
-    }
-
-    let configCode = '';
-    let toolName = '';
-    switch (toolType) {
-      case 'claude':
-        configCode = `export ANTHROPIC_API_KEY="${key.actualKey}"`;
-        toolName = 'Claude CLI';
-        break;
-      case 'cursor':
-        configCode = `{
-  "anthropic.apiKey": "${key.actualKey}"
-}`;
-        toolName = 'Cursor IDE';
-        break;
-      case 'copilot':
-        configCode = `ANTHROPIC_API_KEY=${key.actualKey}`;
-        toolName = 'GitHub Copilot';
-        break;
-      default:
-        showToast('不支持的工具类型', 'error');
-        return;
-    }
-
-    copyToClipboard(configCode);
-    showToast(`${toolName}配置已复制到剪贴板！`);
-  }
-
-  // 复制到剪贴板的通用函数
-  function copyToClipboard(text) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function() {
-        console.log('复制成功');
-      }).catch(function(err) {
-        console.error('复制失败:', err);
-        fallbackCopyTextToClipboard(text);
-      });
-    } else {
-      fallbackCopyTextToClipboard(text);
-    }
-  }
-
-  // 备用复制方法
-  function fallbackCopyTextToClipboard(text) {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    textArea.style.top = "0";
-    textArea.style.left = "0";
-    textArea.style.position = "fixed";
-
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-
-    try {
-      const successful = document.execCommand('copy');
-      const msg = successful ? 'successful' : 'unsuccessful';
-      console.log('Fallback: 复制文本 ' + msg);
-    } catch (err) {
-      console.error('Fallback: 无法复制', err);
-    }
-
-    document.body.removeChild(textArea);
-  }
-
-  // 刷新个人Key信息
-  function refreshMyKeys() {
-    showToast('正在刷新个人Key信息...');
-    setTimeout(() => {
-      renderMyKeys(2); // 重新渲染
-      showToast('个人Key信息已刷新！');
-    }, 500);
-  }
-
-  // 显示使用统计Modal
-  function showKeyUsageModal() {
-    const projectData = memberKeyAssignments['proj-1'];
-    const currentMember = projectData?.members['member-2'];
-
-    if (!currentMember) {
-      alert('无法获取当前用户信息');
-      return;
-    }
-
-    // 获取当前用户的使用日志
-    const userLogs = keyUsageLogs.filter(log => log.memberId === 'member-2');
-
-    // 计算统计数据
-    const totalTokens = userLogs.reduce((sum, log) => sum + log.tokens, 0);
-    const totalCost = userLogs.reduce((sum, log) => sum + log.cost, 0);
-
-    // 按Key分组统计
-    const keyStats = {};
-    userLogs.forEach(log => {
-      if (!keyStats[log.keyId]) {
-        keyStats[log.keyId] = { tokens: 0, cost: 0, count: 0 };
-      }
-      keyStats[log.keyId].tokens += log.tokens;
-      keyStats[log.keyId].cost += log.cost;
-      keyStats[log.keyId].count += 1;
-    });
-
-    let statsHtml = Object.entries(keyStats).map(([keyId, stats]) => {
-      const keyInfo = projectData.keys[keyId];
-      return `
-        <tr>
-          <td>${keyInfo?.name || keyId}</td>
-          <td>${stats.tokens.toLocaleString()}</td>
-          <td>$${stats.cost.toFixed(3)}</td>
-          <td>${stats.count}</td>
-        </tr>
-      `;
-    }).join('');
-
-    const modalHtml = `
-      <div class="modal" style="display:flex;align-items:center;justify-content:center">
-        <div class="modal-content" style="width:600px;max-width:90vw">
-          <div class="modal-header">
-            <h2>我的使用统计 - ${currentMember.name}</h2>
-            <button onclick="closeKeyUsageModal()" style="background:none;border:none;font-size:20px;cursor:pointer">&times;</button>
-          </div>
-          <div class="modal-body">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
-              <div style="text-align:center;background:#F8FAFC;padding:15px;border-radius:8px">
-                <div style="font-size:24px;font-weight:600;color:#1E293B">${totalTokens.toLocaleString()}</div>
-                <div style="font-size:12px;color:#64748B">总Token消耗</div>
-              </div>
-              <div style="text-align:center;background:#F8FAFC;padding:15px;border-radius:8px">
-                <div style="font-size:24px;font-weight:600;color:#059669">$${totalCost.toFixed(2)}</div>
-                <div style="font-size:12px;color:#64748B">总费用</div>
-              </div>
-            </div>
-
-            <h4 style="margin:20px 0 10px 0">按Key分组统计</h4>
-            <table style="width:100%;font-size:13px">
-              <thead>
-                <tr style="background:#F8FAFC">
-                  <th style="padding:8px;text-align:left">Key名称</th>
-                  <th style="padding:8px;text-align:left">Token消耗</th>
-                  <th style="padding:8px;text-align:left">费用</th>
-                  <th style="padding:8px;text-align:left">调用次数</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${statsHtml}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-  }
-
-  // 关闭使用统计Modal
-  function closeKeyUsageModal() {
-    const modal = document.querySelector('.modal');
-    if (modal) {
-      modal.style.display = 'none';
-      modal.remove();
-    }
-  }
-
-  // 显示提示信息
-  function showToast(message, type = 'success') {
-    const container = document.getElementById('toast-container');
-    if (!container) return;
-
-    // 确定图标和标题
-    let icon, title;
-    switch (type) {
-      case 'error':
-        icon = '❌';
-        title = '错误';
-        break;
-      case 'warning':
-        icon = '⚠️';
-        title = '警告';
-        break;
-      case 'success':
-      default:
-        icon = '✅';
-        title = '成功';
-        break;
-    }
-
-    // 创建新的toast
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.innerHTML = `
-      <div class="toast-icon">${icon}</div>
-      <div class="toast-content">
-        <div class="toast-title">${title}</div>
-        <div class="toast-message">${message}</div>
-      </div>
-    `;
-
-    container.appendChild(toast);
-
-    // 触发显示动画
-    setTimeout(() => {
-      toast.classList.add('show');
-    }, 10);
-
-    // 3秒后自动移除
-    setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => {
-        if (toast.parentNode) {
-          toast.parentNode.removeChild(toast);
-        }
-      }, 300);
-    }, 3000);
-  }
-
-  // 更新交互函数，添加memberId参数处理
-
-  // 调整成员配额
-  function adjustMemberQuota(memberId) {
-    const projectData = memberKeyAssignments['proj-1'];
-    const member = projectData?.members[memberId];
-    if (member) {
-      showAdjustQuotaModal(memberId);
-    } else {
-      showToast('成员数据不存在', 'error');
-    }
-  }
-
-  // 显示调整配额Modal
-  function showAdjustQuotaModal(memberId) {
-    const projectData = memberKeyAssignments['proj-1'];
-    const member = projectData.members[memberId];
-
-    // 设置成员信息
-    document.getElementById('adjust-member-name').textContent = member.name;
-    document.getElementById('adjust-member-role').textContent = `${member.role} · ${member.email}`;
-
-    // 生成配额调整列表
-    const quotaList = document.getElementById('adjust-quota-list');
-    quotaList.innerHTML = '';
-
-    member.assignedKeys.forEach(keyId => {
-      const key = projectData.keys[keyId];
-      const quota = member.keyQuotas[keyId];
-
-      const quotaItem = document.createElement('div');
-      quotaItem.style.cssText = 'background:white;border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:12px;';
-
-      quotaItem.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          </div>
-            <div style="font-weight:500">${key.name}</div>
-            <div style="font-size:11px;color:var(--sub)">${key.provider} ${key.model}</div>
-          </div>
-          <div style="text-align:right">
-            <div style="font-size:12px;color:var(--sub)">使用率</div>
-            <div style="font-weight:500;color:${quota.used/quota.allocated > 0.8 ? 'var(--danger)' : 'var(--text)'}">
-              ${(quota.used/quota.allocated*100).toFixed(1)}%
-            </div>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div class="form-group">
-            <label class="form-label">当前配额</label>
-            <input type="number" value="${quota.allocated}" min="1000"
-                   id="quota-${keyId}" data-original="${quota.allocated}">
-          </div>
-          <div class="form-group">
-            <label class="form-label">已使用</label>
-            <input value="${quota.used.toLocaleString()}" readonly style="background:var(--bg);color:var(--sub);">
-          </div>
-        </div>
-        <div style="margin-top:8px;font-size:11px;color:var(--sub)" id="quota-change-${keyId}">
-          无变化
-        </div>
-      `;
-
-      quotaList.appendChild(quotaItem);
-
-      // 添加输入事件监听器
-      const input = quotaItem.querySelector(`#quota-${keyId}`);
-      input.addEventListener('input', () => updateQuotaChangeIndicator(keyId, quota.allocated));
-    });
-
-    // 存储当前编辑的成员ID
-    document.getElementById('modal-adjustQuota').setAttribute('data-member-id', memberId);
-
-    openModal('adjustQuota');
-  }
-
-  // 更新配额变化指示器
-  function updateQuotaChangeIndicator(keyId, originalQuota) {
-    const input = document.getElementById(`quota-${keyId}`);
-    const indicator = document.getElementById(`quota-change-${keyId}`);
-    const newQuota = parseInt(input.value) || 0;
-    const change = newQuota - originalQuota;
-
-    if (change === 0) {
-      indicator.textContent = '无变化';
-      indicator.style.color = 'var(--sub)';
-    } else if (change > 0) {
-      indicator.textContent = `增加 ${change.toLocaleString()} tokens`;
-      indicator.style.color = 'var(--success)';
-    } else {
-      indicator.textContent = `减少 ${Math.abs(change).toLocaleString()} tokens`;
-      indicator.style.color = 'var(--danger)';
-    }
-  }
-
-  // 确认调整配额
-  function confirmAdjustQuota() {
-    const modal = document.getElementById('modal-adjustQuota');
-    const memberId = modal.getAttribute('data-member-id');
-    const projectData = memberKeyAssignments['proj-1'];
-    const member = projectData.members[memberId];
-
-    let hasChanges = false;
-    const changes = [];
-
-    member.assignedKeys.forEach(keyId => {
-      const input = document.getElementById(`quota-${keyId}`);
-      const originalQuota = parseInt(input.getAttribute('data-original'));
-      const newQuota = parseInt(input.value) || 0;
-
-      if (newQuota !== originalQuota && newQuota >= 1000) {
-        // 检查Key总配额限制
-        const key = projectData.keys[keyId];
-        const currentAllocated = Object.values(projectData.members)
-          .filter(m => m.assignedKeys.includes(keyId) && m.id !== memberId)
-          .reduce((sum, m) => sum + (m.keyQuotas[keyId]?.allocated || 0), 0);
-
-        if (currentAllocated + newQuota <= key.totalQuota) {
-          member.keyQuotas[keyId].allocated = newQuota;
-          hasChanges = true;
-          changes.push(`${key.name}: ${newQuota.toLocaleString()}`);
-        } else {
-          showToast(`${key.name} 配额超出限制，最大可分配：${(key.totalQuota - currentAllocated).toLocaleString()}`, 'error');
-          return;
-        }
-      } else if (newQuota < 1000) {
-        showToast(`${key.name} 配额不能少于1000 tokens`, 'error');
-        return;
-      }
-    });
-
-    if (hasChanges) {
-      closeModal('adjustQuota');
-      renderMemberKeyTable();
-      showToast(`已调整 ${member.name} 的配额：${changes.join(', ')}`);
-    } else {
-      showToast('未检测到配额变化', 'warning');
-    }
-  }
-
-  // 暂停成员
-  function suspendMember(memberId) {
-    const projectData = memberKeyAssignments['proj-1'];
-    const member = projectData?.members[memberId];
-    if (member) {
-      const confirmed = confirm(`确定要暂停成员 ${member.name} 的Key使用权限吗？`);
-      if (confirmed) {
-        alert(`暂停功能：已暂停成员 ${member.name} (${memberId}) 的Key访问权限`);
-        // 这里可以更新数据状态，然后重新渲染表格
-        // member.keyQuotas[keyId].status = 'suspended';
-        // renderMemberKeyTable();
-      }
-    } else {
-      alert('成员数据不存在');
-    }
-  }
-
-  // 为成员分配Key（更新版本）
-  function assignKeyToMember(memberId) {
-    const projectData = memberKeyAssignments['proj-1'];
-    const member = projectData?.members[memberId];
-    if (member) {
-      showAssignKeyModal(memberId);
-    } else {
-      showToast('成员数据不存在', 'error');
-    }
-  }
-
-  // 编辑成员配额
-  function editMemberQuota(memberId) {
-    const projectData = memberKeyAssignments['proj-1'];
-    const member = projectData?.members[memberId];
-    if (member) {
-      showEditQuotaModal(memberId);
-    } else {
-      showToast('成员数据不存在', 'error');
-    }
-  }
-
-  // 显示编辑配额Modal
-  function showEditQuotaModal(memberId) {
-    const projectData = memberKeyAssignments['proj-1'];
-    const member = projectData.members[memberId];
-    if (!member || member.assignedKeys.length === 0) {
-      showToast('该成员未分配任何Key', 'error');
-      return;
-    }
-
-    // 创建Modal HTML
-    const modalHTML = `
-      <div class="modal" id="modal-editQuota" style="display: flex;">
-        <div class="modal-box" style="width: 500px;">
-          <div class="modal-title">编辑配额 - ${member.name}</div>
-
-          <div class="modal-section-label">当前Key配额</div>
-          <div style="max-height: 300px; overflow-y: auto;">
-            ${member.assignedKeys.map(keyId => {
-              const quota = member.keyQuotas[keyId];
-              const keyInfo = projectData.keys[keyId];
-              return `
-                <div style="background: var(--bg); padding: 15px; border-radius: 8px; margin-bottom: 10px;">
-                  <div style="font-weight: 600; margin-bottom: 8px;">${keyInfo.name}</div>
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <label style="min-width: 80px; font-size: 12px;">配额:</label>
-                    <input type="number" id="edit-quota-${keyId}" value="${quota.allocated}"
-                           min="1000" step="1000" style="flex: 1;"
-                           placeholder="请输入Token配额">
-                    <span style="font-size: 12px; color: var(--sub);">tokens</span>
-                  </div>
-                  <div style="font-size: 11px; color: var(--sub); margin-top: 4px;">
-                    已使用: ${quota.used.toLocaleString()} (${((quota.used / quota.allocated) * 100).toFixed(1)}%)
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-
-          <div class="modal-actions">
-            <button class="btn" onclick="closeEditQuotaModal()">取消</button>
-            <button class="btn btn-primary" onclick="confirmEditQuota('${memberId}')">保存修改</button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    // 添加到页面
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-  }
-
-  // 确认编辑配额
-  function confirmEditQuota(memberId) {
-    const projectData = memberKeyAssignments['proj-1'];
-    const member = projectData.members[memberId];
-    let hasChanges = false;
-
-    member.assignedKeys.forEach(keyId => {
-      const input = document.getElementById(`edit-quota-${keyId}`);
-      const newQuota = parseInt(input.value);
-
-      if (newQuota && newQuota !== member.keyQuotas[keyId].allocated) {
-        if (newQuota < member.keyQuotas[keyId].used) {
-          showToast(`${projectData.keys[keyId].name} 的新配额不能小于已使用量`, 'error');
-          return;
-        }
-        member.keyQuotas[keyId].allocated = newQuota;
-        hasChanges = true;
-      }
-    });
-
-    if (hasChanges) {
-      closeEditQuotaModal();
-      renderMemberKeyTable(); // 重新渲染表格
-      showToast(`成功更新 ${member.name} 的配额设置`);
-    } else {
-      showToast('未检测到任何更改', 'warning');
-    }
-  }
-
-  // 关闭编辑配额Modal
-  function closeEditQuotaModal() {
-    const modal = document.getElementById('modal-editQuota');
-    if (modal) {
-      modal.remove();
-    }
-  }
-
-  // 监控控制相关函数
-  let monitoringInterval = null;
-
-  // 切换监控状态
-  function toggleMonitoring() {
-    const btn = document.getElementById('monitor-control-btn');
-    if (monitoringInterval) {
-      // 停止监控
-      clearInterval(monitoringInterval);
-      monitoringInterval = null;
-      btn.textContent = '▶️ 开始';
-      btn.classList.remove('btn-danger');
-      showToast('实时监控已停止');
-    } else {
-      // 开始监控
-      startMonitoring();
-      btn.textContent = '⏸️ 停止';
-      btn.classList.add('btn-danger');
-      showToast('实时监控已开始');
-    }
-  }
-
-  // 开始监控
-  function startMonitoring() {
-    if (monitoringInterval) return; // 避免重复启动
-
-    monitoringInterval = setInterval(() => {
-      updateUsageMonitoring();
-      updateTopMembers();
-      updateAlerts();
-    }, 5000); // 每5秒更新一次
-  }
-
-  // 停止监控
-  function stopMonitoring() {
-    if (monitoringInterval) {
-      clearInterval(monitoringInterval);
-      monitoringInterval = null;
-    }
-  }
-
-  // 监控周期变更
-  function changeMonitorPeriod(period) {
-    showToast(`已切换到${period === 'month' ? '本月' : period === 'week' ? '本周' : '今日'}数据`);
-    // 这里可以根据period重新加载对应的数据
-    setTimeout(() => {
-      updateUsageMonitoring();
-      updateTopMembers();
-      updateAlerts();
-    }, 300);
-  }
-
-  // 刷新使用监控数据（简单版本，实际可以从服务器获取最新数据）
-  function refreshUsageMonitoring() {
-    showToast('正在刷新监控数据...');
-    setTimeout(() => {
-      updateUsageMonitoring();
-      updateTopMembers();
-      updateAlerts();
-      showToast('监控数据已刷新');
-    }, 1000);
-  }
-
-  // === 额外的Missing Functions ===
-
-  // 显示批量分配通知Modal (完善)
-  function showBatchConfirmModal(assignments) {
-    const modalHTML = `
-      <div class="modal" id="modal-batchConfirm" style="display: flex;">
-        <div class="modal-box" style="width: 500px;">
-          <div class="modal-title">确认批量分配</div>
-
-          <div style="margin: 20px 0;">
-            <div style="font-size: 14px; font-weight: 600; margin-bottom: 10px;">将要执行以下分配操作：</div>
-            <div style="max-height: 300px; overflow-y: auto;">
-              ${assignments.map(assignment => `
-                <div style="background: var(--bg); padding: 12px; border-radius: 6px; margin-bottom: 8px; font-size: 13px;">
-                  <strong>${assignment.memberName}</strong> → ${assignment.keyName} (${assignment.quota.toLocaleString()} tokens/月)
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <div class="modal-actions">
-            <button class="btn" onclick="closeBatchConfirmModal()">取消</button>
-            <button class="btn btn-primary" onclick="executeBatchAssignment()">确认执行</button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-  }
-
-  function closeBatchConfirmModal() {
-    const modal = document.getElementById('modal-batchConfirm');
-    if (modal) modal.remove();
-  }
-
-  function executeBatchAssignment() {
-    closeBatchConfirmModal();
-    closeModal('batchAssign');
-    showToast('批量分配操作已完成！', 'success');
-    setTimeout(() => {
-      renderMemberKeyTable(); // 重新渲染表格显示结果
-    }, 500);
-  }
-
-  // 显示Key统计详情
-  function showKeyStatsDetail(keyId) {
-    const projectData = memberKeyAssignments['proj-1'];
-    const keyInfo = projectData.keys[keyId];
-    if (!keyInfo) {
-      showToast('Key信息不存在', 'error');
-      return;
-    }
-
-    // 计算这个key的使用统计
-    const keyUsage = Object.values(projectData.members)
-      .filter(member => member.assignedKeys.includes(keyId))
-      .map(member => ({
-        name: member.name,
-        role: member.role,
-        quota: member.keyQuotas[keyId].allocated,
-        used: member.keyQuotas[keyId].used,
-        percentage: ((member.keyQuotas[keyId].used / member.keyQuotas[keyId].allocated) * 100).toFixed(1)
-      }));
-
-    const modalHTML = `
-      <div class="modal" id="modal-keyStats" style="display: flex;">
-        <div class="modal-box" style="width: 600px;">
-          <div class="modal-title">${keyInfo.name} - 使用统计</div>
-
-          <div style="margin: 20px 0;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-              <div style="background: var(--bg); padding: 15px; border-radius: 8px; text-align: center;">
-                <div style="font-size: 24px; font-weight: 600; color: var(--primary);">${keyUsage.length}</div>
-                <div style="font-size: 12px; color: var(--sub);">分配成员</div>
-              </div>
-              <div style="background: var(--bg); padding: 15px; border-radius: 8px; text-align: center;">
-                <div style="font-size: 24px; font-weight: 600; color: var(--success);">${keyUsage.reduce((sum, u) => sum + u.used, 0).toLocaleString()}</div>
-                <div style="font-size: 12px; color: var(--sub);">总使用量</div>
-              </div>
-            </div>
-
-            <div style="font-weight: 600; margin-bottom: 10px;">成员使用详情：</div>
-            <div style="max-height: 250px; overflow-y: auto;">
-              ${keyUsage.map(member => `
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border); font-size: 13px;">
-                  </div>
-                    <strong>${member.name}</strong> <span style="color: var(--sub);">(${member.role})</span>
-                  </div>
-                  <div style="text-align: right;">
-                    </div>${member.used.toLocaleString()} / ${member.quota.toLocaleString()}</div>
-                    <div style="font-size: 11px; color: ${member.percentage > 80 ? 'var(--danger)' : 'var(--sub)'};">
-                      ${member.percentage}%
-                    </div>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <div class="modal-actions">
-            <button class="btn btn-primary" onclick="closeKeyStatsModal()">关闭</button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-  }
-
-  function closeKeyStatsModal() {
-    const modal = document.getElementById('modal-keyStats');
-    if (modal) modal.remove();
-  }
-
-  // 显示使用趋势图表 (简化版)
-  function showUsageTrends() {
-    const modalHTML = `
-      <div class="modal" id="modal-usageTrends" style="display: flex;">
-        <div class="modal-box" style="width: 800px;">
-          <div class="modal-title">使用趋势分析</div>
-
-          <div style="margin: 20px 0;">
-            <div style="background: var(--bg); padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px;">
-              <div style="font-size: 16px; color: var(--sub);">📈 最近7天Token使用趋势</div>
-              <div style="height: 200px; display: flex; align-items: end; justify-content: space-around; border-bottom: 2px solid var(--border); margin-top: 20px;">
-                <div style="width: 40px; height: 60%; background: var(--primary); margin: 0 5px;" title="3/10: 425K"></div>
-                <div style="width: 40px; height: 75%; background: var(--primary); margin: 0 5px;" title="3/11: 530K"></div>
-                <div style="width: 40px; height: 85%; background: var(--primary); margin: 0 5px;" title="3/12: 612K"></div>
-                <div style="width: 40px; height: 70%; background: var(--primary); margin: 0 5px;" title="3/13: 488K"></div>
-                <div style="width: 40px; height: 90%; background: var(--primary); margin: 0 5px;" title="3/14: 645K"></div>
-                <div style="width: 40px; height: 95%; background: var(--danger); margin: 0 5px;" title="3/15: 680K"></div>
-                <div style="width: 40px; height: 88%; background: var(--primary); margin: 0 5px;" title="3/16: 620K"></div>
-              </div>
-              <div style="display: flex; justify-content: space-around; font-size: 12px; color: var(--sub); margin-top: 8px;">
-                <span>3/10</span><span>3/11</span><span>3/12</span><span>3/13</span><span>3/14</span><span>3/15</span><span>3/16</span>
-              </div>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-              <div style="background: #ECFDF3; padding: 15px; border-radius: 8px;">
-                <div style="color: var(--success); font-weight: 600; margin-bottom: 8px;">📈 增长趋势</div>
-                <div style="font-size: 13px; line-height: 1.6;">
-                  • 本周平均使用量 +12%<br>
-                  • GPT-4使用占比 65%<br>
-                  • Claude使用稳定增长
-                </div>
-              </div>
-              <div style="background: #FEF3F2; padding: 15px; border-radius: 8px;">
-                <div style="color: var(--danger); font-weight: 600; margin-bottom: 8px;">⚠️ 注意事项</div>
-                <div style="font-size: 13px; line-height: 1.6;">
-                  • 3/15 使用量异常高<br>
-                  • 王五配额使用率107%<br>
-                  • 建议检查异常调用
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="modal-actions">
-            <button class="btn" onclick="exportUsageReport()" style="margin-right: auto;">📊 导出报告</button>
-            <button class="btn btn-primary" onclick="closeUsageTrendsModal()">关闭</button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-  }
-
-  function closeUsageTrendsModal() {
-    const modal = document.getElementById('modal-usageTrends');
-    if (modal) modal.remove();
-  }
-
-  // 快速配额调整
-  function quickAdjustQuota(memberId, adjustment) {
-    const projectData = memberKeyAssignments['proj-1'];
-    const member = projectData?.members[memberId];
-    if (!member || member.assignedKeys.length === 0) {
-      showToast('该成员未分配Key', 'error');
-      return;
-    }
-
-    // 对所有已分配的Key进行等比例调整
-    let totalAdjusted = 0;
-    member.assignedKeys.forEach(keyId => {
-      const currentQuota = member.keyQuotas[keyId].allocated;
-      const newQuota = Math.max(1000, currentQuota + adjustment);
-      member.keyQuotas[keyId].allocated = newQuota;
-      totalAdjusted += (newQuota - currentQuota);
-    });
-
-    renderMemberKeyTable(); // 重新渲染
-    const action = adjustment > 0 ? '增加' : '减少';
-    showToast(`成功为 ${member.name} ${action}配额 ${Math.abs(totalAdjusted).toLocaleString()} tokens`);
-  }
 </script>
-
-<!-- Toast Container -->
-<div class="toast-container" id="toast-container"></div>
-
 </body>
 </html>
