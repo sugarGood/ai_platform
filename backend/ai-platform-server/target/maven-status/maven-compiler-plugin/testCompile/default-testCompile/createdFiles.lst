@@ -1,0 +1,10 @@
+com\aiplatform\backend\member\ProjectMemberControllerTest.class
+com\aiplatform\backend\capability\AiCapabilityControllerTest.class
+com\aiplatform\backend\aikey\ProjectAiKeyControllerTest.class
+com\aiplatform\backend\workspace\ProjectWorkspaceControllerTest.class
+com\aiplatform\backend\service\ProjectServiceControllerTest.class
+com\aiplatform\backend\token\WorkspaceAccessTokenControllerTest.class
+com\aiplatform\backend\binding\WorkspaceCapabilityControllerTest.class
+com\aiplatform\backend\project\ProjectControllerTest.class
+com\aiplatform\backend\aikey\ProjectAiKeyUsageControllerTest.class
+com\aiplatform\backend\AiPlatformBackendApplicationTests.class

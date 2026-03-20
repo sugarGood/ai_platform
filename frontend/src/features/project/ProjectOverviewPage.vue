@@ -1,11 +1,11 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
+import { getProjectById } from '../../composables/useProjects'
 import ActivityTimeline from '../../components/ui/ActivityTimeline.vue'
 import CardPanel from '../../components/ui/CardPanel.vue'
 import StatCard from '../../components/ui/StatCard.vue'
-import { getProjectById } from '../../mocks/projects'
 import NotFoundProjectState from './NotFoundProjectState.vue'
 
 const route = useRoute()
@@ -34,7 +34,7 @@ const stats = computed(() => {
     },
     {
       id: 'services',
-      icon: '⚙️',
+      icon: '🛰️',
       label: '代码服务',
       value: `${project.value.serviceCount}`,
       delta: `${project.value.serviceCount} 个已关联服务`,
@@ -77,7 +77,7 @@ const stats = computed(() => {
 
     <div class="overview-grid">
       <CardPanel title="代码服务健康状态">
-        <div class="service-list" data-testid="project-overview-services">
+        <div v-if="project.services.length" class="service-list" data-testid="project-overview-services">
           <article v-for="service in project.services" :key="service.id" class="service-item">
             <div>
               <div class="service-name">
@@ -89,10 +89,14 @@ const stats = computed(() => {
             <span class="service-status" :class="service.statusTone">{{ service.statusLabel }}</span>
           </article>
         </div>
+        <p v-else class="empty-state" data-testid="project-overview-services">
+          当前项目还没有接入代码服务，后续可以继续联调 `/api/projects/:projectId/services`。
+        </p>
       </CardPanel>
 
       <CardPanel title="项目活动">
-        <ActivityTimeline :items="project.activities" />
+        <ActivityTimeline v-if="project.activities.length" :items="project.activities" />
+        <p v-else class="empty-state">当前项目还没有活动记录，后续可继续接入项目动态接口。</p>
       </CardPanel>
     </div>
   </section>
@@ -141,7 +145,8 @@ const stats = computed(() => {
 }
 
 .service-stack,
-.service-meta {
+.service-meta,
+.empty-state {
   color: var(--text-subtle);
   font-size: 12px;
 }
@@ -150,8 +155,13 @@ const stats = computed(() => {
   margin-left: 8px;
 }
 
-.service-meta {
+.service-meta,
+.empty-state {
   margin-top: 6px;
+}
+
+.empty-state {
+  line-height: 1.7;
 }
 
 .service-status {

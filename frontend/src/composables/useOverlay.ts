@@ -1,5 +1,9 @@
 ﻿import { reactive } from 'vue'
 
+import router from '../router'
+import type { BackendBranchStrategy, BackendProjectType } from '../types/project'
+import { branchStrategyLabelMap, createProject, projectTypeLabelMap } from './useProjects'
+
 export type OverlayKind = 'none' | 'notifications' | 'new-project' | 'action'
 
 export interface OverlayShortcut {
@@ -9,10 +13,9 @@ export interface OverlayShortcut {
 
 interface NewProjectDraft {
   name: string
-  type: string
-  description: string
-  repo: string
-  branch: string
+  code: string
+  type: BackendProjectType
+  branchStrategy: BackendBranchStrategy
 }
 
 interface OverlayState {
@@ -23,14 +26,15 @@ interface OverlayState {
   items: string[]
   shortcuts: OverlayShortcut[]
   draft: NewProjectDraft
+  submitError: string
+  submitting: boolean
 }
 
 const defaultDraft = (): NewProjectDraft => ({
   name: '',
-  type: '对外产品',
-  description: '',
-  repo: '',
-  branch: 'main',
+  code: '',
+  type: 'PRODUCT',
+  branchStrategy: 'GIT_FLOW',
 })
 
 const state = reactive<OverlayState>({
@@ -41,11 +45,14 @@ const state = reactive<OverlayState>({
   items: [],
   shortcuts: [],
   draft: defaultDraft(),
+  submitError: '',
+  submitting: false,
 })
 
-// ???????????????????????????
 function resetDraft() {
   state.draft = defaultDraft()
+  state.submitError = ''
+  state.submitting = false
 }
 
 export function closeOverlay() {
@@ -73,20 +80,19 @@ export function openNotifications() {
     '支付网关生产部署仍待双人审批，已等待 23 分钟。',
   ]
   state.shortcuts = []
+  state.submitError = ''
 }
 
-// ???????????????????????????????
 export function openNewProjectModal() {
   state.open = true
   state.kind = 'new-project'
   state.title = '新建项目空间'
-  state.description = '补充基础信息后即可生成项目草稿，后续再继续完善服务与知识库配置。'
+  state.description = '字段已对齐后端 `POST /api/projects`，创建成功后会立即刷新项目空间列表。'
   state.items = []
   state.shortcuts = []
   resetDraft()
 }
 
-// ????????????????????????????
 export function openActionDialog(options: {
   title: string
   description: string
@@ -99,38 +105,69 @@ export function openActionDialog(options: {
   state.description = options.description
   state.items = options.items ?? []
   state.shortcuts = options.shortcuts ?? []
+  state.submitError = ''
+  state.submitting = false
 }
 
-// ?????????????????????????????????
-export function submitNewProjectDraft() {
-  const name = state.draft.name.trim() || '未命名项目'
+export async function submitNewProjectDraft() {
+  const name = state.draft.name.trim()
+  const code = state.draft.code.trim().toUpperCase()
 
-  openActionDialog({
-    title: `已创建项目草稿：${name}`,
-    description: '当前为前端原型交互，项目草稿已在界面层完成收集，下一步可继续接后端创建接口。',
-    items: [
-      `项目类型：${state.draft.type}`,
-      `主干分支：${state.draft.branch || 'main'}`,
-      state.draft.repo ? `仓库地址：${state.draft.repo}` : '暂未填写仓库地址，可稍后补充。',
-    ],
-    shortcuts: [{ label: '返回项目列表', to: '/projects' }],
-  })
+  if (!name || !code) {
+    state.submitError = '请先填写项目名称和项目编码。'
+    return
+  }
+
+  state.submitError = ''
+  state.submitting = true
+
+  try {
+    const createdProject = await createProject({
+      name,
+      code,
+      projectType: state.draft.type,
+      branchStrategy: state.draft.branchStrategy,
+    })
+
+    const overviewPath = `/projects/${createdProject.id}/overview`
+    const items = [
+      `项目编码：${code}`,
+      `项目类型：${projectTypeLabelMap[state.draft.type]}`,
+      `分支策略：${branchStrategyLabelMap[state.draft.branchStrategy]}`,
+      '项目列表已和后端重新同步。',
+    ]
+
+    openActionDialog({
+      title: `项目已创建：${createdProject.name}`,
+      description: '后端创建接口调用成功，项目空间列表已经刷新。',
+      items,
+      shortcuts: [
+        { label: '进入项目概览', to: overviewPath },
+        { label: '返回项目列表', to: '/projects' },
+      ],
+    })
+
+    void router.replace('/projects')
+  } catch (error) {
+    state.submitError = error instanceof Error ? error.message : '项目创建失败，请稍后重试。'
+  } finally {
+    state.submitting = false
+  }
 }
 
-// ??????????????????????????????????
 export function triggerModuleAction(actionLabel: string, contextTitle?: string) {
   const title = contextTitle ? `${contextTitle} · ${actionLabel}` : actionLabel
 
   const descriptionMap: Record<string, string> = {
-    '新建工作流': '已打开工作流创建入口，可继续补充触发器、LLM 节点、工具调用和审批链。',
-    '导入模板': '可从模板库选择预设流程，快速初始化当前页面的标准能力。',
-    '导出周报': '已触发周报导出动作，后续可接入真实下载接口。',
-    '生成评估报告': '已触发评估报告生成入口，可继续接入异步任务与文件下载。',
-    '保存配置': '已记录当前配置保存动作，后续可接入后端持久化。',
-    '保存项目设置': '已记录项目设置保存动作，后续可接入后端持久化。',
-    '分配新 Key': 'Key分配功能已准备就绪，可选择成员并配置对应的模型权限与配额限制。',
-    '导出使用报告': '正在生成Key使用情况报告，包含成员活跃度、配额使用率和异常告警分析。',
-    '生成成员使用指南': '正在根据项目配置生成个性化的Key使用指南，包含权限说明和最佳实践。',
+    新建工作流: '已打开工作流创建入口，可继续补充触发器、LLM 节点、工具调用和审批链。',
+    导入模板: '可从模板库选择预设流程，快速初始化当前页面的标准能力。',
+    导出周报: '已触发周报导出动作，后续可接入真实下载接口。',
+    生成评估报告: '已触发评估报告生成入口，可继续接入异步任务与文件下载。',
+    保存配置: '已记录当前配置保存动作，后续可接入后端持久化。',
+    保存项目设置: '已记录项目设置保存动作，后续可接入后端持久化。',
+    '分配新 Key': 'Key 分配功能已准备就绪，可选择成员并配置对应的模型权限与配额限制。',
+    导出使用报告: '正在生成 Key 使用情况报告，包含成员活跃度、配额使用率和异常告警分析。',
+    生成成员使用指南: '正在根据项目配置生成个性化的 Key 使用指南，包含权限说明和最佳实践。',
   }
 
   openActionDialog({

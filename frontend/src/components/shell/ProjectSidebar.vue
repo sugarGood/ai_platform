@@ -2,8 +2,8 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
+import { getProjectById } from '../../composables/useProjects'
 import { projectNavGroups } from '../../mocks/navigation'
-import { getProjectById } from '../../mocks/projects'
 
 const route = useRoute()
 

@@ -1,13 +1,19 @@
 ﻿<script setup lang="ts">
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { useProjects } from '../../composables/useProjects'
+import { useOverlay } from '../../composables/useOverlay'
 import ProjectCard from '../../components/ui/ProjectCard.vue'
 import ProjectTable from '../../components/ui/ProjectTable.vue'
-import { useOverlay } from '../../composables/useOverlay'
-import { projectSummaries } from '../../mocks/projects'
 
 const router = useRouter()
 const { openNewProjectModal } = useOverlay()
+const { loadProjects, projectState, projectSummaries } = useProjects()
+
+onMounted(() => {
+  void loadProjects()
+})
 
 function enterProject(projectId: string) {
   const targetPath = `/projects/${projectId}/overview`
@@ -36,16 +42,32 @@ function enterProject(projectId: string) {
       </button>
     </section>
 
-    <div class="projects-grid">
-      <ProjectCard
-        v-for="project in projectSummaries.slice(0, 3)"
-        :key="project.id"
-        :project="project"
-        @click="enterProject"
-      />
+    <div v-if="projectState.error" class="projects-banner" data-testid="projects-error-banner">
+      后端项目接口暂时不可用，当前回退到本地 mock 数据。
+      <span class="projects-banner-detail">{{ projectState.error }}</span>
     </div>
 
-    <ProjectTable :projects="projectSummaries" @select="enterProject" />
+    <div v-else-if="projectState.loading && !projectState.loadedFromApi" class="projects-banner" data-testid="projects-loading-banner">
+      正在加载后端项目列表...
+    </div>
+
+    <template v-if="projectSummaries.length">
+      <div class="projects-grid">
+        <ProjectCard
+          v-for="project in projectSummaries.slice(0, 3)"
+          :key="project.id"
+          :project="project"
+          @click="enterProject"
+        />
+      </div>
+
+      <ProjectTable :projects="projectSummaries" @select="enterProject" />
+    </template>
+
+    <section v-else class="projects-empty" data-testid="projects-empty-state">
+      <h2>还没有项目</h2>
+      <p>后端已连接成功，但项目列表为空。可以先从右上角创建第一个项目。</p>
+    </section>
   </section>
 </template>
 
@@ -100,6 +122,38 @@ function enterProject(projectId: string) {
   color: white;
   cursor: pointer;
   box-shadow: 0 14px 24px rgba(79, 110, 247, 0.24);
+}
+
+.projects-banner,
+.projects-empty {
+  padding: 16px 18px;
+  border: 1px solid rgba(79, 110, 247, 0.14);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-soft);
+}
+
+.projects-banner {
+  color: var(--text-subtle);
+  line-height: 1.7;
+}
+
+.projects-banner-detail {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-main);
+  word-break: break-word;
+}
+
+.projects-empty h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.projects-empty p {
+  margin: 10px 0 0;
+  color: var(--text-subtle);
+  line-height: 1.7;
 }
 
 .projects-grid {

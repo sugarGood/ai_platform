@@ -1,0 +1,81 @@
+2026-03-19 14:03:33.659 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 14:03:34.198 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 14:03:34.252 INFO  [main] o.e.j.server.handler.ContextHandler - Started o.e.j.s.ServletContextHandler@6f80fafe{/,null,AVAILABLE}
+2026-03-19 14:03:34.411 INFO  [main] o.e.jetty.server.AbstractConnector - Started ServerConnector@1ef3efa8{HTTP/1.1, (http/1.1)}{0.0.0.0:8080}
+2026-03-19 14:03:34.426 INFO  [main] org.eclipse.jetty.server.Server - Started Server@2364305a{STARTING}[11.0.18,sto=0] @1228ms
+2026-03-19 14:03:34.426 INFO  [main] com.dbmcp.DatabaseServerApp - Database MCP Server started at http://0.0.0.0:8080/mcp (health: /health). sessionTtl=900s, poolTtl=1800s, cleanup=60s, maxSessions=200, maxPools=50
+2026-03-19 14:03:34.426 INFO  [main] com.dbmcp.DatabaseServerApp - No default database connection configured. Clients must provide a connection object or reuse connection_id.
+2026-03-19 14:03:34.426 INFO  [main] com.dbmcp.DatabaseServerApp - Authentication mode: NONE, allowedHosts=[], allowedOrigins=[], activeSessions=0, activePools=0
+2026-03-19 14:03:34.426 WARN  [main] com.dbmcp.DatabaseServerApp - Authentication is disabled. Configure DATABASE_MCP_AUTH_MODE and token/header settings before exposing this service publicly.
+2026-03-19 14:47:06.640 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 14:47:07.104 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 14:47:07.126 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 14:49:13.148 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 14:49:13.496 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 14:49:13.510 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 15:29:13.328 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 15:29:13.741 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 15:29:13.757 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 15:48:24.675 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 15:48:25.311 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 15:48:25.355 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 15:48:44.398 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 15:48:44.905 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 15:48:44.927 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 15:49:44.868 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 15:49:45.348 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 15:49:45.370 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 15:58:59.247 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 15:58:59.661 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 15:58:59.679 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 16:15:41.348 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 16:15:41.785 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 16:15:41.803 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 16:15:45.744 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 16:15:46.073 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 16:15:46.087 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 16:16:39.800 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 16:16:40.110 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 16:16:40.123 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 16:19:12.156 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 16:19:12.487 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 16:19:12.501 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 16:19:17.871 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 16:19:18.196 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 16:19:18.210 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 16:20:34.922 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 16:20:35.264 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 16:20:35.279 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 16:21:07.069 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 16:21:07.396 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 16:21:07.410 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 17:10:12.032 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 17:10:12.478 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 17:10:12.497 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 17:11:59.518 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 17:11:59.942 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 17:11:59.959 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 17:19:44.308 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 17:19:44.728 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 17:19:44.747 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 17:19:52.597 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 17:19:52.917 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 17:19:52.932 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 17:21:47.001 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 17:21:47.322 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 17:21:47.332 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 17:22:15.535 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 17:22:15.857 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 17:22:15.872 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 17:32:23.306 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 17:32:23.635 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 17:32:23.648 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 17:33:01.406 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 17:33:01.734 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 17:33:01.747 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 18:12:16.200 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 18:12:16.557 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 18:12:16.572 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]
+2026-03-19 18:19:56.548 WARN  [main] com.dbmcp.DatabaseServerApp - Startup arguments are ignored. Configure the server via config.properties or DATABASE_MCP_* environment variables.
+2026-03-19 18:19:56.865 INFO  [main] org.eclipse.jetty.server.Server - jetty-11.0.18; built: 2023-10-27T02:14:36.036Z; git: 5a9a771a9fbcb9d36993630850f612581b78c13f; jvm 17.0.13+10-LTS-268
+2026-03-19 18:19:56.879 INFO  [database-mcp-shutdown] org.eclipse.jetty.server.Server - Stopped Server@2364305a{STOPPING}[11.0.18,sto=0]

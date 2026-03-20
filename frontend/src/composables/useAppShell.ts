@@ -1,7 +1,7 @@
-import { computed } from 'vue'
+﻿import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
-import { getProjectById } from '../mocks/projects'
+import { getProjectById } from './useProjects'
 
 export function useAppShell() {
   const route = useRoute()

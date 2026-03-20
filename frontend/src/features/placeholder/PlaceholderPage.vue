@@ -1,10 +1,10 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 import PlaceholderState from '../../components/ui/PlaceholderState.vue'
 import { globalPlaceholderContent, projectPlaceholderContent } from '../../mocks/placeholders'
-import { getProjectById } from '../../mocks/projects'
+import { getProjectById } from '../../composables/useProjects'
 import type { PlaceholderContent } from '../../types/navigation'
 import NotFoundProjectState from '../project/NotFoundProjectState.vue'
 
@@ -75,3 +75,4 @@ const content = computed<PlaceholderContent>(() => {
   letter-spacing: 0.06em;
 }
 </style>
+

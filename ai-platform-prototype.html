@@ -300,68 +300,54 @@
   </div>
 
   <div class="nav-section">
-    <div class="nav-label">概览</div>
+    <div class="nav-label">我的工作台</div>
     <div class="nav-item active" onclick="showPage('dashboard')">
       <span class="icon">📊</span><span class="label">工作台</span>
     </div>
-    <div class="nav-item" onclick="showPage('efficiency')">
-      <span class="icon">📈</span><span class="label">效能看板</span>
+    <div class="nav-item" onclick="showPage('my-credential')">
+      <span class="icon">🪪</span><span class="label">我的凭证</span>
+    </div>
+    <div class="nav-item" onclick="showPage('my-ability')">
+      <span class="icon">🧩</span><span class="label">我的能力</span>
+    </div>
+    <div class="nav-item" onclick="showPage('my-usage')">
+      <span class="icon">📈</span><span class="label">我的用量</span>
     </div>
   </div>
 
   <div class="nav-section">
-    <div class="nav-label">开发</div>
+    <div class="nav-label">项目</div>
     <div class="nav-item" onclick="showPage('projects')">
       <span class="icon">📁</span><span class="label">项目空间</span>
     </div>
-    <div class="nav-item" onclick="showPage('cicd')">
-      <span class="icon">🔧</span><span class="label">CI / CD</span>
-    </div>
-    <div class="nav-item" onclick="showPage('envs')">
-      <span class="icon">🌍</span><span class="label">环境管理</span>
-    </div>
-    <div class="nav-item" onclick="showPage('incidents')">
-      <span class="icon">🚨</span><span class="label">事故中心</span>
-      <span class="badge">3</span>
-    </div>
   </div>
 
   <div class="nav-section">
-    <div class="nav-label">AI 能力</div>
-    <div class="nav-item" onclick="showPage('workflows')">
-      <span class="icon">🔀</span><span class="label">Agent 工作流</span>
-    </div>
-    <div class="nav-item" onclick="showPage('functions')">
-      <span class="icon">🔩</span><span class="label">Function 管理</span>
-    </div>
-    <div class="nav-item" onclick="showPage('ai-monitor')">
-      <span class="icon">🔭</span><span class="label">执行监控</span>
-    </div>
-    <div class="nav-item" onclick="showPage('evals')">
-      <span class="icon">📐</span><span class="label">AI 评估</span>
-    </div>
-  </div>
-
-  <div class="nav-section">
-    <div class="nav-label">资源</div>
-    <div class="nav-item" onclick="showPage('atomic')">
-      <span class="icon">⚛️</span><span class="label">原子能力库</span>
-    </div>
+    <div class="nav-label">平台 AI 能力</div>
     <div class="nav-item" onclick="showPage('knowledge')">
-      <span class="icon">📚</span><span class="label">知识库（全局）</span>
+      <span class="icon">📚</span><span class="label">全局知识库</span>
     </div>
     <div class="nav-item" onclick="showPage('skills')">
-      <span class="icon">⚡</span><span class="label">Skill 库</span>
+      <span class="icon">⚡</span><span class="label">全局技能库</span>
     </div>
-    <div class="nav-item" onclick="showPage('templates')">
-      <span class="icon">🗂️</span><span class="label">模板库</span>
+    <div class="nav-item" onclick="showPage('global-tools')">
+      <span class="icon">🔩</span><span class="label">全局工具集</span>
+    </div>
+    <div class="nav-item" onclick="showPage('integrations')">
+      <span class="icon">🔌</span><span class="label">集成市场</span>
+    </div>
+    <div class="nav-item" onclick="showPage('atomic')">
+      <span class="icon">⚛️</span><span class="label">原子能力中心</span>
     </div>
   </div>
 
   <div class="nav-section">
-    <div class="nav-label">管理</div>
+    <div class="nav-label">平台管理</div>
     <div class="nav-item" onclick="showPage('keys')">
-      <span class="icon">🔑</span><span class="label">Key 管理</span>
+      <span class="icon">🔑</span><span class="label">凭证管理</span>
+    </div>
+    <div class="nav-item" onclick="showPage('efficiency')">
+      <span class="icon">📊</span><span class="label">用量看板</span>
     </div>
     <div class="nav-item" onclick="showPage('audit')">
       <span class="icon">🛡️</span><span class="label">审计安全</span>
@@ -399,19 +385,22 @@
   </div>
 
   <div class="nav-section">
-    <div class="nav-label">产品</div>
+    <div class="nav-label">项目概览</div>
     <div class="nav-item" id="pnav-overview" onclick="showProjectPage('overview')">
       <span class="icon">📊</span><span class="label">概览</span>
     </div>
-    <div class="nav-item" id="pnav-agile" onclick="showProjectPage('agile')">
-      <span class="icon">🏃</span><span class="label">研发流程</span>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">AI 工作区</div>
+    <div class="nav-item" id="pnav-workspace" onclick="showProjectPage('workspace')">
+      <span class="icon">🚀</span><span class="label">接入与凭证</span>
     </div>
-    <div class="nav-item" id="pnav-knowledge" onclick="showProjectPage('knowledge')">
-      <span class="icon">📚</span><span class="label">知识库</span>
+    <div class="nav-item" id="pnav-ai-cap" onclick="showProjectPage('ai-cap')">
+      <span class="icon">🤖</span><span class="label">AI 能力配置</span>
     </div>
-    <div class="nav-item" id="pnav-incidents" onclick="showProjectPage('incidents')">
-      <span class="icon">🚨</span><span class="label">事故</span>
-      <span class="badge">1</span>
+    <div class="nav-item" id="pnav-quota" onclick="showProjectPage('keymanagement')">
+      <span class="icon">📊</span><span class="label">配额管理</span>
     </div>
   </div>
 
@@ -427,12 +416,6 @@
     <div class="nav-label">配置</div>
     <div class="nav-item" id="pnav-members" onclick="showProjectPage('members')">
       <span class="icon">👥</span><span class="label">成员权限</span>
-    </div>
-    <div class="nav-item" id="pnav-keymanagement" onclick="showProjectPage('keymanagement')">
-      <span class="icon">🔑</span><span class="label">Key管理中心</span>
-    </div>
-    <div class="nav-item" id="pnav-skillconfig" onclick="showProjectPage('skillconfig')">
-      <span class="icon">⚡</span><span class="label">Skill 配置</span>
     </div>
     <div class="nav-item" id="pnav-psettings" onclick="showProjectPage('psettings')">
       <span class="icon">⚙️</span><span class="label">项目设置</span>
@@ -454,6 +437,7 @@
     <div class="topbar-title" id="topbar-title">工作台</div>
     <div class="topbar-actions">
       <button class="btn">🔔 通知</button>
+      <button class="btn" onclick="showPage('my-credential')">🪪 我的凭证</button>
       <button class="btn btn-primary" onclick="openModal('newProject')">+ 新建项目</button>
     </div>
   </div>
@@ -467,114 +451,40 @@
           <div class="stat-icon">🤖</div>
           <div class="stat-label">本月 Token 消耗</div>
           <div class="stat-value" style="color:var(--primary)">2.4M</div>
-          <div class="stat-delta">↑ 12% 较���月</div>
+          <div class="stat-delta">↑ 12% 较上月</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">👥</div>
-          <div class="stat-label">活跃员工</div>
+          <div class="stat-icon">🪪</div>
+          <div class="stat-label">活跃平台凭证</div>
           <div class="stat-value">38</div>
-          <div class="stat-delta">↑ 5 人新增</div>
+          <div class="stat-delta">↑ 5 本周新增</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">📁</div>
-          <div class="stat-label">进行中项目</div>
-          <div class="stat-value">12</div>
-          <div class="stat-delta" style="color:var(--sub)">共 18 个项目</div>
+          <div class="stat-icon">⚡</div>
+          <div class="stat-label">本月技能调用</div>
+          <div class="stat-value" style="color:var(--success)">1,847</div>
+          <div class="stat-delta">↑ 23% 较上月</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">🚨</div>
-          <div class="stat-label">待处理事故</div>
-          <div class="stat-value" style="color:var(--danger)">3</div>
-          <div class="stat-delta down">↑ 较昨日 +2</div>
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-label">凭证即将过期</div>
+          <div class="stat-value" style="color:var(--warning)">4</div>
+          <div class="stat-delta down">7 天内过期</div>
         </div>
       </div>
 
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">Token 消耗趋势（本月）</span>
-            <span style="font-size:12px;color:var(--sub)">日维度</span>
-          </div>
-          <div class="card-body">
-            <div class="chart-area" id="chartArea"></div>
-            <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--sub)">
-              <span>3/1</span><span>3/7</span><span>3/14</span><span>3/21</span><span>3/28</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">部门 Token 用量排行</span>
-            <span class="badge badge-blue">本月</span>
-          </div>
-          <div class="card-body">
-            <div style="margin-bottom:14px">
-              <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px">
-                <span>前端团队</span><span style="font-weight:600">680K</span>
-              </div>
-              <div class="progress-wrap"><div class="progress-bar" style="width:85%"></div></div>
-            </div>
-            <div style="margin-bottom:14px">
-              <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px">
-                <span>后端团队</span><span style="font-weight:600">920K</span>
-              </div>
-              <div class="progress-wrap"><div class="progress-bar" style="width:100%"></div></div>
-            </div>
-            <div style="margin-bottom:14px">
-              <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px">
-                <span>产品团队</span><span style="font-weight:600;color:var(--warning)">420K / 400K</span>
-              </div>
-              <div class="progress-wrap"><div class="progress-bar warning" style="width:105%;max-width:100%"></div></div>
-              <div style="font-size:11px;color:var(--warning);margin-top:4px">⚠ 已超出配额</div>
-            </div>
-            <div>
-              <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:13px">
-                <span>测试团队</span><span style="font-weight:600">180K</span>
-              </div>
-              <div class="progress-wrap"><div class="progress-bar" style="width:22%"></div></div>
-            </div>
-          </div>
-        </div>
+      <!-- 快捷操作 -->
+      <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+        <button class="btn" onclick="showPage('my-credential')">🪪 查看我的凭证</button>
+        <button class="btn" onclick="showPage('my-ability')">🧩 查看可用能力</button>
+        <button class="btn" onclick="showPage('integrations')">🔌 集成市场</button>
+        <button class="btn" onclick="showPage('skills')">⚡ 全局技能库</button>
+        <button class="btn btn-primary" onclick="openModal('newProject')" style="margin-left:auto">+ 新建项目</button>
       </div>
-
-      <div class="grid-2">
+      <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:16px">
         <div class="card">
           <div class="card-header">
-            <span class="card-title">🚨 近期事故</span>
-            <button class="btn" style="font-size:12px;padding:4px 10px" onclick="showPage('incidents')">查看全部</button>
-          </div>
-          <div class="card-body" style="padding:0 20px">
-            <div class="incident-item">
-              <div class="incident-dot critical"></div>
-              <div style="flex:1">
-                <div class="incident-title">支付服务 NullPointerException</div>
-                <div class="incident-meta">order-service · 10分钟前 · AI已完成诊断</div>
-              </div>
-              <span class="badge badge-red">严重</span>
-            </div>
-            <div class="incident-item">
-              <div class="incident-dot warning"></div>
-              <div style="flex:1">
-                <div class="incident-title">用户中心接口 P99 延迟超阈值</div>
-                <div class="incident-meta">user-service · 1小时前 · 待分配</div>
-              </div>
-              <span class="badge badge-yellow">警告</span>
-            </div>
-            <div class="incident-item">
-              <div class="incident-dot info"></div>
-              <div style="flex:1">
-                <div class="incident-title">前端打包体积超出限制</div>
-                <div class="incident-meta">mall-frontend · 3小时前 · AI正在分析</div>
-              </div>
-              <span class="badge badge-blue">提示</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <span class="card-title">📋 项目活动</span>
+            <span class="card-title">📋 平台动态</span>
           </div>
           <div class="card-body" style="padding: 16px 20px">
             <div class="timeline">
@@ -586,12 +496,12 @@
               <div class="timeline-item">
                 <div class="timeline-dot"></div>
                 <div class="timeline-time">1小时前</div>
-                <div class="timeline-content"><strong>王五</strong> 通过 MCP 接入了 <strong>支付项目</strong> 知识库</div>
+                <div class="timeline-content"><strong>王五</strong> 平台凭证成功接入 Claude Code，可用技能 12 个</div>
               </div>
               <div class="timeline-item">
                 <div class="timeline-dot"></div>
                 <div class="timeline-time">2小时前</div>
-                <div class="timeline-content">AI 为 <strong>用户中心</strong> 项目生成了接口文档</div>
+                <div class="timeline-content">AI 为 <strong>用户中心</strong> 项目生成了接口文档（/doc-gen 技能）</div>
               </div>
               <div class="timeline-item">
                 <div class="timeline-dot"></div>
@@ -772,13 +682,14 @@
       </div>
 
       <div class="card" style="margin-top:16px">
-        <div class="card-header"><span class="card-title">🤖 AI 项目摘要</span><span style="font-size:12px;color:var(--sub)">每日更新</span></div>
+        <div class="card-header"><span class="card-title">🤖 AI 项目摘要</span><span style="font-size:12px;color:var(--sub)">每日更新 · 由代理层自动生成</span></div>
         <div class="card-body">
           <div class="ai-bubble">
-            <strong>商城系统 · 今日摘要（3月8日）</strong><br><br>
+            <strong>商城系统 · 今日摘要（3月19日）</strong><br><br>
             Sprint 8 进度 58%，剩余6天，整体节奏正常。<strong>订单状态机重构</strong>是本Sprint最大风险项（8SP，仅65%），建议今天组织对齐。<br><br>
             mall-frontend 正在构建 feature/search（ES接入），预计15分钟完成。mall-backend 生产环境运行稳定，P99 延迟 120ms。<br><br>
-            <strong>今日建议：</strong>支付回调联调已拖1天，建议李四与支付网关团队今天完成对接。
+            <strong>AI 能力使用：</strong>本周 /code-review 触发 34 次，search_knowledge 调用 76 次，知识库命中率 82%。<br><br>
+            <strong>今日建议：</strong>支付回调联调已拖1天，建议李四与支付网关团队今天完成对接。李四凭证用量接近月配额（96%），建议提前申请扩容。
           </div>
         </div>
       </div>
@@ -988,22 +899,24 @@
       </div>
     </div>
 
-    <!-- ========== PROJECT: KNOWLEDGE ========== -->
+    <!-- ========== PROJECT: KNOWLEDGE (旧页面保留，AI能力Tab中已有更完整版) ========== -->
     <div class="page" id="page-proj-knowledge">
+      <div style="background:var(--primary-light);border:1px solid var(--primary);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--primary)">
+        💡 知识库已整合至「AI 能力」模块，提供更完整的继承关系管理和检索测试能力。<button class="btn" style="padding:3px 10px;font-size:12px;margin-left:10px" onclick="showProjectPage('ai-cap')">前往 AI 能力 →</button>
+      </div>
       <div style="display:flex;gap:12px;margin-bottom:16px">
         <input placeholder="搜索知识库..." style="max-width:280px">
         <button class="btn btn-primary" style="margin-left:auto">+ 上传文档</button>
-        <button class="btn">🌐 启用全局知识库</button>
       </div>
       <div class="card">
         <table>
-          <thead><tr><th>文件名</th><th>类型</th><th>大小</th><th>上传者</th><th>更新时间</th><th>操作</th></tr></thead>
+          <thead><tr><th>文件名</th><th>类型</th><th>状态</th><th>大小</th><th>上传者</th><th>更新时间</th><th>操作</th></tr></thead>
           <tbody>
-          <tr><td>📄 商城需求文档 v2.3</td><td><span class="badge badge-blue">需求</span></td><td>245KB</td><td>张三</td><td>2026-03-06</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
-          <tr><td>📐 商城原型图 v1.5</td><td><span class="badge badge-yellow">原型</span></td><td>3.2MB</td><td>产品部</td><td>2026-03-05</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
-          <tr><td>📋 接口文档 - 商品模块</td><td><span class="badge badge-green">技术</span></td><td>88KB</td><td>AI生成</td><td>2026-03-04</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
-          <tr><td>📋 接口文档 - 订单模块</td><td><span class="badge badge-green">技术</span></td><td>102KB</td><td>AI生成</td><td>2026-03-03</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
-          <tr><td>🔒 安全规范手册</td><td><span class="badge badge-gray">全局</span></td><td>56KB</td><td>全局启用</td><td>2026-02-20</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+          <tr><td>📄 商城需求文档 v2.3</td><td><span class="badge badge-blue">需求</span></td><td><span class="badge badge-green">✓ 已向量化</span></td><td>245KB</td><td>张三</td><td>2026-03-06</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+          <tr><td>📐 商城原型图 v1.5</td><td><span class="badge badge-yellow">原型</span></td><td><span class="badge badge-green">✓ 已向量化</span></td><td>3.2MB</td><td>产品部</td><td>2026-03-05</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+          <tr><td>📋 接口文档 - 商品模块</td><td><span class="badge badge-green">技术</span></td><td><span class="badge badge-green">✓ 已向量化</span></td><td>88KB</td><td>AI生成</td><td>2026-03-04</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+          <tr><td>📋 系统架构设计文档</td><td><span class="badge badge-green">技术</span></td><td><span class="badge badge-blue">⟳ 向量化中</span></td><td>102KB</td><td>王五</td><td>2026-03-19</td><td><span style="font-size:12px;color:var(--sub)">处理中...</span></td></tr>
+          <tr><td>🔒 安全规范手册</td><td><span class="badge badge-gray">全局</span></td><td><span class="badge badge-green">✓ 已向量化</span></td><td>56KB</td><td>全局启用</td><td>2026-02-20</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
           </tbody>
         </table>
       </div>
@@ -1036,11 +949,12 @@
       <div class="card">
         <div class="card-header"><span class="card-title">项目成员权限</span><button class="btn btn-primary" style="font-size:12px;padding:5px 12px">+ 添加成员</button></div>
         <table>
-          <thead><tr><th>成员</th><th>角色</th><th>Token 限额/月</th><th>知识库</th><th>Skill</th><th>MCP访问</th></tr></thead>
+          <thead><tr><th>成员</th><th>角色</th><th>凭证状态</th><th>知识库权限</th><th>可用技能</th><th>配额（月）</th><th>操作</th></tr></thead>
           <tbody>
-          <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#4F6EF7">张</div>张三</div></td><td><span class="badge badge-blue">项目负责人</span></td><td>无限制</td><td>读写</td><td>全部</td><td><span class="badge badge-green">✓</span></td></tr>
-          <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#F04438">李</div>李四</div></td><td><span class="badge badge-gray">开发</span></td><td>500K</td><td>只读</td><td>代码相关</td><td><span class="badge badge-green">✓</span></td></tr>
-          <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#12B76A">王</div>王五</div></td><td><span class="badge badge-gray">开发</span></td><td>500K</td><td>只读</td><td>代码相关</td><td><span class="badge badge-green">✓</span></td></tr>
+          <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#4F6EF7">张</div>张三</div></td><td><span class="badge badge-blue">项目负责人</span></td><td><span class="badge badge-green">● 正常</span></td><td>读写</td><td>全部</td><td>无限制</td><td><button class="btn" style="padding:3px 8px;font-size:11px">权限设置</button></td></tr>
+          <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#F04438">李</div>李四</div></td><td><span class="badge badge-gray">开发</span></td><td><span class="badge badge-yellow">● 接近上限</span></td><td>只读</td><td>代码相关</td><td style="color:var(--warning);font-weight:600">180K / 100K</td><td><div style="display:flex;gap:4px"><button class="btn btn-primary" style="padding:3px 8px;font-size:11px">扩容</button><button class="btn" style="padding:3px 8px;font-size:11px">权限设置</button></div></td></tr>
+          <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#12B76A">王</div>王五</div></td><td><span class="badge badge-gray">开发</span></td><td><span class="badge badge-green">● 正常</span></td><td>只读</td><td>代码相关</td><td>68K / 100K</td><td><button class="btn" style="padding:3px 8px;font-size:11px">权限设置</button></td></tr>
+          <tr><td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:#F79009">陈</div>陈六</div></td><td><span class="badge badge-gray">测试</span></td><td><span class="badge badge-green">● 正常</span></td><td>只读</td><td>测试相关</td><td>42K / 100K</td><td><button class="btn" style="padding:3px 8px;font-size:11px">权限设置</button></td></tr>
           </tbody>
         </table>
       </div>
@@ -1083,10 +997,89 @@
           <div class="card-header"><span class="card-title">研发配置</span></div>
           <div class="card-body">
             <div class="form-group"><label class="form-label">Sprint 周期</label><select><option>2周</option><option>1周</option></select></div>
-            <div class="form-group"><label class="form-label">Token 月配额</label><select><option>跟随部门（500K）</option><option>1M</option><option>无限制</option></select></div>
+            <div class="form-group"><label class="form-label">Token 月配额（跳转配额管理页设置）</label><div style="display:flex;align-items:center;gap:8px"><span style="font-size:13px;font-weight:600">500K / 月</span><button class="btn" style="padding:3px 10px;font-size:12px" onclick="showProjectPage('keymanagement')">配额管理 →</button></div></div>
             <div class="form-group"><label class="form-label">关联原子能力</label><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px"><span class="badge badge-green">🔐 SSO</span><span class="badge badge-blue">💳 支付网关</span><button class="btn" style="padding:2px 8px;font-size:11px">+ 添加</button></div></div>
             <button class="btn btn-primary">保存</button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PROJECT: QUOTA MANAGEMENT ========== -->
+    <div class="page" id="page-proj-keymanagement">
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-icon">🪙</div><div class="stat-label">本月已用 Token</div><div class="stat-value" style="color:var(--primary)">320K</div><div class="stat-delta">配额 500K · 64% 已用</div></div>
+        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">项目成员数</div><div class="stat-value">6</div><div class="stat-delta">4 人本月有使用</div></div>
+        <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-label">超额成员</div><div class="stat-value" style="color:var(--danger)">1</div><div class="stat-delta down">李四 · 已超 80K</div></div>
+        <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-label">重置日</div><div class="stat-value" style="font-size:18px">4月1日</div><div class="stat-delta" style="color:var(--sub)">剩余 13 天</div></div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📊 项目配额设置</span>
+            <button class="btn btn-primary" style="font-size:12px;padding:5px 12px">申请扩容</button>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">项目月总配额</label>
+              <div style="display:flex;align-items:center;gap:8px">
+                <input value="500,000 tokens" style="flex:1">
+                <span style="font-size:12px;color:var(--sub)">由平台管理员审批调整</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">成员默认限额</label>
+              <select><option>100K（默认）</option><option>200K</option><option>300K</option><option>不限制（消耗项目池）</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">超配额策略</label>
+              <select><option>降速（切换轻量模型）</option><option>暂停使用</option><option>通知管理员</option></select>
+            </div>
+            <div style="background:var(--bg);border-radius:8px;padding:12px;margin-bottom:14px">
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span>项目总配额</span><strong>500K</strong></div>
+              <div class="progress-wrap" style="margin-bottom:6px"><div class="progress-bar" style="width:64%"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--sub)"><span>已用 320K</span><span>剩余 180K</span></div>
+            </div>
+            <button class="btn btn-primary">保存配置</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">👥 成员配额分配</span><button class="btn btn-primary" style="font-size:12px;padding:5px 12px">批量调整</button></div>
+          <table>
+            <thead><tr><th>成员</th><th>角色</th><th>本月已用</th><th>个人限额</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#4F6EF7">张</div>张三</div></td>
+              <td><span class="badge badge-blue">负责人</span></td>
+              <td>186K</td><td>无限制</td>
+              <td><span class="badge badge-green">● 正常</span></td>
+              <td><button class="btn" style="padding:3px 8px;font-size:11px">调整</button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#F04438">李</div>李四</div></td>
+              <td><span class="badge badge-gray">开发</span></td>
+              <td style="color:var(--danger);font-weight:600">180K</td><td>100K</td>
+              <td><span class="badge badge-red">● 已超额</span></td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-primary" style="padding:3px 8px;font-size:11px">扩容</button><button class="btn" style="padding:3px 8px;font-size:11px">暂停</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#12B76A">王</div>王五</div></td>
+              <td><span class="badge badge-gray">开发</span></td>
+              <td>68K</td><td>100K</td>
+              <td><span class="badge badge-green">● 正常</span></td>
+              <td><button class="btn" style="padding:3px 8px;font-size:11px">调整</button></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#F79009">陈</div>陈六</div></td>
+              <td><span class="badge badge-gray">测试</span></td>
+              <td>42K</td><td>100K</td>
+              <td><span class="badge badge-green">● 正常</span></td>
+              <td><button class="btn" style="padding:3px 8px;font-size:11px">调整</button></td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -1237,25 +1230,36 @@
 
     <!-- ========== KNOWLEDGE ========== -->
     <div class="page" id="page-knowledge">
-      <div style="display:flex;gap:12px;margin-bottom:20px">
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-label">全局文档总数</div><div class="stat-value" style="color:var(--primary)">48</div><div class="stat-delta">↑ 3 本月新增</div></div>
+        <div class="stat-card"><div class="stat-icon">🔍</div><div class="stat-label">本月检索次数</div><div class="stat-value">3,241</div><div class="stat-delta">↑ 18% 较上月</div></div>
+        <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-label">知识库命中率</div><div class="stat-value" style="color:var(--success)">78%</div><div class="stat-delta">目标 ≥ 70% ✓</div></div>
+        <div class="stat-card"><div class="stat-icon">⟳</div><div class="stat-label">向量化队列</div><div class="stat-value" style="color:var(--warning)">2</div><div class="stat-delta">处理中</div></div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-bottom:16px">
         <input placeholder="搜索知识库..." style="max-width:320px">
+        <select style="width:auto"><option>全部分类</option><option>规范</option><option>安全</option><option>架构</option><option>设计</option></select>
         <button class="btn btn-primary" style="margin-left:auto">+ 上传文档</button>
+        <button class="btn">🔍 检索测试</button>
       </div>
 
       <div class="tabs" id="knowledgeTabs">
         <div class="tab active" onclick="switchTab('knowledgeTabs','kb-global')">🌐 全局知识库</div>
         <div class="tab" onclick="switchTab('knowledgeTabs','kb-project')">📁 项目知识库</div>
+        <div class="tab" onclick="switchTab('knowledgeTabs','kb-pipeline')">⚙️ RAG 流水线</div>
       </div>
 
       <div id="kb-global">
         <div class="card">
           <table>
-            <thead><tr><th>文档名称</th><th>分类</th><th>被引用项目</th><th>更新时间</th><th>操作</th></tr></thead>
+            <thead><tr><th>文档名称</th><th>分类</th><th>分块数</th><th>命中次数</th><th>被引用项目</th><th>注入方式</th><th>更新时间</th><th>操作</th></tr></thead>
             <tbody>
-            <tr><td>📄 公司代码规范 v3.0</td><td><span class="badge badge-blue">规范</span></td><td>18个项目</td><td>2026-02-01</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
-            <tr><td>🔒 安全开发手册</td><td><span class="badge badge-red">安全</span></td><td>18个项目</td><td>2026-01-15</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
-            <tr><td>📐 UI 设计规范</td><td><span class="badge badge-yellow">设计</span></td><td>9个项目</td><td>2026-01-10</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
-            <tr><td>🏗️ 微服务架构指南</td><td><span class="badge badge-green">架构</span></td><td>12个项目</td><td>2025-12-20</td><td><button class="btn" style="padding:3px 8px;font-size:12px">查看</button></td></tr>
+            <tr><td>📄 公司代码规范 v3.0</td><td><span class="badge badge-blue">规范</span></td><td>312 块</td><td>1,240</td><td>18个项目</td><td><span class="badge badge-blue">自动注入</span></td><td>2026-02-01</td><td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">查看</button><button class="btn" style="padding:3px 8px;font-size:11px">更新</button></div></td></tr>
+            <tr><td>🔒 安全开发手册</td><td><span class="badge badge-red">安全</span></td><td>186 块</td><td>892</td><td>18个项目</td><td><span class="badge badge-blue">自动注入</span></td><td>2026-01-15</td><td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">查看</button><button class="btn" style="padding:3px 8px;font-size:11px">更新</button></div></td></tr>
+            <tr><td>📐 UI 设计规范</td><td><span class="badge badge-yellow">设计</span></td><td>94 块</td><td>341</td><td>9个项目</td><td><span class="badge badge-green">按需检索</span></td><td>2026-01-10</td><td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">查看</button><button class="btn" style="padding:3px 8px;font-size:11px">更新</button></div></td></tr>
+            <tr><td>🏗️ 微服务架构指南</td><td><span class="badge badge-green">架构</span></td><td>228 块</td><td>567</td><td>12个项目</td><td><span class="badge badge-green">按需检索</span></td><td>2025-12-20</td><td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">查看</button><button class="btn" style="padding:3px 8px;font-size:11px">更新</button></div></td></tr>
+            <tr><td>📋 产品线文档 v1.0</td><td><span class="badge badge-gray">产品</span></td><td>—</td><td>—</td><td>—</td><td><span class="badge badge-yellow">⟳ 向量化中</span></td><td>2026-03-19</td><td><span style="font-size:12px;color:var(--sub)">处理中...</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -1267,90 +1271,162 @@
             <select style="border:none;font-weight:600;font-size:14px;background:transparent;padding:0">
               <option>商城系统</option><option>用户中心</option><option>支付网关</option>
             </select>
+            <button class="btn btn-primary" style="font-size:12px;padding:5px 12px">+ 上传文档</button>
           </div>
           <table>
-            <thead><tr><th>文档名称</th><th>类型</th><th>上传者</th><th>更新时间</th></tr></thead>
+            <thead><tr><th>文档名称</th><th>类型</th><th>分块数</th><th>状态</th><th>上传者</th><th>更新时间</th><th>操作</th></tr></thead>
             <tbody>
-            <tr><td>📄 商城需求文档 v2.3</td><td><span class="badge badge-blue">需求</span></td><td>张三</td><td>2026-03-06</td></tr>
-            <tr><td>📐 原型图 v1.5</td><td><span class="badge badge-yellow">原型</span></td><td>产品部</td><td>2026-03-05</td></tr>
+            <tr><td>📄 商城需求文档 v2.3</td><td><span class="badge badge-blue">需求</span></td><td>248 块</td><td><span class="badge badge-green">✓ 已向量化</span></td><td>张三</td><td>2026-03-06</td><td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">查看</button><button class="btn" style="padding:3px 8px;font-size:11px">删除</button></div></td></tr>
+            <tr><td>📐 原型图 v1.5</td><td><span class="badge badge-yellow">原型</span></td><td>62 块</td><td><span class="badge badge-green">✓ 已向量化</span></td><td>产品部</td><td>2026-03-05</td><td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">查看</button><button class="btn" style="padding:3px 8px;font-size:11px">删除</button></div></td></tr>
+            <tr><td>📋 系统架构设计文档</td><td><span class="badge badge-green">技术</span></td><td>—</td><td><span class="badge badge-blue">⟳ 向量化中</span></td><td>王五</td><td>2026-03-19</td><td><span style="font-size:12px;color:var(--sub)">处理中...</span></td></tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <div id="kb-pipeline" style="display:none">
+        <div class="grid-2" style="margin-bottom:16px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">⚙️ RAG Pipeline 状态</span><span class="badge badge-green">● 运行中</span></div>
+            <div class="card-body">
+              <div style="margin-bottom:14px">
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>文档解析（Apache Tika）</span><span class="badge badge-green">● 正常</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>智能分块（语义分块）</span><span class="badge badge-green">● 正常</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Embedding（BGE-M3）</span><span class="badge badge-green">● 正常</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>向量存储（pgvector）</span><span class="badge badge-green">● 正常</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px"><span>Reranking（BGE-Reranker）</span><span class="badge badge-green">● 正常</span></div>
+              </div>
+              <div style="background:var(--bg);border-radius:8px;padding:12px;font-size:12px">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="color:var(--sub)">今日处理文档</span><span>12 个</span></div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="color:var(--sub)">平均向量化耗时</span><span>8.3s / 文档</span></div>
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">队列待处理</span><span style="color:var(--warning)">2 个</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">🔍 检索测试</span></div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label">输入测试 Query</label>
+                <input placeholder="例：如何处理支付回调异常？">
+              </div>
+              <div class="form-group">
+                <label class="form-label">检索范围</label>
+                <select><option>全局 + 项目（商城系统）</option><option>仅全局</option><option>仅项目</option></select>
+              </div>
+              <button class="btn btn-primary" style="width:100%;margin-bottom:12px">🔍 执行检索</button>
+              <div style="background:var(--bg);border-radius:8px;padding:12px;font-size:12px">
+                <div style="font-weight:600;margin-bottom:8px">检索结果预览：</div>
+                <div style="padding:8px;background:white;border-radius:6px;margin-bottom:6px;border-left:3px solid var(--primary)">
+                  <div style="font-weight:500;margin-bottom:3px">安全开发手册 · 第 4.2 节</div>
+                  <div style="color:var(--sub)">支付回调需验证签名，防止重放攻击。建议使用幂等 Key...</div>
+                  <div style="color:var(--primary);font-size:11px;margin-top:4px">相关度：0.92</div>
+                </div>
+                <div style="padding:8px;background:white;border-radius:6px;border-left:3px solid var(--success)">
+                  <div style="font-weight:500;margin-bottom:3px">商城需求文档 v2.3 · 支付模块</div>
+                  <div style="color:var(--sub)">支付回调接口需在 30 秒内响应，超时自动重试 3 次...</div>
+                  <div style="color:var(--success);font-size:11px;margin-top:4px">相关度：0.87</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- ========== SKILLS ========== -->
     <div class="page" id="page-skills">
-      <div style="display:flex;gap:12px;margin-bottom:20px">
-        <button class="btn btn-primary" style="margin-left:auto">+ 创建 Skill</button>
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-label">全局技能总数</div><div class="stat-value" style="color:var(--primary)">12</div><div class="stat-delta">↑ 2 本月新增</div></div>
+        <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-label">本月总调用次数</div><div class="stat-value">1,847</div><div class="stat-delta">↑ 23% 较上月</div></div>
+        <div class="stat-card"><div class="stat-icon">👍</div><div class="stat-label">平均满意度</div><div class="stat-value" style="color:var(--success)">92%</div><div class="stat-delta">基于用户反馈</div></div>
+        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-label">待审核发布</div><div class="stat-value" style="color:var(--warning)">2</div><div class="stat-delta down">需管理员审批</div></div>
       </div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-header"><span class="card-title">⚡ 内置 Skill</span></div>
-          <div class="card-body" style="padding:0 20px">
-            <div class="skill-item">
-              <div class="skill-icon" style="background:#EEF1FF">🔍</div>
-              <div style="flex:1">
-                <div class="skill-name">Code Review</div>
-                <div class="skill-desc">自动审查代码质量、安全、性能</div>
-              </div>
-              <span class="badge badge-green">全局</span>
-            </div>
-            <div class="skill-item">
-              <div class="skill-icon" style="background:#ECFDF3">📝</div>
-              <div style="flex:1">
-                <div class="skill-name">接口文档生成</div>
-                <div class="skill-desc">代码→OpenAPI 文档自动生成</div>
-              </div>
-              <span class="badge badge-green">全局</span>
-            </div>
-            <div class="skill-item">
-              <div class="skill-icon" style="background:#FEF3F2">🚨</div>
-              <div style="flex:1">
-                <div class="skill-name">故障诊断</div>
-                <div class="skill-desc">日志分析、根因定位、修复建议</div>
-              </div>
-              <span class="badge badge-green">全局</span>
-            </div>
-            <div class="skill-item">
-              <div class="skill-icon" style="background:#FFFAEB">✅</div>
-              <div style="flex:1">
-                <div class="skill-name">单元测试生成</div>
-                <div class="skill-desc">根据代码自动生成单元测试用例</div>
-              </div>
-              <span class="badge badge-green">全局</span>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><span class="card-title">🏢 公司自定义 Skill</span></div>
-          <div class="card-body" style="padding:0 20px">
-            <div class="skill-item">
-              <div class="skill-icon" style="background:#F9F5FF">🔐</div>
-              <div style="flex:1">
-                <div class="skill-name">SSO 集成助手</div>
-                <div class="skill-desc">一键生成公司 SSO 对接代码</div>
-              </div>
-              <span class="badge badge-blue">自定义</span>
-            </div>
-            <div class="skill-item">
-              <div class="skill-icon" style="background:#F0FDF4">🏷️</div>
-              <div style="flex:1">
-                <div class="skill-name">Git提交规范检查</div>
-                <div class="skill-desc">确保 commit message 符合公司规范</div>
-              </div>
-              <span class="badge badge-blue">自定义</span>
-            </div>
-            <div class="skill-item">
-              <div class="skill-icon" style="background:#FFFAEB">📊</div>
-              <div style="flex:1">
-                <div class="skill-name">BI 数据查询</div>
-                <div class="skill-desc">用自然语言查询公司 BI 数据</div>
-              </div>
-              <span class="badge badge-blue">自定义</span>
-            </div>
-          </div>
-        </div>
+
+      <div style="display:flex;gap:12px;margin-bottom:16px;align-items:center">
+        <input placeholder="搜索技能..." style="max-width:260px">
+        <select style="width:auto"><option>全部分类</option><option>工程</option><option>文档</option><option>测试</option><option>安全</option><option>数据</option></select>
+        <select style="width:auto"><option>全部状态</option><option>已发布</option><option>草稿</option><option>审核中</option></select>
+        <button class="btn btn-primary" style="margin-left:auto" onclick="openModal('createSkill')">+ 创建技能</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">企业全局技能库</span><span style="font-size:12px;color:var(--sub)">通过 MCP Prompts 暴露，在客户端呈现为 / 命令</span></div>
+        <table>
+          <thead><tr><th>技能名称</th><th>触发命令</th><th>分类</th><th>关联知识库</th><th>本月调用</th><th>满意度</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody>
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:8px"><div class="skill-icon" style="width:28px;height:28px;background:#EEF1FF;font-size:14px">🔍</div><div><div style="font-weight:500">代码审查</div><div style="font-size:11px;color:var(--sub)">规范·安全·性能三维度</div></div></div></td>
+            <td><code style="font-size:11px;background:var(--bg);padding:2px 6px;border-radius:4px">/code-review</code></td>
+            <td><span class="badge badge-blue">工程</span></td>
+            <td>代码规范 · 安全手册</td>
+            <td><strong>312</strong></td>
+            <td><span style="color:var(--success)">👍 94%</span></td>
+            <td><span class="badge badge-green">已发布</span></td>
+            <td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">▶ 测试</button><button class="btn" style="padding:3px 8px;font-size:11px">✏️ 编辑</button></div></td>
+          </tr>
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:8px"><div class="skill-icon" style="width:28px;height:28px;background:#FEF3F2;font-size:14px">🐛</div><div><div style="font-weight:500">Bug 分析</div><div style="font-size:11px;color:var(--sub)">日志分析+根因定位</div></div></div></td>
+            <td><code style="font-size:11px;background:var(--bg);padding:2px 6px;border-radius:4px">/bug-analysis</code></td>
+            <td><span class="badge badge-blue">工程</span></td>
+            <td>架构指南</td>
+            <td><strong>89</strong></td>
+            <td><span style="color:var(--success)">👍 91%</span></td>
+            <td><span class="badge badge-green">已发布</span></td>
+            <td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">▶ 测试</button><button class="btn" style="padding:3px 8px;font-size:11px">✏️ 编辑</button></div></td>
+          </tr>
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:8px"><div class="skill-icon" style="width:28px;height:28px;background:#ECFDF3;font-size:14px">📝</div><div><div style="font-weight:500">文档生成</div><div style="font-size:11px;color:var(--sub)">代码→OpenAPI/README</div></div></div></td>
+            <td><code style="font-size:11px;background:var(--bg);padding:2px 6px;border-radius:4px">/doc-gen</code></td>
+            <td><span class="badge badge-yellow">文档</span></td>
+            <td>—</td>
+            <td><strong>156</strong></td>
+            <td><span style="color:var(--success)">👍 88%</span></td>
+            <td><span class="badge badge-green">已发布</span></td>
+            <td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">▶ 测试</button><button class="btn" style="padding:3px 8px;font-size:11px">✏️ 编辑</button></div></td>
+          </tr>
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:8px"><div class="skill-icon" style="width:28px;height:28px;background:#FFFAEB;font-size:14px">📋</div><div><div style="font-weight:500">需求分析</div><div style="font-size:11px;color:var(--sub)">PRD拆解+验收标准</div></div></div></td>
+            <td><code style="font-size:11px;background:var(--bg);padding:2px 6px;border-radius:4px">/requirement-analysis</code></td>
+            <td><span class="badge badge-gray">产品</span></td>
+            <td>产品规范</td>
+            <td><strong>74</strong></td>
+            <td><span style="color:var(--success)">👍 90%</span></td>
+            <td><span class="badge badge-green">已发布</span></td>
+            <td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">▶ 测试</button><button class="btn" style="padding:3px 8px;font-size:11px">✏️ 编辑</button></div></td>
+          </tr>
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:8px"><div class="skill-icon" style="width:28px;height:28px;background:#F9F5FF;font-size:14px">🔐</div><div><div style="font-weight:500">安全扫描</div><div style="font-size:11px;color:var(--sub)">OWASP Top 10 检测</div></div></div></td>
+            <td><code style="font-size:11px;background:var(--bg);padding:2px 6px;border-radius:4px">/security-scan</code></td>
+            <td><span class="badge badge-red">安全</span></td>
+            <td>安全手册</td>
+            <td><strong>43</strong></td>
+            <td><span style="color:var(--success)">👍 96%</span></td>
+            <td><span class="badge badge-green">已发布</span></td>
+            <td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">▶ 测试</button><button class="btn" style="padding:3px 8px;font-size:11px">✏️ 编辑</button></div></td>
+          </tr>
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:8px"><div class="skill-icon" style="width:28px;height:28px;background:#F0FDF4;font-size:14px">🏗️</div><div><div style="font-weight:500">技术方案评审</div><div style="font-size:11px;color:var(--sub)">架构合理性+风险评估</div></div></div></td>
+            <td><code style="font-size:11px;background:var(--bg);padding:2px 6px;border-radius:4px">/tech-review</code></td>
+            <td><span class="badge badge-blue">工程</span></td>
+            <td>架构指南</td>
+            <td><strong>28</strong></td>
+            <td><span style="color:var(--warning)">👍 85%</span></td>
+            <td><span class="badge badge-yellow">审核中</span></td>
+            <td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">▶ 测试</button><button class="btn btn-primary" style="padding:3px 8px;font-size:11px">审批</button></div></td>
+          </tr>
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:8px"><div class="skill-icon" style="width:28px;height:28px;background:#EEF1FF;font-size:14px">✅</div><div><div style="font-weight:500">单元测试生成</div><div style="font-size:11px;color:var(--sub)">自动生成测试用例</div></div></div></td>
+            <td><code style="font-size:11px;background:var(--bg);padding:2px 6px;border-radius:4px">/gen-tests</code></td>
+            <td><span class="badge badge-gray">测试</span></td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td><span class="badge badge-gray">草稿</span></td>
+            <td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">▶ 测试</button><button class="btn btn-primary" style="padding:3px 8px;font-size:11px">提交审核</button></div></td>
+          </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -1406,46 +1482,140 @@
       </div>
     </div>
 
-    <!-- ========== KEYS ========== -->
+    <!-- ========== 凭证管理（平台管理员视图） ========== -->
     <div class="page" id="page-keys">
-      <div class="stats-grid" style="margin-bottom:20px">
-        <div class="stat-card"><div class="stat-label">总 Token 配额/月</div><div class="stat-value" style="color:var(--primary)">10M</div></div>
-        <div class="stat-card"><div class="stat-label">已使用</div><div class="stat-value">2.4M</div><div class="stat-delta">24% 已用</div></div>
-        <div class="stat-card"><div class="stat-label">超额部门</div><div class="stat-value" style="color:var(--danger)">1</div><div class="stat-delta down">产品团队</div></div>
-        <div class="stat-card"><div class="stat-label">接入模型</div><div class="stat-value">3</div><div class="stat-delta" style="color:var(--sub)">Claude / GPT / 文心</div></div>
+      <div class="tabs" id="credTabs">
+        <div class="tab active" onclick="switchTab('credTabs','cred-members')">👤 成员凭证管理</div>
+        <div class="tab" onclick="switchTab('credTabs','cred-upstream')">🔑 上游 API Key</div>
+        <div class="tab" onclick="switchTab('credTabs','cred-quota')">📊 配额策略</div>
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <span class="card-title">员工 Key 管理</span>
-          <button class="btn btn-primary" style="font-size:12px;padding:5px 12px">+ 分配 Key</button>
+      <!-- 成员凭证管理 -->
+      <div id="cred-members">
+        <div class="stats-grid" style="margin-bottom:20px">
+          <div class="stat-card"><div class="stat-icon">🪪</div><div class="stat-label">活跃平台凭证</div><div class="stat-value" style="color:var(--primary)">38</div><div class="stat-delta">↑ 5 本周新增</div></div>
+          <div class="stat-card"><div class="stat-icon">⚠️</div><div class="stat-label">即将过期（≤7天）</div><div class="stat-value" style="color:var(--warning)">3</div><div class="stat-delta down">需提醒续签</div></div>
+          <div class="stat-card"><div class="stat-icon">🚫</div><div class="stat-label">已吊销</div><div class="stat-value" style="color:var(--danger)">2</div><div class="stat-delta" style="color:var(--sub)">本月</div></div>
+          <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">今日正常接入</div><div class="stat-value" style="color:var(--success)">31</div><div class="stat-delta">有效调用记录</div></div>
         </div>
-        <table>
-          <thead><tr><th>员工</th><th>部门</th><th>月配额</th><th>本月已用</th><th>使用率</th><th>状态</th><th>操作</th></tr></thead>
-          <tbody>
-          <tr>
-            <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#4F6EF7">张</div>张三</div></td>
-            <td>技术部</td><td>无限制</td><td>320K</td>
-            <td><div class="progress-wrap" style="width:80px"><div class="progress-bar" style="width:32%"></div></div></td>
-            <td><span class="badge badge-green">正常</span></td>
-            <td><button class="btn" style="padding:3px 8px;font-size:12px">调整</button></td>
-          </tr>
-          <tr>
-            <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#F04438">李</div>李四</div></td>
-            <td>技术部</td><td>500K</td><td>480K</td>
-            <td><div class="progress-wrap" style="width:80px"><div class="progress-bar warning" style="width:96%"></div></div></td>
-            <td><span class="badge badge-yellow">接近上限</span></td>
-            <td><button class="btn" style="padding:3px 8px;font-size:12px">调整</button></td>
-          </tr>
-          <tr>
-            <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#F79009">陈</div>陈六</div></td>
-            <td>产品部</td><td>400K</td><td><span style="color:var(--danger);font-weight:600">430K</span></td>
-            <td><div class="progress-wrap" style="width:80px"><div class="progress-bar danger" style="width:100%"></div></div></td>
-            <td><span class="badge badge-red">已超额</span></td>
-            <td><button class="btn btn-primary" style="padding:3px 8px;font-size:12px">扩容</button></td>
-          </tr>
-          </tbody>
-        </table>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">成员平台凭证列表</span>
+            <div style="display:flex;gap:8px">
+              <select style="font-size:12px;padding:4px 8px"><option>全部状态</option><option>正常</option><option>即将过期</option><option>已过期</option><option>已吊销</option></select>
+              <button class="btn btn-primary" style="font-size:12px;padding:5px 12px">+ 为成员生成凭证</button>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>成员</th><th>凭证前缀</th><th>类型</th><th>月配额</th><th>本月已用</th><th>接入状态</th><th>到期时间</th><th>操作</th></tr></thead>
+            <tbody>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#4F6EF7">张</div>张三</div></td>
+              <td><code style="font-size:11px">plt_uid_zhang3_</code></td>
+              <td><span class="badge badge-blue">个人</span></td>
+              <td>无限制</td><td>186K</td>
+              <td><span class="badge badge-green">● 正常</span></td>
+              <td>2026-06-19</td>
+              <td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">调整</button><button class="btn" style="padding:3px 8px;font-size:11px">吊销</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#F04438">李</div>李四</div></td>
+              <td><code style="font-size:11px">plt_uid_lisi4_</code></td>
+              <td><span class="badge badge-blue">个人</span></td>
+              <td>500K</td><td>480K</td>
+              <td><span class="badge badge-yellow">● 接近上限</span></td>
+              <td>2026-06-15</td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-primary" style="padding:3px 8px;font-size:11px">扩容</button><button class="btn" style="padding:3px 8px;font-size:11px">吊销</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#F79009">陈</div>陈六</div></td>
+              <td><code style="font-size:11px">plt_uid_chen6_</code></td>
+              <td><span class="badge badge-blue">个人</span></td>
+              <td>400K</td><td><span style="color:var(--danger);font-weight:600">430K</span></td>
+              <td><span class="badge badge-red">● 已超额</span></td>
+              <td style="color:var(--warning)">2026-03-26 <span style="font-size:10px">（7天后）</span></td>
+              <td><div style="display:flex;gap:4px"><button class="btn btn-primary" style="padding:3px 8px;font-size:11px">扩容</button><button class="btn" style="padding:3px 8px;font-size:11px">吊销</button></div></td>
+            </tr>
+            <tr>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="avatar" style="width:26px;height:26px;font-size:11px;background:#6941C6">机</div>CI/CD Bot</div></td>
+              <td><code style="font-size:11px">plt_svc_cibot_</code></td>
+              <td><span class="badge badge-yellow">服务账号</span></td>
+              <td>2M</td><td>340K</td>
+              <td><span class="badge badge-green">● 正常</span></td>
+              <td>2027-01-01（审批）</td>
+              <td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">调整</button><button class="btn" style="padding:3px 8px;font-size:11px">吊销</button></div></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 上游 API Key（平台持有，成员不可见） -->
+      <div id="cred-upstream" style="display:none">
+        <div style="background:#FFFAEB;border:1px solid #FEC84B;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#B54708">
+          <strong>⚠ 安全说明：</strong>此处管理平台持有的上游真实 API Key。成员侧只持有平台凭证（plt_...），平台代理层使用此处 Key 转发请求，真实 Key 永不下发给成员。
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">上游 AI 供应商 API Key</span><button class="btn btn-primary" style="font-size:12px;padding:5px 12px">+ 添加</button></div>
+          <table>
+            <thead><tr><th>供应商</th><th>模型</th><th>Key 前缀</th><th>月配额</th><th>本月已用</th><th>代理端点</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody>
+            <tr>
+              <td><strong>Anthropic</strong></td>
+              <td>claude-sonnet-4-6</td>
+              <td><code style="font-size:11px">sk-ant-api03-xx•••</code></td>
+              <td>10M</td><td>2.4M</td>
+              <td><code style="font-size:11px">/proxy/anthropic</code></td>
+              <td><span class="badge badge-green">● 主用</span></td>
+              <td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">轮换</button><button class="btn" style="padding:3px 8px;font-size:11px">测试</button></div></td>
+            </tr>
+            <tr>
+              <td><strong>OpenAI</strong></td>
+              <td>gpt-4o</td>
+              <td><code style="font-size:11px">sk-proj-xx•••</code></td>
+              <td>5M</td><td>0.8M</td>
+              <td><code style="font-size:11px">/proxy/openai</code></td>
+              <td><span class="badge badge-gray">● 备用</span></td>
+              <td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">轮换</button><button class="btn" style="padding:3px 8px;font-size:11px">测试</button></div></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 配额策略 -->
+      <div id="cred-quota" style="display:none">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><span class="card-title">全局配额策略</span></div>
+            <div class="card-body">
+              <div class="form-group"><label class="form-label">公司月总配额</label><input value="10,000,000 tokens"></div>
+              <div class="form-group"><label class="form-label">默认成员月配额</label><input value="500,000 tokens"></div>
+              <div class="form-group"><label class="form-label">凭证默认有效期</label>
+                <select><option>30 天</option><option>90 天（推荐）</option><option>180 天</option></select>
+              </div>
+              <div class="form-group"><label class="form-label">超配额策略</label>
+                <select><option>降速（切换低价模型）</option><option>暂停使用</option><option>通知管理员</option></select>
+              </div>
+              <button class="btn btn-primary">保存策略</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">模型路由配置</span></div>
+            <div class="card-body">
+              <div class="form-group"><label class="form-label">默认模型（常规请求）</label>
+                <select><option>claude-sonnet-4-6（推荐）</option><option>gpt-4o</option></select>
+              </div>
+              <div class="form-group"><label class="form-label">降级模型（超配额时）</label>
+                <select><option>claude-haiku-4-5（低成本）</option><option>gpt-3.5-turbo</option></select>
+              </div>
+              <div class="form-group"><label class="form-label">高风险任务（安全审查节点）</label>
+                <select><option>claude-opus-4-6（高准确率）</option><option>claude-sonnet-4-6</option></select>
+              </div>
+              <button class="btn btn-primary">保存路由</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1580,109 +1750,109 @@
     <div class="page" id="page-atomic">
       <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center">
         <input placeholder="搜索原子能力..." style="max-width:260px">
-        <select style="width:auto"><option>全部分类</option><option>基础设施</option><option>业务中台</option><option>数据服务</option></select>
-        <button class="btn btn-primary" style="margin-left:auto">+ 注册原子能力</button>
+        <select style="width:auto"><option>全部分类</option><option>模型调用</option><option>知识检索</option><option>Agent能力</option><option>MCP开发</option><option>数据处理</option></select>
+        <button class="btn btn-primary" style="margin-left:auto">+ 发布新能力</button>
       </div>
       <div class="stats-grid" style="margin-bottom:20px">
-        <div class="stat-card"><div class="stat-icon">⚛️</div><div class="stat-label">已注册能力</div><div class="stat-value" style="color:var(--primary)">24</div><div class="stat-delta">↑ 3 本月新增</div></div>
-        <div class="stat-card"><div class="stat-icon">🔗</div><div class="stat-label">项目接入次数</div><div class="stat-value">86</div><div class="stat-delta">↑ 12% 较上月</div></div>
-        <div class="stat-card"><div class="stat-icon">🤖</div><div class="stat-label">AI自动接入</div><div class="stat-value">41</div><div class="stat-delta">AI生成率 48%</div></div>
-        <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-label">本周版本更新</div><div class="stat-value">5</div><div class="stat-delta" style="color:var(--sub)">能力迭代升级</div></div>
+        <div class="stat-card"><div class="stat-icon">⚛️</div><div class="stat-label">已发布能力</div><div class="stat-value" style="color:var(--primary)">18</div><div class="stat-delta">↑ 2 本月新增</div></div>
+        <div class="stat-card"><div class="stat-icon">📖</div><div class="stat-label">项目订阅次数</div><div class="stat-value">86</div><div class="stat-delta">↑ 12% 较上月</div></div>
+        <div class="stat-card"><div class="stat-icon">🔧</div><div class="stat-label">关联工具数</div><div class="stat-value">34</div><div class="stat-delta">通过 MCP 暴露</div></div>
+        <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-label">本周文档更新</div><div class="stat-value">5</div><div class="stat-delta" style="color:var(--sub)">能力规范迭代</div></div>
       </div>
 
-      <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">基础设施能力</div>
+      <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">模型调用规范</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
         <div class="atomic-card">
-          <div class="atomic-icon" style="background:#EEF1FF">📨</div>
-          <div class="atomic-name">统一短信服务</div>
-          <div class="atomic-desc">支持阿里云/腾讯云短信，统一接口，自动降级切换</div>
-          <div class="atomic-git">📦 git.company.com/platform/sms-sdk<br>🌿 branch: main &nbsp;·&nbsp; version: v2.3.1</div>
+          <div class="atomic-icon" style="background:#EEF1FF">🤖</div>
+          <div class="atomic-name">统一 API 调用规范</div>
+          <div class="atomic-desc">企业标准化 AI API 调用方式，含重试策略、超时配置、错误处理规范</div>
+          <div class="atomic-git">📄 docs/ai-api-standard.md · v1.2.0<br>🔗 适用：所有 AI 接入场景</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">Java</span><span class="project-tag">Node.js</span><span class="project-tag">Python</span></div>
-          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">已接入 12 个项目</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">🤖 AI接入</button></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">14 个项目订阅</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">查看文档</button></div>
         </div>
         <div class="atomic-card">
-          <div class="atomic-icon" style="background:#ECFDF3">📧</div>
-          <div class="atomic-name">邮件推送服务</div>
-          <div class="atomic-desc">模板邮件、HTML邮件、附件支持，自动重试机制</div>
-          <div class="atomic-git">📦 git.company.com/platform/mail-sdk<br>🌿 branch: main &nbsp;·&nbsp; version: v1.8.0</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">Java</span><span class="project-tag">Node.js</span></div>
-          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">已接入 8 个项目</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">🤖 AI接入</button></div>
+          <div class="atomic-icon" style="background:#ECFDF3">✍️</div>
+          <div class="atomic-name">Prompt 工程最佳实践</div>
+          <div class="atomic-desc">企业级 Prompt 设计规范，含角色设定、上下文注入、输出格式控制模板</div>
+          <div class="atomic-git">📄 docs/prompt-engineering.md · v2.0.0<br>🔗 适用：Skill 开发、Agent 设计</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">通用</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">18 个项目订阅</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">查看文档</button></div>
         </div>
         <div class="atomic-card">
-          <div class="atomic-icon" style="background:#FFFAEB">🗄️</div>
-          <div class="atomic-name">对象存储 OSS</div>
-          <div class="atomic-desc">文件上传下载、CDN加速、图片压缩裁剪、权限控制</div>
-          <div class="atomic-git">📦 git.company.com/platform/oss-sdk<br>🌿 branch: main &nbsp;·&nbsp; version: v3.1.2</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">Java</span><span class="project-tag">Node.js</span><span class="project-tag">Python</span></div>
-          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">已接入 15 个项目</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">🤖 AI接入</button></div>
+          <div class="atomic-icon" style="background:#FFFAEB">🌊</div>
+          <div class="atomic-name">流式响应处理规范</div>
+          <div class="atomic-desc">SSE 流式输出标准接入方式，含前端渲染、中断处理、Token 计数规范</div>
+          <div class="atomic-git">📄 docs/streaming-standard.md · v1.0.0<br>🔗 适用：实时对话场景</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">Node.js</span><span class="project-tag">React</span><span class="project-tag">Vue</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">9 个项目订阅</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">查看文档</button></div>
         </div>
       </div>
 
-      <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">业务中台能力</div>
+      <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">知识检索能力</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
         <div class="atomic-card">
-          <div class="atomic-icon" style="background:#F9F5FF">🔐</div>
-          <div class="atomic-name">统一身份认证 SSO</div>
-          <div class="atomic-desc">OIDC/OAuth2标准，支持MFA，会话管理，RBAC权限</div>
-          <div class="atomic-git">📦 git.company.com/platform/sso-client<br>🌿 branch: main &nbsp;·&nbsp; version: v4.0.3</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">Java</span><span class="project-tag">Node.js</span><span class="project-tag">React</span><span class="project-tag">Vue</span></div>
-          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">已接入 18 个项目</span><span class="badge badge-green">已标准化</span></div>
+          <div class="atomic-icon" style="background:#F9F5FF">🔍</div>
+          <div class="atomic-name">RAG 标准接入接口</div>
+          <div class="atomic-desc">企业知识库 RAG 标准调用接口，含向量检索、混合检索、Reranking 规范</div>
+          <div class="atomic-git">📄 docs/rag-interface.md · v1.1.0<br>🔗 端点：/mcp/global → search_knowledge</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">MCP Tool</span><span class="project-tag">REST API</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">12 个项目订阅</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">查看文档</button></div>
         </div>
         <div class="atomic-card">
-          <div class="atomic-icon" style="background:#FEF3F2">💳</div>
-          <div class="atomic-name">统一支付网关</div>
-          <div class="atomic-desc">微信/支付宝/银联，退款、对账、风控一体化</div>
-          <div class="atomic-git">📦 git.company.com/platform/pay-sdk<br>🌿 branch: release-2.x &nbsp;·&nbsp; version: v2.5.1</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">Java</span><span class="project-tag">Node.js</span></div>
-          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">已接入 6 个项目</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">🤖 AI接入</button></div>
-        </div>
-        <div class="atomic-card">
-          <div class="atomic-icon" style="background:#F0FDF4">📊</div>
-          <div class="atomic-name">BI 数据查询服务</div>
-          <div class="atomic-desc">自然语言查询业务数据，自动生成SQL，结果可视化</div>
-          <div class="atomic-git">📦 git.company.com/platform/bi-query<br>🌿 branch: main &nbsp;·&nbsp; version: v1.2.0</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">REST API</span><span class="project-tag">GraphQL</span></div>
-          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">已接入 9 个项目</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">🤖 AI接入</button></div>
+          <div class="atomic-icon" style="background:#FEF3F2">🔀</div>
+          <div class="atomic-name">混合检索策略规范</div>
+          <div class="atomic-desc">向量检索 + BM25 混合召回策略，含权重配置、召回数量、相关性阈值规范</div>
+          <div class="atomic-git">📄 docs/hybrid-search.md · v1.0.0<br>🔗 适用：知识库命中率优化</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">pgvector</span><span class="project-tag">BM25</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">6 个项目订阅</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">查看文档</button></div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header"><span class="card-title">🤖 AI 接入工作流示例</span><span style="font-size:12px;color:var(--sub)">选择能力后 AI 自动读取 Git 文档生成接入代码</span></div>
-        <div class="card-body">
-          <div class="grid-2">
-            <div>
-              <div class="ai-label">在 IDE 中输入：</div>
-              <div class="code-block" style="margin-bottom:12px"><span class="cm"># 告诉AI要接入短信能力</span><br>帮我在这个 Spring Boot 项目中<br>接入公司的统一短信服务</div>
-              <div class="ai-label">🤖 AI 自动处理步骤：</div>
-              <div class="timeline" style="margin-top:8px">
-                <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">Step 1</div><div class="timeline-content">MCP调用 <code>get_atomic_capability("sms")</code> 获取Git地址</div></div>
-                <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">Step 2</div><div class="timeline-content">读取仓库 README 与接入文档，理解API设计</div></div>
-                <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">Step 3</div><div class="timeline-content">分析当前项目技术栈（Spring Boot 3 + Maven）</div></div>
-                <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">Step 4</div><div class="timeline-content">生成完整接入代码 + 配置项 + 单元测试用例</div></div>
-              </div>
-            </div>
-            <div>
-              <div class="ai-label">生成的接入代码：</div>
-              <div class="code-block" style="font-size:11px;line-height:1.8">
-                <span class="cm">// pom.xml 自动补充依赖</span><br>
-                <span class="str">&lt;dependency&gt;</span><br>
-                &nbsp;&nbsp;<span class="str">&lt;groupId&gt;</span>com.company<span class="str">&lt;/groupId&gt;</span><br>
-                &nbsp;&nbsp;<span class="str">&lt;artifactId&gt;</span>sms-sdk<span class="str">&lt;/artifactId&gt;</span><br>
-                &nbsp;&nbsp;<span class="str">&lt;version&gt;</span>2.3.1<span class="str">&lt;/version&gt;</span><br>
-                <span class="str">&lt;/dependency&gt;</span><br><br>
-                <span class="cm">// SmsService.java（自动生成）</span><br>
-                <span class="kw">@Service</span><br>
-                <span class="kw">public class</span> SmsService {<br>
-                &nbsp;&nbsp;<span class="kw">@Autowired</span><br>
-                &nbsp;&nbsp;<span class="kw">private</span> CompanySmsClient smsClient;<br><br>
-                &nbsp;&nbsp;<span class="kw">public void</span> sendVerifyCode(String phone) {<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;smsClient.send(phone, <span class="str">"VERIFY_TPL"</span>,<br>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Map.of(<span class="str">"code"</span>, genCode()));<br>
-                &nbsp;&nbsp;}<br>
-                }
-              </div>
-            </div>
-          </div>
+      <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Agent 能力</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#EEF1FF">🧠</div>
+          <div class="atomic-name">Agent 设计模式</div>
+          <div class="atomic-desc">ReAct / Plan-Execute / Multi-Agent 三种模式规范，含适用场景、实现示例、安全边界</div>
+          <div class="atomic-git">📄 docs/agent-patterns.md · v1.3.0<br>🔗 适用：自动化工作流设计</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">通用</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">11 个项目订阅</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">查看文档</button></div>
+        </div>
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#ECFDF3">🔧</div>
+          <div class="atomic-name">Tool Calling 最佳实践</div>
+          <div class="atomic-desc">Function Calling 设计规范，含工具描述质量、参数设计、错误处理、并行调用规范</div>
+          <div class="atomic-git">📄 docs/tool-calling.md · v1.1.0<br>🔗 适用：工具集开发</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">JSON Schema</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">8 个项目订阅</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">查看文档</button></div>
+        </div>
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#FFFAEB">🛡️</div>
+          <div class="atomic-name">Agent 安全边界规范</div>
+          <div class="atomic-desc">Agent 权限最小化、操作审批流程、危险操作拦截、人工介入触发条件规范</div>
+          <div class="atomic-git">📄 docs/agent-safety.md · v1.0.0<br>🔗 适用：生产环境 Agent</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">安全</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">7 个项目订阅</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">查看文档</button></div>
+        </div>
+      </div>
+
+      <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">MCP 开发规范</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
+        <div class="atomic-card" style="border-color:var(--primary)">
+          <div class="atomic-icon" style="background:#EEF1FF">🔌</div>
+          <div class="atomic-name">自建 MCP 服务器开发指南</div>
+          <div class="atomic-desc">企业内部 MCP Server 开发规范，含脚手架使用、认证中间件、审计日志、发布流程</div>
+          <div class="atomic-git">📄 docs/mcp-development.md · v1.0.0<br>🔗 脚手架：npx create-platform-mcp</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">Node.js</span><span class="project-tag">TypeScript</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">5 个项目订阅</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">查看文档</button></div>
+        </div>
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#ECFDF3">📐</div>
+          <div class="atomic-name">MCP Tool 设计规范</div>
+          <div class="atomic-desc">Tool 命名规范、描述质量要求、参数 Schema 设计、幂等性与安全性要求</div>
+          <div class="atomic-git">📄 docs/mcp-tool-design.md · v1.0.0<br>🔗 适用：MCP Tool 开发</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">JSON-RPC 2.0</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:12px;color:var(--sub)">4 个项目订阅</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">查看文档</button></div>
         </div>
       </div>
     </div>
@@ -2563,8 +2733,1103 @@
       </div>
     </div>
 
+    <!-- ========== 我的凭证 ========== -->
+    <div class="page" id="page-my-credential">
+      <!-- 凭证状态卡 -->
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card" style="border-color:var(--success)">
+          <div class="card-header" style="background:#ECFDF3;border-radius:11px 11px 0 0">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:20px">🪪</span>
+              <div>
+                <div style="font-weight:700;font-size:14px">我的平台凭证</div>
+                <div style="font-size:12px;color:var(--sub)">个人凭证 · 有效期至 2026-06-19</div>
+              </div>
+            </div>
+            <span class="badge badge-green">● 正常</span>
+          </div>
+          <div class="card-body">
+            <div style="background:var(--bg);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-family:monospace;font-size:13px;display:flex;align-items:center;justify-content:space-between">
+              <span style="color:var(--sub)">plt_uid_zhang3_</span><span style="letter-spacing:2px">••••••••••••</span>
+              <button class="btn" style="padding:3px 10px;font-size:12px">显示 / 复制</button>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px;margin-bottom:14px">
+              <div style="background:var(--bg);border-radius:8px;padding:10px">
+                <div style="color:var(--sub);margin-bottom:4px">凭证类型</div>
+                <div style="font-weight:600">个人凭证（Personal）</div>
+              </div>
+              <div style="background:var(--bg);border-radius:8px;padding:10px">
+                <div style="color:var(--sub);margin-bottom:4px">有效期</div>
+                <div style="font-weight:600;color:var(--success)">90 天（剩余 92 天）</div>
+              </div>
+              <div style="background:var(--bg);border-radius:8px;padding:10px">
+                <div style="color:var(--sub);margin-bottom:4px">最近使用</div>
+                <div style="font-weight:600">10 分钟前</div>
+              </div>
+              <div style="background:var(--bg);border-radius:8px;padding:10px">
+                <div style="color:var(--sub);margin-bottom:4px">所属项目</div>
+                <div style="font-weight:600">商城系统、用户中心</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-primary" style="font-size:12px">🔄 续签凭证</button>
+              <button class="btn" style="font-size:12px">📋 查看历史凭证</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">📡 接入状态检测</span></div>
+          <div class="card-body">
+            <div style="margin-bottom:16px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <span style="font-size:13px;font-weight:500">Claude Code</span>
+                <span class="badge badge-green">● 已连接</span>
+              </div>
+              <div style="font-size:12px;color:var(--sub)">ANTHROPIC_BASE_URL 已配置 · 上次调用：10分钟前</div>
+            </div>
+            <div style="margin-bottom:16px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <span style="font-size:13px;font-weight:500">Cursor</span>
+                <span class="badge badge-yellow">⚠ 未验证</span>
+              </div>
+              <div style="font-size:12px;color:var(--sub)">已下载配置，尚未检测到调用记录</div>
+            </div>
+            <div style="margin-bottom:16px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <span style="font-size:13px;font-weight:500">MCP 全局能力</span>
+                <span class="badge badge-green">● 已连接</span>
+              </div>
+              <div style="font-size:12px;color:var(--sub)">platform-global MCP · 5 个工具可用</div>
+            </div>
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <span style="font-size:13px;font-weight:500">MCP 项目能力（商城系统）</span>
+                <span class="badge badge-green">● 已连接</span>
+              </div>
+              <div style="font-size:12px;color:var(--sub)">platform-project MCP · 12 个工具可用</div>
+            </div>
+            <button class="btn" style="width:100%;margin-top:14px;font-size:12px">🔍 重新检测所有连接</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 接入指南 -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🚀 接入指南</span>
+          <span style="font-size:12px;color:var(--sub)">选择你使用的工具，平台自动生成配置</span>
+        </div>
+        <div class="card-body">
+          <div class="tabs" id="setupTabs">
+            <div class="tab active" onclick="switchTab('setupTabs','setup-claude-code')">Claude Code</div>
+            <div class="tab" onclick="switchTab('setupTabs','setup-cursor')">Cursor</div>
+            <div class="tab" onclick="switchTab('setupTabs','setup-codex')">Codex / Agent</div>
+            <div class="tab" onclick="switchTab('setupTabs','setup-onecmd')">一键安装</div>
+          </div>
+
+          <div id="setup-claude-code">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+              <div>
+                <div style="font-weight:600;font-size:13px;margin-bottom:10px">Step 1 · 配置环境变量</div>
+                <div class="code-block" style="margin-bottom:16px">
+                  <span class="cm"># 写入 ~/.bashrc 或 ~/.zshrc</span><br>
+                  <span class="kw">export</span> ANTHROPIC_BASE_URL=<span class="str">"https://ai-platform.com/proxy/anthropic"</span><br>
+                  <span class="kw">export</span> ANTHROPIC_API_KEY=<span class="str">"plt_uid_zhang3_xxxxxx"</span>
+                </div>
+                <div style="font-weight:600;font-size:13px;margin-bottom:10px">Step 2 · 配置 MCP Server</div>
+                <div class="code-block">
+                  <span class="cm">// ~/.claude/settings.json</span><br>
+                  {<br>
+                  &nbsp;&nbsp;<span class="str">"mcpServers"</span>: {<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"platform-global"</span>: {<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">"url"</span>: <span class="str">"https://ai-platform.com/mcp/global"</span>,<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">"headers"</span>: { <span class="str">"Authorization"</span>: <span class="str">"Bearer plt_uid_..."</span> }<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;},<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"platform-project"</span>: {<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">"url"</span>: <span class="str">"https://ai-platform.com/mcp/project/proj_123"</span>,<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">"headers"</span>: { <span class="str">"Authorization"</span>: <span class="str">"Bearer plt_uid_..."</span> }<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                  &nbsp;&nbsp;}<br>
+                  }
+                </div>
+              </div>
+              <div>
+                <div style="font-weight:600;font-size:13px;margin-bottom:10px">Step 3 · 验证连接</div>
+                <div style="background:var(--bg);border-radius:8px;padding:14px;margin-bottom:12px;font-size:12px">
+                  在 Claude Code 对话框输入 <code>/mcp</code>，应看到：<br>
+                  <div style="margin-top:8px;color:var(--success)">✓ platform-global · 5 tools, 3 resources, 6 prompts<br>✓ platform-project · 7 tools, 5 resources, 4 prompts</div>
+                </div>
+                <div style="background:#ECFDF3;border:1px solid #ABEFC6;border-radius:8px;padding:14px;font-size:12px">
+                  <div style="font-weight:600;color:#027A48;margin-bottom:8px">✓ 连接成功后 AI 自动拥有：</div>
+                  <ul style="color:#027A48;padding-left:16px;line-height:2">
+                    <li>企业知识库语义检索</li>
+                    <li>项目级 Skill（/code-review 等命令）</li>
+                    <li>工具集（Jira / GitHub / 数据平台等）</li>
+                    <li>原子能力文档自动获取</li>
+                  </ul>
+                </div>
+                <div style="display:flex;gap:8px;margin-top:14px">
+                  <button class="btn btn-primary" style="font-size:12px">📋 复制全部配置</button>
+                  <button class="btn" style="font-size:12px">📥 下载 settings.json</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="setup-cursor" style="display:none">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+              <div>
+                <div style="font-weight:600;font-size:13px;margin-bottom:10px">在 Cursor 中配置</div>
+                <div style="background:var(--bg);border-radius:8px;padding:14px;margin-bottom:12px">
+                  <div style="font-size:13px;font-weight:500;margin-bottom:10px">Settings → Models</div>
+                  <div style="font-size:12px;line-height:2.2">
+                    <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">OpenAI API Key</span><code style="font-size:11px">plt_uid_zhang3_xxxxxx</code></div>
+                    <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">Override OpenAI Base URL</span><code style="font-size:11px">https://ai-platform.com/proxy/openai</code></div>
+                  </div>
+                </div>
+                <div style="background:var(--bg);border-radius:8px;padding:14px">
+                  <div style="font-size:13px;font-weight:500;margin-bottom:10px">Settings → Features → MCP Servers</div>
+                  <div style="font-size:12px;color:var(--sub);margin-bottom:8px">点击 "Add MCP Server" 添加：</div>
+                  <code style="font-size:11px;word-break:break-all">https://ai-platform.com/mcp/project/proj_123</code>
+                </div>
+              </div>
+              <div>
+                <button class="btn btn-primary" style="width:100%;margin-bottom:12px">📋 复制接入配置</button>
+                <div style="background:#ECFDF3;border:1px solid #ABEFC6;border-radius:8px;padding:14px;font-size:12px">
+                  <div style="font-weight:600;color:#027A48;margin-bottom:6px">配置完成后效果：</div>
+                  <ul style="color:#027A48;padding-left:16px;line-height:2">
+                    <li>AI 请求通过平台代理转发</li>
+                    <li>项目知识库自动注入上下文</li>
+                    <li>企业 Skill 出现在 Cursor Chat</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="setup-codex" style="display:none">
+            <div class="code-block" style="margin-bottom:16px">
+              <span class="cm"># Codex / 自建 Agent / CI 脚本</span><br>
+              <span class="kw">export</span> OPENAI_BASE_URL=<span class="str">"https://ai-platform.com/proxy/openai"</span><br>
+              <span class="kw">export</span> OPENAI_API_KEY=<span class="str">"plt_uid_zhang3_xxxxxx"</span>
+            </div>
+            <div style="background:var(--bg);border-radius:8px;padding:14px;font-size:12px;color:var(--sub)">
+              平台代理完全兼容 OpenAI API 格式，原有代码无需修改，只需替换 base URL 和 API Key 即可。
+            </div>
+          </div>
+
+          <div id="setup-onecmd" style="display:none">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+              <div>
+                <div style="font-weight:600;font-size:13px;margin-bottom:10px">一键安装脚本（包含凭证，单次有效）</div>
+                <div class="code-block" style="margin-bottom:12px">
+                  curl -fsSL <span class="str">"https://ai-platform.com/setup?token=SETUP_TOKEN"</span> | bash
+                </div>
+                <div style="font-size:12px;color:var(--sub);margin-bottom:16px">脚本自动完成：</div>
+                <div class="timeline" style="font-size:12px">
+                  <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content">写入环境变量到 shell 配置文件</div></div>
+                  <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content">生成 ~/.claude/settings.json（MCP 配置）</div></div>
+                  <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content">验证平台连通性</div></div>
+                  <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content">输出接入成功确认</div></div>
+                </div>
+              </div>
+              <div>
+                <button class="btn btn-primary" style="width:100%;margin-bottom:12px;padding:10px">🔗 生成一键安装链接</button>
+                <div style="background:#FFFAEB;border:1px solid #FEC84B;border-radius:8px;padding:12px;font-size:12px">
+                  <strong style="color:#B54708">⚠ 安全提示：</strong>
+                  <ul style="color:#B54708;padding-left:16px;margin-top:6px;line-height:2">
+                    <li>安装链接含个人凭证，请勿分享</li>
+                    <li>链接有效期 24 小时，单次使用</li>
+                    <li>安装后可在此页面撤销凭证</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 我的能力 ========== -->
+    <div class="page" id="page-my-ability">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        <div>
+          <div style="font-size:15px;font-weight:700;margin-bottom:4px">我的 AI 能力</div>
+          <div style="font-size:12px;color:var(--sub)">以下能力由平台自动注入，无需手动配置 · 已接入 Claude Code / Cursor</div>
+        </div>
+        <button class="btn" style="margin-left:auto" onclick="showPage('my-credential')">⚙️ 去接入指南</button>
+      </div>
+
+      <!-- 可用知识库 -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header">
+          <span class="card-title">📚 可用知识库</span>
+          <span style="font-size:12px;color:var(--sub)">全局继承 + 项目级，AI 请求时自动检索</span>
+        </div>
+        <div class="card-body" style="padding:0 20px">
+          <div class="skill-item">
+            <div class="skill-icon" style="background:#EEF1FF">📄</div>
+            <div style="flex:1">
+              <div class="skill-name">公司代码规范 v3.0</div>
+              <div class="skill-desc">全局知识库 · 每次请求自动注入摘要（≤500 tokens）</div>
+            </div>
+            <span class="badge badge-blue">自动注入</span>
+          </div>
+          <div class="skill-item">
+            <div class="skill-icon" style="background:#FEF3F2">🔒</div>
+            <div style="flex:1">
+              <div class="skill-name">安全开发手册</div>
+              <div class="skill-desc">全局知识库 · OWASP Top 10 规范 · 安全审查时自动调用</div>
+            </div>
+            <span class="badge badge-blue">自动注入</span>
+          </div>
+          <div class="skill-item">
+            <div class="skill-icon" style="background:#ECFDF3">🛒</div>
+            <div style="flex:1">
+              <div class="skill-name">商城系统需求文档 v2.3</div>
+              <div class="skill-desc">商城系统项目 · 248 个知识块 · 按需语义检索</div>
+            </div>
+            <span class="badge badge-green">按需检索</span>
+          </div>
+          <div class="skill-item" style="border-bottom:none">
+            <div class="skill-icon" style="background:#FFFAEB">📋</div>
+            <div style="flex:1">
+              <div class="skill-name">系统架构设计文档</div>
+              <div class="skill-desc">商城系统项目 · 向量化中...</div>
+            </div>
+            <span class="badge badge-yellow">处理中</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 可用技能 -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header">
+          <span class="card-title">⚡ 可用技能（Skill）</span>
+          <span style="font-size:12px;color:var(--sub)">在 Claude Code 中输入 / 触发</span>
+        </div>
+        <div class="card-body" style="padding:0 20px">
+          <div class="skill-item">
+            <div class="skill-icon" style="background:#EEF1FF">🔍</div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px"><div class="skill-name">代码审查</div><code style="font-size:11px;background:var(--bg);padding:1px 6px;border-radius:4px">/code-review</code></div>
+              <div class="skill-desc">规范 · 安全 · 性能三维度 · 企业全局 · 本月使用 312 次</div>
+            </div>
+            <span class="badge badge-green">已启用</span>
+          </div>
+          <div class="skill-item">
+            <div class="skill-icon" style="background:#FEF3F2">🐛</div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px"><div class="skill-name">Bug 分析</div><code style="font-size:11px;background:var(--bg);padding:1px 6px;border-radius:4px">/bug-analysis</code></div>
+              <div class="skill-desc">日志分析 + 根因定位 · 企业全局 · 本月使用 89 次</div>
+            </div>
+            <span class="badge badge-green">已启用</span>
+          </div>
+          <div class="skill-item">
+            <div class="skill-icon" style="background:#F9F5FF">🛒</div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px"><div class="skill-name">商城代码审查（项目定制版）</div><code style="font-size:11px;background:var(--bg);padding:1px 6px;border-radius:4px">/mall-review</code></div>
+              <div class="skill-desc">商城系统专属 · 额外注入业务规范 + 支付安全规则</div>
+            </div>
+            <span class="badge badge-blue">项目技能</span>
+          </div>
+          <div class="skill-item" style="border-bottom:none">
+            <div class="skill-icon" style="background:#ECFDF3">📝</div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;gap:8px"><div class="skill-name">文档生成</div><code style="font-size:11px;background:var(--bg);padding:1px 6px;border-radius:4px">/doc-gen</code></div>
+              <div class="skill-desc">代码 → OpenAPI / README 自动生成 · 企业全局</div>
+            </div>
+            <span class="badge badge-gray">未订阅</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 可用工具 -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🔩 可用工具（Tool）</span>
+          <span style="font-size:12px;color:var(--sub)">AI 自动判断调用时机，按最小权限注入</span>
+        </div>
+        <div class="card-body" style="padding:0 20px">
+          <div class="skill-item">
+            <div class="skill-icon" style="background:#EEF1FF;font-size:14px">🔍</div>
+            <div style="flex:1"><div class="skill-name">search_knowledge</div><div class="skill-desc">语义搜索企业/项目知识库 · 平台内置 · 始终可用</div></div>
+            <span class="badge badge-green">● 可用</span>
+          </div>
+          <div class="skill-item">
+            <div class="skill-icon" style="background:#FFFAEB;font-size:14px">📋</div>
+            <div style="flex:1"><div class="skill-name">query_jira</div><div class="skill-desc">查询 Jira 工单信息 · 企业级 · 已有 jira.read 权限</div></div>
+            <span class="badge badge-green">● 可用</span>
+          </div>
+          <div class="skill-item">
+            <div class="skill-icon" style="background:#1B1F230F;font-size:14px">🐙</div>
+            <div style="flex:1"><div class="skill-name">GitHub 集成（6 个工具）</div><div class="skill-desc">查 Issue / PR / 代码 · OAuth 已授权</div></div>
+            <span class="badge badge-green">● 可用</span>
+          </div>
+          <div class="skill-item" style="border-bottom:none">
+            <div class="skill-icon" style="background:#FEF3F2;font-size:14px">🚀</div>
+            <div style="flex:1"><div class="skill-name">trigger_deploy</div><div class="skill-desc">触发服务部署 · 生产需审批 · 暂无权限</div></div>
+            <span class="badge badge-gray">无权限</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 我的用量 ========== -->
+    <div class="page" id="page-my-usage">
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-icon">🪙</div><div class="stat-label">本月 Token 消耗</div><div class="stat-value" style="color:var(--primary)">186K</div><div class="stat-delta">↑ 12% 较上月</div></div>
+        <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-label">月配额剩余</div><div class="stat-value" style="color:var(--success)">314K</div><div class="stat-delta">62% 剩余</div></div>
+        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-label">今日调用次数</div><div class="stat-value">42</div><div class="stat-delta" style="color:var(--sub)">代理 + MCP</div></div>
+        <div class="stat-card"><div class="stat-icon">🤖</div><div class="stat-label">最常用技能</div><div class="stat-value" style="font-size:16px">code-review</div><div class="stat-delta">本月 28 次</div></div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Token 消耗趋势（近 30 天）</span></div>
+          <div class="card-body">
+            <div class="chart-area" id="myUsageChart"></div>
+            <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--sub)"><span>2/18</span><span>2/25</span><span>3/1</span><span>3/8</span><span>3/14</span><span>3/19</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">消耗分布</span></div>
+          <div class="card-body">
+            <div style="margin-bottom:12px">
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>claude-sonnet-4-6</span><span style="font-weight:600">142K</span></div>
+              <div class="progress-wrap"><div class="progress-bar" style="width:76%"></div></div>
+            </div>
+            <div style="margin-bottom:12px">
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>claude-haiku-4-5（轻量任务）</span><span style="font-weight:600">34K</span></div>
+              <div class="progress-wrap"><div class="progress-bar" style="width:18%"></div></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>Skill 调用附加上下文</span><span style="font-weight:600">10K</span></div>
+              <div class="progress-wrap"><div class="progress-bar" style="width:6%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">⚡ 技能 / 工具使用明细</span></div>
+        <table>
+          <thead><tr><th>技能 / 工具</th><th>类型</th><th>本月调用</th><th>平均 Token/次</th><th>最后使用</th></tr></thead>
+          <tbody>
+          <tr><td><span style="font-family:monospace">/code-review</span></td><td><span class="badge badge-blue">Skill</span></td><td>28</td><td>3,200</td><td>今天 14:23</td></tr>
+          <tr><td><span style="font-family:monospace">search_knowledge</span></td><td><span class="badge badge-green">Tool</span></td><td>76</td><td>180</td><td>今天 14:25</td></tr>
+          <tr><td><span style="font-family:monospace">/bug-analysis</span></td><td><span class="badge badge-blue">Skill</span></td><td>11</td><td>4,800</td><td>昨天 16:40</td></tr>
+          <tr><td><span style="font-family:monospace">query_jira</span></td><td><span class="badge badge-green">Tool</span></td><td>34</td><td>220</td><td>今天 11:30</td></tr>
+          <tr><td><span style="font-family:monospace">/doc-generation</span></td><td><span class="badge badge-blue">Skill</span></td><td>8</td><td>2,600</td><td>3天前</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ========== 项目：接入与凭证 ========== -->
+    <div class="page" id="page-proj-workspace">
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="card" style="border-color:var(--success)">
+          <div class="card-header" style="background:#ECFDF3;border-radius:11px 11px 0 0">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:20px">🪪</span>
+              <div>
+                <div style="font-weight:700;font-size:14px">项目平台凭证</div>
+                <div style="font-size:12px;color:var(--sub)">个人凭证 · 绑定当前项目 · 有效期至 2026-06-19</div>
+              </div>
+            </div>
+            <span class="badge badge-green">● 正常</span>
+          </div>
+          <div class="card-body">
+            <div style="background:var(--bg);border-radius:8px;padding:12px 14px;margin-bottom:14px;font-family:monospace;font-size:13px;display:flex;align-items:center;justify-content:space-between">
+              <span style="color:var(--sub)">plt_uid_zhang3_</span><span style="letter-spacing:2px">••••••••••••</span>
+              <button class="btn" style="padding:3px 10px;font-size:12px">显示 / 复制</button>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;margin-bottom:14px">
+              <div style="background:var(--bg);border-radius:8px;padding:10px"><div style="color:var(--sub);margin-bottom:4px">凭证类型</div><div style="font-weight:600">个人凭证（Personal）</div></div>
+              <div style="background:var(--bg);border-radius:8px;padding:10px"><div style="color:var(--sub);margin-bottom:4px">剩余有效期</div><div style="font-weight:600;color:var(--success)">92 天</div></div>
+              <div style="background:var(--bg);border-radius:8px;padding:10px"><div style="color:var(--sub);margin-bottom:4px">最近使用</div><div style="font-weight:600">10 分钟前</div></div>
+              <div style="background:var(--bg);border-radius:8px;padding:10px"><div style="color:var(--sub);margin-bottom:4px">本月用量</div><div style="font-weight:600;color:var(--primary)">186K / 500K</div></div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-primary" style="font-size:12px">🔄 续签凭证</button>
+              <button class="btn" style="font-size:12px">📋 历史凭证</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">📡 接入状态</span><button class="btn" style="font-size:12px;padding:4px 10px">🔍 重新检测</button></div>
+          <div class="card-body">
+            <div style="margin-bottom:14px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                <span style="font-size:13px;font-weight:500">Claude Code</span>
+                <span class="badge badge-green">● 已连接</span>
+              </div>
+              <div style="font-size:12px;color:var(--sub)">ANTHROPIC_BASE_URL 已配置 · 上次调用：10分钟前</div>
+            </div>
+            <div style="margin-bottom:14px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                <span style="font-size:13px;font-weight:500">Cursor</span>
+                <span class="badge badge-yellow">⚠ 未验证</span>
+              </div>
+              <div style="font-size:12px;color:var(--sub)">已下载配置，尚未检测到调用记录</div>
+            </div>
+            <div style="margin-bottom:14px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                <span style="font-size:13px;font-weight:500">MCP 全局能力</span>
+                <span class="badge badge-green">● 已连接</span>
+              </div>
+              <div style="font-size:12px;color:var(--sub)">platform-global · 5 个工具 · 6 个技能</div>
+            </div>
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+                <span style="font-size:13px;font-weight:500">MCP 项目能力（商城系统）</span>
+                <span class="badge badge-green">● 已连接</span>
+              </div>
+              <div style="font-size:12px;color:var(--sub)">platform-project · 12 个工具 · 4 个技能</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 接入指南 -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🚀 接入指南</span>
+          <span style="font-size:12px;color:var(--sub)">选择工具，平台自动生成配置</span>
+        </div>
+        <div class="card-body">
+          <div class="tabs" id="projSetupTabs">
+            <div class="tab active" onclick="switchTab('projSetupTabs','psetup-claude')">Claude Code</div>
+            <div class="tab" onclick="switchTab('projSetupTabs','psetup-cursor')">Cursor</div>
+            <div class="tab" onclick="switchTab('projSetupTabs','psetup-codex')">Codex / Agent</div>
+            <div class="tab" onclick="switchTab('projSetupTabs','psetup-onecmd')">一键安装</div>
+          </div>
+
+          <div id="psetup-claude">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+              <div>
+                <div style="font-weight:600;font-size:13px;margin-bottom:10px">Step 1 · 配置环境变量</div>
+                <div class="code-block" style="margin-bottom:16px">
+                  <span class="cm"># 写入 ~/.bashrc 或 ~/.zshrc</span><br>
+                  <span class="kw">export</span> ANTHROPIC_BASE_URL=<span class="str">"https://ai-platform.com/proxy/anthropic"</span><br>
+                  <span class="kw">export</span> ANTHROPIC_API_KEY=<span class="str">"plt_uid_zhang3_xxxxxx"</span>
+                </div>
+                <div style="font-weight:600;font-size:13px;margin-bottom:10px">Step 2 · 配置 MCP Server</div>
+                <div class="code-block">
+                  <span class="cm">// ~/.claude/settings.json</span><br>
+                  {<br>
+                  &nbsp;&nbsp;<span class="str">"mcpServers"</span>: {<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"platform-global"</span>: {<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">"url"</span>: <span class="str">"https://ai-platform.com/mcp/global"</span>,<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">"headers"</span>: { <span class="str">"Authorization"</span>: <span class="str">"Bearer plt_uid_..."</span> }<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;},<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"platform-project"</span>: {<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">"url"</span>: <span class="str">"https://ai-platform.com/mcp/project/proj_mall"</span>,<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">"headers"</span>: { <span class="str">"Authorization"</span>: <span class="str">"Bearer plt_uid_..."</span> }<br>
+                  &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                  &nbsp;&nbsp;}<br>
+                  }
+                </div>
+              </div>
+              <div>
+                <div style="font-weight:600;font-size:13px;margin-bottom:10px">Step 3 · 验证连接</div>
+                <div style="background:var(--bg);border-radius:8px;padding:14px;margin-bottom:12px;font-size:12px">
+                  在 Claude Code 输入 <code>/mcp</code>，应看到：<br>
+                  <div style="margin-top:8px;color:var(--success)">✓ platform-global · 5 tools, 3 resources, 6 prompts<br>✓ platform-project · 7 tools, 5 resources, 4 prompts</div>
+                </div>
+                <div style="background:#ECFDF3;border:1px solid #ABEFC6;border-radius:8px;padding:14px;font-size:12px">
+                  <div style="font-weight:600;color:#027A48;margin-bottom:8px">✓ 连接成功后 AI 自动拥有：</div>
+                  <ul style="color:#027A48;padding-left:16px;line-height:2">
+                    <li>商城系统知识库语义检索</li>
+                    <li>项目专属 Skill（/mall-review 等）</li>
+                    <li>工具集（Jira / GitHub / 数据平台）</li>
+                    <li>企业全局技能（/code-review 等）</li>
+                  </ul>
+                </div>
+                <div style="display:flex;gap:8px;margin-top:14px">
+                  <button class="btn btn-primary" style="font-size:12px">📋 复制全部配置</button>
+                  <button class="btn" style="font-size:12px">📥 下载 settings.json</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="psetup-cursor" style="display:none">
+            <div style="background:var(--bg);border-radius:8px;padding:14px;margin-bottom:12px">
+              <div style="font-size:13px;font-weight:500;margin-bottom:10px">Settings → Models</div>
+              <div style="font-size:12px;line-height:2.2">
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">OpenAI API Key</span><code style="font-size:11px">plt_uid_zhang3_xxxxxx</code></div>
+                <div style="display:flex;justify-content:space-between"><span style="color:var(--sub)">Override OpenAI Base URL</span><code style="font-size:11px">https://ai-platform.com/proxy/openai</code></div>
+              </div>
+            </div>
+            <div style="background:var(--bg);border-radius:8px;padding:14px;margin-bottom:12px">
+              <div style="font-size:13px;font-weight:500;margin-bottom:8px">Settings → Features → MCP Servers → Add</div>
+              <code style="font-size:11px;word-break:break-all">https://ai-platform.com/mcp/project/proj_mall</code>
+            </div>
+            <button class="btn btn-primary" style="font-size:12px">📋 复制接入配置</button>
+          </div>
+
+          <div id="psetup-codex" style="display:none">
+            <div class="code-block" style="margin-bottom:16px">
+              <span class="cm"># Codex / 自建 Agent / CI 脚本</span><br>
+              <span class="kw">export</span> OPENAI_BASE_URL=<span class="str">"https://ai-platform.com/proxy/openai"</span><br>
+              <span class="kw">export</span> OPENAI_API_KEY=<span class="str">"plt_uid_zhang3_xxxxxx"</span>
+            </div>
+            <div style="background:var(--bg);border-radius:8px;padding:14px;font-size:12px;color:var(--sub)">平台代理完全兼容 OpenAI API 格式，原有代码无需修改，只需替换 base URL 和 API Key 即可。</div>
+          </div>
+
+          <div id="psetup-onecmd" style="display:none">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+              <div>
+                <div style="font-weight:600;font-size:13px;margin-bottom:10px">一键安装脚本（含凭证，单次有效）</div>
+                <div class="code-block" style="margin-bottom:12px">
+                  curl -fsSL <span class="str">"https://ai-platform.com/setup?token=SETUP_TOKEN"</span> | bash
+                </div>
+                <div class="timeline" style="font-size:12px">
+                  <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content">写入环境变量到 shell 配置文件</div></div>
+                  <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content">生成 ~/.claude/settings.json（MCP 配置）</div></div>
+                  <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content">验证平台连通性</div></div>
+                  <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content">输出接入成功确认</div></div>
+                </div>
+              </div>
+              <div>
+                <button class="btn btn-primary" style="width:100%;margin-bottom:12px;padding:10px">🔗 生成一键安装链接</button>
+                <div style="background:#FFFAEB;border:1px solid #FEC84B;border-radius:8px;padding:12px;font-size:12px">
+                  <strong style="color:#B54708">⚠ 安全提示：</strong>
+                  <ul style="color:#B54708;padding-left:16px;margin-top:6px;line-height:2">
+                    <li>安装链接含个人凭证，请勿分享</li>
+                    <li>链接有效期 24 小时，单次使用</li>
+                    <li>安装后可在此页面撤销凭证</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 项目 AI 能力（综合页） ========== -->
+    <div class="page" id="page-proj-ai-cap">
+      <div class="tabs" id="aiCapTabs">
+        <div class="tab active" onclick="switchTab('aiCapTabs','aicap-kb')">📚 知识库</div>
+        <div class="tab" onclick="switchTab('aiCapTabs','aicap-skills')">⚡ 技能库</div>
+        <div class="tab" onclick="switchTab('aiCapTabs','aicap-tools')">🔩 工具集</div>
+        <div class="tab" onclick="switchTab('aiCapTabs','aicap-integrations')">🔌 集成</div>
+      </div>
+
+      <!-- 知识库 Tab -->
+      <div id="aicap-kb">
+        <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center">
+          <span style="font-size:13px;color:var(--sub)">项目知识库 · 默认继承全局知识库</span>
+          <button class="btn btn-primary" style="margin-left:auto">+ 上传文档</button>
+          <button class="btn">⚙️ 检索设置</button>
+        </div>
+        <!-- 继承全局 -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header">
+            <span class="card-title">🌐 继承自企业全局知识库</span>
+            <span class="badge badge-green">● 已启用</span>
+          </div>
+          <div class="card-body" style="padding:0 20px">
+            <div class="skill-item">
+              <div class="skill-icon" style="background:#EEF1FF">📄</div>
+              <div style="flex:1"><div class="skill-name">公司代码规范 v3.0</div><div class="skill-desc">适用范围：全企业 · 18个项目引用 · 每次请求自动注入摘要</div></div>
+              <span class="badge badge-blue">自动注入</span>
+            </div>
+            <div class="skill-item">
+              <div class="skill-icon" style="background:#FEF3F2">🔒</div>
+              <div style="flex:1"><div class="skill-name">安全开发手册</div><div class="skill-desc">适用范围：全企业 · OWASP Top 10 规范 · 安全审查时自动调用</div></div>
+              <span class="badge badge-blue">自动注入</span>
+            </div>
+            <div class="skill-item">
+              <div class="skill-icon" style="background:#ECFDF3">🏗️</div>
+              <div style="flex:1"><div class="skill-name">微服务架构指南</div><div class="skill-desc">适用范围：全企业 · 包含领域划分、接口规范、部署模式</div></div>
+              <button class="btn btn-danger" style="padding:3px 8px;font-size:12px">关闭继承</button>
+            </div>
+          </div>
+        </div>
+        <!-- 项目自有 -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📁 项目专属知识库</span>
+            <div style="display:flex;gap:8px">
+              <input placeholder="测试检索效果..." style="width:200px;padding:5px 10px;font-size:12px">
+              <button class="btn btn-primary" style="padding:5px 10px;font-size:12px">🔍 检索测试</button>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>文档名称</th><th>状态</th><th>分块数</th><th>上传者</th><th>更新时间</th><th>操作</th></tr></thead>
+            <tbody>
+            <tr>
+              <td>📄 商城需求文档 v2.3</td>
+              <td><span class="badge badge-green">✓ 已向量化</span></td>
+              <td>248 块</td><td>张三</td><td>2026-03-06</td>
+              <td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">查看</button><button class="btn" style="padding:3px 8px;font-size:11px">删除</button></div></td>
+            </tr>
+            <tr>
+              <td>📋 接口文档 - 商品模块</td>
+              <td><span class="badge badge-green">✓ 已向量化</span></td>
+              <td>87 块</td><td>AI生成</td><td>2026-03-04</td>
+              <td><div style="display:flex;gap:4px"><button class="btn" style="padding:3px 8px;font-size:11px">查看</button><button class="btn" style="padding:3px 8px;font-size:11px">删除</button></div></td>
+            </tr>
+            <tr>
+              <td>📋 系统架构设计文档</td>
+              <td><span class="badge badge-blue">⟳ 向量化中</span></td>
+              <td>—</td><td>王五</td><td>2026-03-19</td>
+              <td><span style="font-size:12px;color:var(--sub)">处理中...</span></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 技能库 Tab -->
+      <div id="aicap-skills" style="display:none">
+        <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center">
+          <span style="font-size:13px;color:var(--sub)">项目技能 + 继承全局技能</span>
+          <button class="btn btn-primary" style="margin-left:auto">+ 新建技能</button>
+        </div>
+        <!-- 全局继承 -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-header"><span class="card-title">🌐 继承自企业全局技能库</span></div>
+          <div class="card-body" style="padding:0 20px">
+            <div class="skill-item">
+              <div class="skill-icon" style="background:#EEF1FF">🔍</div>
+              <div style="flex:1">
+                <div style="display:flex;align-items:center;gap:8px"><div class="skill-name">代码审查</div><code style="font-size:11px;background:var(--bg);padding:1px 6px;border-radius:4px">/code-review</code></div>
+                <div class="skill-desc">规范 · 安全 · 性能三维度全面审查 · 本月全企业使用 312 次</div>
+              </div>
+              <div style="display:flex;gap:6px;align-items:center">
+                <span class="badge badge-green">已订阅</span>
+                <button class="btn" style="padding:3px 8px;font-size:11px">克隆定制</button>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-icon" style="background:#FEF3F2">🐛</div>
+              <div style="flex:1">
+                <div style="display:flex;align-items:center;gap:8px"><div class="skill-name">Bug 分析</div><code style="font-size:11px;background:var(--bg);padding:1px 6px;border-radius:4px">/bug-analysis</code></div>
+                <div class="skill-desc">日志分析 + 根因定位 + 修复建议 · 本月使用 89 次</div>
+              </div>
+              <div style="display:flex;gap:6px;align-items:center">
+                <span class="badge badge-green">已订阅</span>
+                <button class="btn" style="padding:3px 8px;font-size:11px">克隆定制</button>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-icon" style="background:#ECFDF3">📝</div>
+              <div style="flex:1">
+                <div style="display:flex;align-items:center;gap:8px"><div class="skill-name">文档生成</div><code style="font-size:11px;background:var(--bg);padding:1px 6px;border-radius:4px">/doc-gen</code></div>
+                <div class="skill-desc">代码 → OpenAPI 文档 / README 自动生成</div>
+              </div>
+              <div style="display:flex;gap:6px;align-items:center">
+                <span class="badge badge-gray">未订阅</span>
+                <button class="btn btn-primary" style="padding:3px 8px;font-size:11px">订阅</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 项目自有 -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">🛒 项目专属技能（商城系统）</span></div>
+          <div class="card-body" style="padding:0 20px">
+            <div class="skill-item">
+              <div class="skill-icon" style="background:#F9F5FF">🛒</div>
+              <div style="flex:1">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div class="skill-name">商城代码审查（项目定制版）</div>
+                  <code style="font-size:11px;background:var(--bg);padding:1px 6px;border-radius:4px">/mall-review</code>
+                  <span class="badge badge-green">已发布</span>
+                </div>
+                <div class="skill-desc">基于企业 code-review 克隆 · 额外注入商城业务规范 + 支付安全规则</div>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button class="btn" style="padding:3px 8px;font-size:11px">▶ 测试</button>
+                <button class="btn" style="padding:3px 8px;font-size:11px">✏️ 编辑</button>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-icon" style="background:#FFFAEB">📊</div>
+              <div style="flex:1">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div class="skill-name">订单业务分析</div>
+                  <code style="font-size:11px;background:var(--bg);padding:1px 6px;border-radius:4px">/order-analysis</code>
+                  <span class="badge badge-yellow">草稿</span>
+                </div>
+                <div class="skill-desc">结合订单状态机文档，分析业务逻辑与异常流</div>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button class="btn" style="padding:3px 8px;font-size:11px">▶ 测试</button>
+                <button class="btn btn-primary" style="padding:3px 8px;font-size:11px">发布</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 工具集 Tab -->
+      <div id="aicap-tools" style="display:none">
+        <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center">
+          <span style="font-size:13px;color:var(--sub)">平台内置 + 企业级 + 项目级工具，按权限自动注入</span>
+          <button class="btn btn-primary" style="margin-left:auto">+ 注册项目工具</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>工具名称</th><th>来源</th><th>分类</th><th>所需权限</th><th>审计级别</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody>
+            <tr>
+              <td><strong>search_knowledge</strong></td>
+              <td><span class="badge badge-green">平台内置</span></td>
+              <td>知识库</td><td>knowledge.read</td>
+              <td><span class="badge badge-gray">普通</span></td>
+              <td><span class="badge badge-green">● 启用</span></td>
+              <td><button class="btn" style="padding:3px 8px;font-size:11px">详情</button></td>
+            </tr>
+            <tr>
+              <td><strong>list_skills</strong></td>
+              <td><span class="badge badge-green">平台内置</span></td>
+              <td>平台</td><td>—</td>
+              <td><span class="badge badge-gray">普通</span></td>
+              <td><span class="badge badge-green">● 启用</span></td>
+              <td><button class="btn" style="padding:3px 8px;font-size:11px">详情</button></td>
+            </tr>
+            <tr>
+              <td><strong>query_jira</strong></td>
+              <td><span class="badge badge-blue">企业级</span></td>
+              <td>项目管理</td><td>jira.read</td>
+              <td><span class="badge badge-gray">普通</span></td>
+              <td><span class="badge badge-green">● 启用</span></td>
+              <td><button class="btn" style="padding:3px 8px;font-size:11px">详情</button></td>
+            </tr>
+            <tr>
+              <td><strong>create_jira</strong></td>
+              <td><span class="badge badge-blue">企业级</span></td>
+              <td>项目管理</td><td>jira.write</td>
+              <td><span class="badge badge-yellow">敏感</span></td>
+              <td><span class="badge badge-green">● 启用</span></td>
+              <td><button class="btn" style="padding:3px 8px;font-size:11px">详情</button></td>
+            </tr>
+            <tr>
+              <td><strong>query_order_db</strong></td>
+              <td><span class="badge badge-yellow">项目级</span></td>
+              <td>数据</td><td>db.read</td>
+              <td><span class="badge badge-red">关键</span></td>
+              <td><span class="badge badge-green">● 启用</span></td>
+              <td><button class="btn" style="padding:3px 8px;font-size:11px">详情</button></td>
+            </tr>
+            <tr>
+              <td><strong>trigger_deploy</strong></td>
+              <td><span class="badge badge-blue">企业级</span></td>
+              <td>部署</td><td>deploy.write</td>
+              <td><span class="badge badge-red">关键</span></td>
+              <td><span class="badge badge-gray">● 禁用</span></td>
+              <td><button class="btn btn-primary" style="padding:3px 8px;font-size:11px">启用</button></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 集成 Tab -->
+      <div id="aicap-integrations" style="display:none">
+        <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center">
+          <span style="font-size:13px;color:var(--sub)">已接入的 MCP 集成服务</span>
+          <button class="btn btn-primary" style="margin-left:auto" onclick="showPage('integrations')">浏览集成市场</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px">
+          <div class="card">
+            <div class="card-body">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                <span style="font-size:28px">🐙</span>
+                <div style="flex:1"><div style="font-weight:600">GitHub</div><div style="font-size:12px;color:var(--sub)">官方精选 · OAuth 授权</div></div>
+                <span class="badge badge-green">● 运行中</span>
+              </div>
+              <div style="font-size:12px;color:var(--sub);margin-bottom:10px">提供：查 Issue / PR / 代码 / 提交记录</div>
+              <div style="font-size:11px;background:var(--bg);border-radius:6px;padding:8px;margin-bottom:10px">
+                <div>Tools: 6 个 &nbsp;·&nbsp; Resources: 2 个</div>
+                <div>今日调用: 34 次</div>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button class="btn" style="font-size:11px;flex:1">⚙️ 配置</button>
+                <button class="btn" style="font-size:11px;flex:1">🔍 测试</button>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                <span style="font-size:28px">📋</span>
+                <div style="flex:1"><div style="font-weight:600">Jira</div><div style="font-size:12px;color:var(--sub)">企业自建 · Token 授权</div></div>
+                <span class="badge badge-green">● 运行中</span>
+              </div>
+              <div style="font-size:12px;color:var(--sub);margin-bottom:10px">提供：查/创建 Issue · Sprint 管理</div>
+              <div style="font-size:11px;background:var(--bg);border-radius:6px;padding:8px;margin-bottom:10px">
+                <div>Tools: 4 个 &nbsp;·&nbsp; Resources: 1 个</div>
+                <div>今日调用: 21 次</div>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button class="btn" style="font-size:11px;flex:1">⚙️ 配置</button>
+                <button class="btn" style="font-size:11px;flex:1">🔍 测试</button>
+              </div>
+            </div>
+          </div>
+          <div class="mcp-card" onclick="showPage('integrations')" style="display:flex;flex-direction:column;justify-content:center">
+            <div class="mcp-icon">➕</div>
+            <div class="mcp-title">接入新集成</div>
+            <div class="mcp-sub">浏览集成市场，一键启用</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 集成市场 ========== -->
+    <div class="page" id="page-integrations">
+      <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center">
+        <input placeholder="搜索集成..." style="max-width:260px">
+        <select style="width:auto"><option>全部分类</option><option>代码托管</option><option>项目管理</option><option>数据库</option><option>通知</option><option>文件</option></select>
+        <button class="btn btn-primary" style="margin-left:auto">+ 接入自建 MCP</button>
+      </div>
+
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-icon">🔌</div><div class="stat-label">可用集成</div><div class="stat-value" style="color:var(--primary)">24</div><div class="stat-delta">↑ 3 本月新增</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">已接入（本项目）</div><div class="stat-value" style="color:var(--success)">5</div><div class="stat-delta">2 平台内置</div></div>
+        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-label">今日 Tool 调用</div><div class="stat-value">287</div><div class="stat-delta" style="color:var(--success)">成功率 99.3%</div></div>
+        <div class="stat-card"><div class="stat-icon">🏷️</div><div class="stat-label">平台内置（不可删）</div><div class="stat-value">2</div><div class="stat-delta" style="color:var(--sub)">知识库 / 技能</div></div>
+      </div>
+
+      <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">平台内置</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
+        <div class="atomic-card" style="border-color:var(--primary)">
+          <div class="atomic-icon" style="background:#EEF1FF">📚</div>
+          <div class="atomic-name">知识库 MCP</div>
+          <div class="atomic-desc">暴露企业知识库的语义检索能力，支持全局 + 项目双范围搜索</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">search_knowledge</span><span class="project-tag">list_resources</span></div>
+          <span class="badge badge-green">● 内置启用</span>
+        </div>
+        <div class="atomic-card" style="border-color:var(--primary)">
+          <div class="atomic-icon" style="background:#F9F5FF">⚡</div>
+          <div class="atomic-name">技能 MCP</div>
+          <div class="atomic-desc">将平台技能库暴露为 MCP Prompts，在客户端呈现为 / 命令</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">list_skills</span><span class="project-tag">MCP Prompts</span></div>
+          <span class="badge badge-green">● 内置启用</span>
+        </div>
+      </div>
+
+      <div style="font-size:12px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">官方精选</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px">
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#1B1F230F">🐙</div>
+          <div class="atomic-name">GitHub</div>
+          <div class="atomic-desc">查询 Issue / PR / 代码、创建 PR、评论 Review，OAuth 授权</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">代码托管</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--sub)">Tools: 6</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">接入</button></div>
+        </div>
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#4A154B22">💬</div>
+          <div class="atomic-name">Slack</div>
+          <div class="atomic-desc">发送消息到 Channel / 用户，查询消息历史，OAuth 授权</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">通知</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--sub)">Tools: 4</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">接入</button></div>
+        </div>
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#ECFDF3">🐘</div>
+          <div class="atomic-name">PostgreSQL</div>
+          <div class="atomic-desc">安全查询数据库，支持只读模式，自动防注入，Token 授权</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">数据库</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--sub)">Tools: 3</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">接入</button></div>
+        </div>
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#0052CC22">📋</div>
+          <div class="atomic-name">Jira</div>
+          <div class="atomic-desc">查询 / 创建 Issue、Sprint 管理、工作流状态变更，Token 授权</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">项目管理</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--sub)">Tools: 4</span><span class="badge badge-green">已接入</span></div>
+        </div>
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#FF5C0022">🦊</div>
+          <div class="atomic-name">GitLab</div>
+          <div class="atomic-desc">查询 MR / Issue / Pipeline，代码搜索，OAuth 授权</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">代码托管</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--sub)">Tools: 5</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">接入</button></div>
+        </div>
+        <div class="atomic-card">
+          <div class="atomic-icon" style="background:#FFFAEB">📊</div>
+          <div class="atomic-name">数据平台</div>
+          <div class="atomic-desc">自然语言查询内部数据平台，自动生成 SQL，结果可视化</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="project-tag">数据</span><span class="project-tag">内部</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--sub)">Tools: 2</span><button class="btn btn-primary" style="padding:4px 10px;font-size:12px">接入</button></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">➕ 接入自建 MCP 服务器</span></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+            <div>
+              <div class="form-group"><label class="form-label">MCP 服务器地址</label><input placeholder="https://your-mcp-server.com/mcp"></div>
+              <div class="form-group"><label class="form-label">认证方式</label>
+                <select><option>Bearer Token</option><option>OAuth 2.0</option><option>无认证</option></select>
+              </div>
+              <div class="form-group"><label class="form-label">API Key / Token</label><input type="password" placeholder="输入认证 Token"></div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-primary">🔍 测试连通性</button>
+                <button class="btn">保存并启用</button>
+              </div>
+            </div>
+            <div>
+              <div class="ai-bubble" style="font-size:12px">
+                <strong>自建 MCP 开发指南：</strong><br><br>
+                使用平台脚手架快速创建：<br>
+                <code>npx create-platform-mcp my-mcp-server</code><br><br>
+                脚手架内置：<br>
+                · 认证中间件（验证平台凭证）<br>
+                · 日志 & 审计中间件<br>
+                · 标准 Tool / Resource / Prompt 模板<br><br>
+                <a style="color:var(--primary)">查看完整开发文档 →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 全局工具集 ========== -->
+    <div class="page" id="page-global-tools">
+      <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center">
+        <input placeholder="搜索工具..." style="max-width:260px">
+        <select style="width:auto"><option>全部分类</option><option>知识库</option><option>代码</option><option>项目管理</option><option>通知</option><option>数据</option></select>
+        <button class="btn btn-primary" style="margin-left:auto">+ 注册新工具</button>
+      </div>
+
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card"><div class="stat-icon">🔩</div><div class="stat-label">已注册工具</div><div class="stat-value" style="color:var(--primary)">18</div><div class="stat-delta">3 内置 · 15 自定义</div></div>
+        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-label">今日调用次数</div><div class="stat-value">1,247</div><div class="stat-delta" style="color:var(--success)">成功率 98.6%</div></div>
+        <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-label">平均响应时长</div><div class="stat-value">340ms</div><div class="stat-delta">↓ -60ms 较昨日</div></div>
+        <div class="stat-card"><div class="stat-icon">🔑</div><div class="stat-label">权限策略</div><div class="stat-value" style="font-size:16px">最小权限</div><div class="stat-delta" style="color:var(--sub)">按角色过滤注入</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-title">工具注册中心</span><span style="font-size:12px;color:var(--sub)">AI 根据描述质量决策是否调用</span></div>
+        <table>
+          <thead><tr><th>工具名称</th><th>展示名称</th><th>分类</th><th>来源</th><th>实现方式</th><th>审计级别</th><th>状态</th><th>操作</th></tr></thead>
+          <tbody>
+          <tr>
+            <td><strong style="font-family:monospace">search_knowledge</strong></td><td>搜索知识库</td>
+            <td><span class="badge badge-blue">知识库</span></td><td><span class="badge badge-green">内置</span></td>
+            <td>内部函数</td><td><span class="badge badge-gray">普通</span></td>
+            <td><span class="badge badge-green">● 启用</span></td>
+            <td><button class="btn" style="padding:3px 8px;font-size:11px">详情</button></td>
+          </tr>
+          <tr>
+            <td><strong style="font-family:monospace">query_jira</strong></td><td>查询 Jira 工单</td>
+            <td><span class="badge badge-yellow">项目管理</span></td><td><span class="badge badge-blue">企业级</span></td>
+            <td>MCP 代理</td><td><span class="badge badge-gray">普通</span></td>
+            <td><span class="badge badge-green">● 启用</span></td>
+            <td><button class="btn" style="padding:3px 8px;font-size:11px">详情</button></td>
+          </tr>
+          <tr>
+            <td><strong style="font-family:monospace">create_jira</strong></td><td>创建 Jira 工单</td>
+            <td><span class="badge badge-yellow">项目管理</span></td><td><span class="badge badge-blue">企业级</span></td>
+            <td>MCP 代理</td><td><span class="badge badge-yellow">敏感</span></td>
+            <td><span class="badge badge-green">● 启用</span></td>
+            <td><button class="btn" style="padding:3px 8px;font-size:11px">详情</button></td>
+          </tr>
+          <tr>
+            <td><strong style="font-family:monospace">query_gitlab</strong></td><td>查询 GitLab 信息</td>
+            <td><span class="badge badge-gray">代码</span></td><td><span class="badge badge-blue">企业级</span></td>
+            <td>HTTP 回调</td><td><span class="badge badge-gray">普通</span></td>
+            <td><span class="badge badge-green">● 启用</span></td>
+            <td><button class="btn" style="padding:3px 8px;font-size:11px">详情</button></td>
+          </tr>
+          <tr>
+            <td><strong style="font-family:monospace">send_notification</strong></td><td>发送企业通知</td>
+            <td><span class="badge badge-gray">通知</span></td><td><span class="badge badge-blue">企业级</span></td>
+            <td>HTTP 回调</td><td><span class="badge badge-yellow">敏感</span></td>
+            <td><span class="badge badge-green">● 启用</span></td>
+            <td><button class="btn" style="padding:3px 8px;font-size:11px">详情</button></td>
+          </tr>
+          <tr>
+            <td><strong style="font-family:monospace">query_data_platform</strong></td><td>查询数据平台</td>
+            <td><span class="badge badge-yellow">数据</span></td><td><span class="badge badge-blue">企业级</span></td>
+            <td>HTTP 回调</td><td><span class="badge badge-red">关键</span></td>
+            <td><span class="badge badge-green">● 启用</span></td>
+            <td><button class="btn" style="padding:3px 8px;font-size:11px">详情</button></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </div><!-- /content -->
 </div><!-- /main -->
+
+<!-- Modal: Create Skill -->
+<div class="modal" id="modal-createSkill">
+  <div class="modal-box" style="width:600px">
+    <div class="modal-title">创建全局技能</div>
+
+    <div class="modal-section-label">基础信息</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-group">
+        <label class="form-label">技能名称</label>
+        <input placeholder="例：代码审查">
+      </div>
+      <div class="form-group">
+        <label class="form-label">触发命令</label>
+        <input placeholder="例：/code-review">
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-group">
+        <label class="form-label">分类</label>
+        <select><option>工程</option><option>文档</option><option>测试</option><option>安全</option><option>产品</option><option>数据</option></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">范围</label>
+        <select><option>企业全局</option><option>项目级</option></select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">技能描述（AI 理解用途）</label>
+      <input placeholder="对提交的代码进行全面审查，包含规范、安全、性能三个维度">
+    </div>
+
+    <div class="modal-section-label">Prompt 模板</div>
+    <div class="form-group">
+      <label class="form-label">System Prompt（支持变量语法 {{variable}}）</label>
+      <textarea rows="5" placeholder="你是一位资深工程师，负责对代码进行专业审查。&#10;请从以下三个维度给出具体意见：&#10;1. 编码规范：是否符合{{company_coding_standard}}&#10;2. 安全风险：是否存在 OWASP Top 10 相关漏洞&#10;3. 性能问题：是否有明显的性能瓶颈"></textarea>
+    </div>
+
+    <div class="modal-section-label">关联配置</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-group">
+        <label class="form-label">关联知识库</label>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px"><input type="checkbox" checked style="width:auto"> 公司代码规范</label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px"><input type="checkbox" checked style="width:auto"> 安全开发手册</label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px"><input type="checkbox" style="width:auto"> 微服务架构指南</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">绑定工具</label>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px"><input type="checkbox" checked style="width:auto"> search_knowledge</label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px"><input type="checkbox" style="width:auto"> post_code_comment</label>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px"><input type="checkbox" style="width:auto"> create_jira</label>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px">
+      <button class="btn" onclick="closeModal('createSkill')">取消</button>
+      <button class="btn" onclick="closeModal('createSkill')">💾 保存草稿</button>
+      <button class="btn btn-primary" onclick="closeModal('createSkill')">▶ 测试运行</button>
+    </div>
+  </div>
+</div>
 
 <!-- Modal: New Project -->
 <div class="modal" id="modal-newProject">
@@ -2695,13 +3960,15 @@
     document.querySelectorAll('#sidebar-global .nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('page-' + name).classList.add('active');
     const titles = {
-      dashboard:'工作台', efficiency:'效能看板',
+      dashboard:'工作台', efficiency:'用量看板',
+      'my-credential':'我的凭证', 'my-ability':'我的能力', 'my-usage':'我的用量',
       projects:'项目空间', mcp:'MCP 接入', incidents:'事故中心',
       cicd:'CI / CD', envs:'环境管理',
-      atomic:'原子能力库', knowledge:'知识库（全局）',
-      skills:'Skill 库', templates:'模板库',
-      keys:'Key 管理', audit:'审计安全', settings:'设置',
-      workflows:'Agent 工作流', functions:'Function 管理台',
+      atomic:'原子能力中心', knowledge:'全局知识库',
+      skills:'全局技能库', templates:'模板库',
+      'global-tools':'全局工具集', integrations:'集成市场',
+      keys:'凭证管理', audit:'审计安全', settings:'设置',
+      workflows:'Agent 工作流', functions:'工具注册中心',
       'ai-monitor':'AI 执行监控', evals:'AI 评估中心'
     };
     document.getElementById('topbar-title').textContent = titles[name] || name;
@@ -2733,13 +4000,18 @@
   const projPageTitles = {
     overview:'概览', agile:'研发流程', knowledge:'知识库',
     incidents:'事故', services:'代码服务', members:'成员权限',
-    keymanagement:'Key管理中心', skillconfig:'Skill 配置', psettings:'项目设置'
+    'ai-cap':'AI 能力', keymanagement:'配额管理', psettings:'项目设置',
+    workspace:'接入与凭证'
   };
 
   function showProjectPage(name) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('#sidebar-project .nav-item').forEach(n => n.classList.remove('active'));
-    const pageId = name === 'agile' ? 'page-proj-agile' : 'page-proj-' + name;
+    const pageId = name === 'agile' ? 'page-proj-agile'
+                 : name === 'ai-cap' ? 'page-proj-ai-cap'
+                 : name === 'keymanagement' ? 'page-proj-keymanagement'
+                 : name === 'workspace' ? 'page-proj-workspace'
+                 : 'page-proj-' + name;
     const el = document.getElementById(pageId);
     if(el) el.classList.add('active');
     document.getElementById('topbar-title').textContent =
@@ -3091,6 +4363,18 @@
       b.className = 'chart-bar';
       b.style.height = h + '%';
       evalsChartEl.appendChild(b);
+    });
+  }
+
+  // 我的用量趋势图
+  const myUsageChartEl = document.getElementById('myUsageChart');
+  if (myUsageChartEl) {
+    [20,35,28,50,42,60,55,70,48,65,80,72,60,85,90,78,65,80,92,88,75,60,55,70,82,78,90,85,92,100].forEach(h => {
+      const b = document.createElement('div');
+      b.className = 'chart-bar';
+      b.style.height = h + '%';
+      b.style.background = '#7B61FF';
+      myUsageChartEl.appendChild(b);
     });
   }
 </script>

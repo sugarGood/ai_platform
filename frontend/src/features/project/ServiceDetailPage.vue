@@ -5,7 +5,7 @@ import { useRoute } from 'vue-router'
 import CardPanel from '../../components/ui/CardPanel.vue'
 import ModuleContent from '../../components/ui/ModuleContent.vue'
 import StatCard from '../../components/ui/StatCard.vue'
-import { getProjectById } from '../../mocks/projects'
+import { getProjectById } from '../../composables/useProjects'
 import type { CatalogItem, ListItem, ModuleSection, PageMetric, TableCell, TableData, Tone } from '../../types/module-page'
 import NotFoundProjectState from './NotFoundProjectState.vue'
 
@@ -444,3 +444,4 @@ const envSections = computed<ModuleSection[]>(() => {
   }
 }
 </style>
+

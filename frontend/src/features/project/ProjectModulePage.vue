@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router'
 
 import ModuleContent from '../../components/ui/ModuleContent.vue'
 import KeyManagementMonitor from '../../components/ui/KeyManagementMonitor.vue'
-import { getProjectById } from '../../mocks/projects'
+import { getProjectById } from '../../composables/useProjects'
 import type { CatalogItem, ModulePageConfig, TableCell } from '../../types/module-page'
 import NotFoundProjectState from './NotFoundProjectState.vue'
 import { useKeyMonitoring } from '../../composables/useKeyMonitoring'
@@ -562,4 +562,5 @@ const pageConfig = computed<ModulePageConfig>(() => {
     />
   </section>
 </template>
+
 

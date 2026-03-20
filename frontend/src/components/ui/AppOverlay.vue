@@ -1,11 +1,11 @@
 ﻿<script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 
+import { branchStrategyOptions, projectTypeOptions } from '../../composables/useProjects'
 import { useOverlay } from '../../composables/useOverlay'
 
 const { closeOverlay, overlayState, submitNewProjectDraft } = useOverlay()
 
-// ???? Esc ????????????????????
 onMounted(() => {
   document.addEventListener('keydown', onKeydown)
 })
@@ -37,40 +37,57 @@ function onKeydown(event: KeyboardEvent) {
       </div>
 
       <div v-else-if="overlayState.kind === 'new-project'" data-testid="new-project-modal" class="overlay-body form-body">
-        <!-- ???????????????????????????? -->
         <label class="form-field">
           <span>项目名称</span>
           <input v-model="overlayState.draft.name" placeholder="例：支付网关 v2" />
         </label>
         <label class="form-field">
+          <span>项目编码</span>
+          <input v-model="overlayState.draft.code" placeholder="例：PAYMENT_GATEWAY" />
+          <small class="field-hint">后端要求全局唯一，建议使用大写英文或下划线。</small>
+        </label>
+        <label class="form-field">
           <span>项目类型</span>
           <select v-model="overlayState.draft.type">
-            <option>对外产品</option>
-            <option>内部系统</option>
-            <option>技术中台</option>
-            <option>数据产品</option>
+            <option v-for="option in projectTypeOptions" :key="option.value" :value="option.value">
+              {{ option.label }}
+            </option>
           </select>
+          <small class="field-hint">
+            {{ projectTypeOptions.find((option) => option.value === overlayState.draft.type)?.hint }}
+          </small>
         </label>
         <label class="form-field">
-          <span>项目描述</span>
-          <textarea v-model="overlayState.draft.description" rows="3" placeholder="简要描述项目背景和目标"></textarea>
-        </label>
-        <label class="form-field">
-          <span>Git 仓库地址</span>
-          <input v-model="overlayState.draft.repo" placeholder="git.company.com/team/project-name" />
-        </label>
-        <label class="form-field">
-          <span>主干分支</span>
-          <input v-model="overlayState.draft.branch" placeholder="main" />
+          <span>分支策略</span>
+          <select v-model="overlayState.draft.branchStrategy">
+            <option v-for="option in branchStrategyOptions" :key="option.value" :value="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+          <small class="field-hint">
+            {{ branchStrategyOptions.find((option) => option.value === overlayState.draft.branchStrategy)?.hint }}
+          </small>
         </label>
 
+        <p v-if="overlayState.submitError" class="form-error" data-testid="new-project-error">
+          {{ overlayState.submitError }}
+        </p>
+
         <div class="overlay-actions">
-          <button class="secondary-button" type="button" @click="closeOverlay">取消</button>
-          <button class="primary-button" type="button" @click="submitNewProjectDraft">创建草稿</button>
+          <button class="secondary-button" type="button" :disabled="overlayState.submitting" @click="closeOverlay">
+            取消
+          </button>
+          <button
+            class="primary-button"
+            type="button"
+            :disabled="overlayState.submitting"
+            @click="submitNewProjectDraft"
+          >
+            {{ overlayState.submitting ? '创建中...' : '创建项目' }}
+          </button>
         </div>
       </div>
 
-      <!-- ?????????????????????????? -->
       <div v-else data-testid="action-modal" class="overlay-body">
         <article v-for="item in overlayState.items" :key="item" class="overlay-list-item">{{ item }}</article>
         <div v-if="overlayState.shortcuts.length" class="overlay-shortcuts">
@@ -175,6 +192,25 @@ function onKeydown(event: KeyboardEvent) {
   font: inherit;
 }
 
+.field-hint,
+.form-error {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.field-hint {
+  color: var(--text-subtle);
+  font-weight: 400;
+}
+
+.form-error {
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(240, 68, 56, 0.08);
+  color: var(--danger);
+}
+
 .overlay-actions,
 .overlay-shortcuts {
   display: flex;
@@ -184,14 +220,31 @@ function onKeydown(event: KeyboardEvent) {
 }
 
 .secondary-button,
-.shortcut-link {
+.shortcut-link,
+.primary-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(17, 24, 39, 0.08);
   border-radius: 999px;
   padding: 10px 16px;
-  background: rgba(255, 255, 255, 0.75);
   box-shadow: var(--shadow-soft);
+}
+
+.secondary-button,
+.shortcut-link {
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.primary-button {
+  border: none;
+  background: linear-gradient(135deg, #4f6ef7 0%, #5d7bff 100%);
+  color: white;
+}
+
+.secondary-button:disabled,
+.primary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 </style>
